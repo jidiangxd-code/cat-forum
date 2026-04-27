@@ -1,0 +1,147 @@
+.page-container {
+  min-height: 100vh;
+  background: #FFF5EB;
+  padding-bottom: 40rpx;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 0;
+}
+
+.loading-icon {
+  font-size: 80rpx;
+  animation: bounce 1s infinite;
+}
+
+.loading-text {
+  margin-top: 20rpx;
+  color: #999;
+  font-size: 28rpx;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20rpx); }
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 60rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 30rpx;
+}
+
+.empty-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.empty-desc {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 50rpx;
+}
+
+.empty-btn {
+  background: linear-gradient(135deg, #FF9500, #FFB74D);
+  color: #fff;
+  padding: 20rpx 60rpx;
+  border-radius: 50rpx;
+  font-size: 30rpx;
+}
+
+/* 喜欢列表 - 网格布局 */
+.likes-grid {
+  padding: 0 20rpx;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.like-item {
+  width: calc(50% - 10rpx);
+  height: 360rpx;
+  border-radius: 24rpx;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 20rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+.like-item:nth-child(odd) {
+  margin-right: 10rpx;
+}
+
+.like-item:nth-child(even) {
+  margin-left: 10rpx;
+}
+
+.like-cover {
+  width: 100%;
+  height: 100%;
+}
+
+.like-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  padding: 40rpx 20rpx 20rpx;
+}
+
+.like-name {
+  color: #fff;
+  font-size: 30rpx;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.like-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.like-location {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 22rpx;
+}
+
+.like-stat {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 22rpx;
+}
+
+/* 取消喜欢按钮 */
+.unlike-btn {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+}
+
+.unlike-icon {
+  font-size: 32rpx;
+}

@@ -1,0 +1,58 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/cat-list/cat-list",
+    "pages/cat-home/cat-home",
+    "pages/create-cat/create-cat",
+    "pages/promote-cat/promote-cat",
+    "pages/merge-cat/merge-cat",
+    "pages/publish/publish",
+    "pages/detail/detail",
+    "pages/profile/profile",
+    "pages/my-posts/my-posts",
+    "pages/my-likes/my-likes",
+    "pages/my-comments/my-comments",
+    "pages/edit-profile/edit-profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#FF9A6A",
+    "navigationBarTitleText": "🐱 校园小猫",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#FFF5EB"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#FF9A6A",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/cat-list/cat-list",
+        "text": "猫咪",
+        "iconPath": "assets/icons/publish.png",
+        "selectedIconPath": "assets/icons/publish-active.png"
+      },
+      {
+        "pagePath": "pages/publish/publish",
+        "text": "发布",
+        "iconPath": "assets/icons/publish.png",
+        "selectedIconPath": "assets/icons/publish-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "cloud": true
+}

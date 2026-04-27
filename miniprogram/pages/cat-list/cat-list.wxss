@@ -1,0 +1,107 @@
+/* pages/cat-list/cat-list.wxss */
+.page { background: #FFF5EB; min-height: 100vh; }
+
+.header {
+  background: linear-gradient(135deg, #FF9A6A, #FF7043);
+  padding: 20rpx 24rpx 24rpx;
+}
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; }
+.page-title { font-size: 36rpx; font-weight: bold; color: #fff; }
+.create-btn {
+  background: rgba(255,255,255,0.25); color: #fff;
+  padding: 10rpx 24rpx; border-radius: 30rpx; font-size: 24rpx;
+}
+.search-bar { display: flex; align-items: center; gap: 12rpx; }
+.search-input {
+  flex: 1; background: rgba(255,255,255,0.9); border-radius: 40rpx;
+  padding: 14rpx 24rpx; font-size: 26rpx;
+}
+.search-btn {
+  background: #fff; color: #FF7043; padding: 14rpx 24rpx;
+  border-radius: 40rpx; font-size: 26rpx; font-weight: bold; flex-shrink: 0;
+}
+.clear-btn {
+  background: rgba(255,255,255,0.3); color: #fff;
+  width: 60rpx; height: 60rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-size: 28rpx; flex-shrink: 0;
+}
+.search-tip {
+  padding: 16rpx 28rpx; font-size: 24rpx; color: #888;
+  background: #fff; border-bottom: 1rpx solid #f0f0f0;
+}
+.tabs {
+  display: flex; background: #fff; padding: 0 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.tab {
+  flex: 1; text-align: center; padding: 24rpx 0; font-size: 26rpx; color: #888;
+}
+.tab.active { color: #FF7043; border-bottom: 4rpx solid #FF7043; font-weight: bold; }
+.rank-list { padding: 16rpx 24rpx; }
+.rank-item {
+  display: flex; align-items: center; background: #fff;
+  border-radius: 16rpx; padding: 20rpx; margin-bottom: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.rank-item.top1 { border-left: 6rpx solid #FFD700; background: #FFFDE7; }
+.rank-item.top2 { border-left: 6rpx solid #C0C0C0; background: #F5F5F5; }
+.rank-item.top3 { border-left: 6rpx solid #CD7F32; background: #FFF3E0; }
+.rank-num { width: 60rpx; text-align: center; font-size: 36rpx; flex-shrink: 0; }
+.rank-num-text { font-size: 28rpx; color: #999; font-weight: bold; }
+.rank-avatar {
+  width: 88rpx; height: 88rpx; border-radius: 50%; margin: 0 20rpx;
+  overflow: hidden; flex-shrink: 0;
+}
+.rank-avatar-empty {
+  background: #FFE0C0; display: flex; align-items: center;
+  justify-content: center; font-size: 44rpx; border-radius: 50%;
+}
+.rank-info { flex: 1; }
+.rank-name { display: block; font-size: 30rpx; font-weight: bold; color: #333; }
+.rank-meta { display: block; font-size: 22rpx; color: #999; margin-top: 4rpx; }
+.rank-vote { text-align: center; flex-shrink: 0; }
+.vote-num { display: block; font-size: 36rpx; font-weight: bold; color: #FF7043; }
+.vote-label { display: block; font-size: 20rpx; color: #bbb; }
+.cat-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20rpx; padding: 20rpx 24rpx;
+}
+.cat-card {
+  background: #fff; border-radius: 20rpx;
+  overflow: hidden; box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.05);
+}
+.cat-card-img-wrap { position: relative; }
+.cat-card-img { width: 100%; height: 220rpx; display: block; }
+.cat-img-empty {
+  height: 220rpx; background: #FFE0C0;
+  display: flex; align-items: center; justify-content: center; font-size: 72rpx;
+}
+.cat-type-badge {
+  position: absolute; top: 12rpx; right: 12rpx;
+  padding: 6rpx 14rpx; border-radius: 20rpx;
+  font-size: 20rpx; font-weight: bold;
+}
+.cat-type-badge.formal { background: #FF9A6A; color: #fff; }
+.cat-type-badge.unknown { background: #88BBFF; color: #fff; }
+.cat-card-body { padding: 16rpx; }
+.cat-card-name { display: block; font-size: 28rpx; font-weight: bold; color: #333; margin-bottom: 6rpx; }
+.cat-card-meta { display: block; font-size: 22rpx; color: #999; margin-bottom: 10rpx; }
+.cat-card-footer { display: flex; align-items: center; justify-content: space-between; }
+.vote-info { font-size: 22rpx; color: #FF9A6A; }
+.cat-status { font-size: 20rpx; padding: 4rpx 10rpx; border-radius: 10rpx; }
+.status-active { background: #E8F5E9; color: #4CAF50; }
+.status-lost { background: #FFF3E0; color: #FF9800; }
+.status-adopted { background: #E3F2FD; color: #2196F3; }
+.empty {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 120rpx 40rpx;
+}
+.empty-icon { font-size: 80rpx; margin-bottom: 20rpx; }
+.empty-text { font-size: 28rpx; color: #999; margin-bottom: 32rpx; }
+.empty-btn {
+  background: #FF9A6A; color: #fff; padding: 20rpx 48rpx;
+  border-radius: 40rpx; font-size: 28rpx;
+}
+.load-more, .no-more {
+  text-align: center; padding: 30rpx; font-size: 24rpx; color: #bbb;
+}

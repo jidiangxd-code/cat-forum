@@ -1,0 +1,50 @@
+<!--猫咪卡片组件-->
+<view class="cat-card" bind:tap="onCardTap">
+  <!-- 图片区域 -->
+  <view class="card-image-wrapper">
+    <image
+      class="card-image"
+      src="{{imageLoadError ? '/assets/images/default-cat.png' : (catItem.images[0] || '/assets/images/default-cat.png')}}"
+      mode="aspectFill"
+      lazy-load
+      binderror="onImageError"
+    />
+    <view class="image-overlay"></view>
+    <view class="location-badge" wx:if="{{catItem.location}}">
+      <text>📍 {{catItem.location}}</text>
+    </view>
+  </view>
+
+  <!-- 信息区域 -->
+  <view class="card-info">
+    <!-- 标题行 -->
+    <view class="card-header">
+      <text class="cat-name">🐱 {{catItem.name || '无名小猫'}}</text>
+      <view class="category-badge {{catItem.category}}">
+        <text>{{categoryText}}</text>
+      </view>
+    </view>
+
+    <!-- 描述 -->
+    <text class="card-desc">{{catItem.description}}</text>
+
+    <!-- 底部操作栏 -->
+    <view class="card-footer">
+      <view class="footer-left">
+        <view class="action-btn" bind:tap="onLikeTap">
+          <text class="like-icon {{catItem.liked ? 'liked' : ''}}">
+            {{catItem.liked ? '❤️' : '🤍'}}
+          </text>
+          <text class="like-count">{{catItem.likeCount || 0}}</text>
+        </view>
+        <view class="action-btn">
+          <text class="action-icon">💬</text>
+          <text class="action-text">{{catItem.commentCount || 0}}</text>
+        </view>
+      </view>
+      <view class="footer-right">
+        <text class="publish-time">{{catItem.createTime}}</text>
+      </view>
+    </view>
+  </view>
+</view>

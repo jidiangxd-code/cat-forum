@@ -1,0 +1,107 @@
+<!--详情页 - 猫咪信息 + 评论-->
+<view class="page-container" wx:if="{{cat}}">
+  <!-- 图片轮播 -->
+  <swiper class="image-swiper" indicator-dots circular autoplay>
+    <swiper-item wx:for="{{cat.images}}" wx:key="*this">
+      <image
+        src="{{imageErrors[index] ? '/assets/images/default-cat.png' : item}}"
+        mode="aspectFill"
+        class="swiper-image"
+        bindtap="previewImage"
+        binderror="onSwiperImageError"
+        data-index="{{index}}"
+      />
+    </swiper-item>
+  </swiper>
+
+  <!-- 信息卡片 -->
+  <view class="info-card">
+    <view class="info-header">
+      <view class="avatar-row">
+        <image class="avatar" src="{{cat.avatar || '/assets/images/default-avatar.png'}}" mode="aspectFill" binderror="onAvatarError" />
+        <view class="user-info">
+          <text class="user-name">{{cat.authorName || '匿名用户'}}</text>
+          <text class="publish-time">{{cat.createTime}}</text>
+        </view>
+      </view>
+      <view class="location-tag">
+        <text>📍 {{cat.location || '未知位置'}}</text>
+      </view>
+    </view>
+
+    <view class="divider"></view>
+
+    <!-- 猫咪名字 -->
+    <view class="cat-name-section">
+      <text class="cat-name">🐱 {{cat.name || '无名小猫'}}</text>
+      <view class="category-tag {{cat.category}}">
+        <text>{{categoryMap[cat.category] || '小猫'}}</text>
+      </view>
+    </view>
+
+    <!-- 描述 -->
+    <view class="description">
+      <text>{{cat.description}}</text>
+    </view>
+  </view>
+
+  <!-- 互动区域 -->
+  <view class="action-bar">
+    <view class="action-item" bind:tap="toggleLike">
+      <text class="action-icon {{liked ? 'liked' : ''}}">{{liked ? '❤️' : '🤍'}}</text>
+      <text class="action-text">{{liked ? '已喜欢' : '喜欢'}}</text>
+      <text class="action-count">{{cat.likeCount || 0}}</text>
+    </view>
+    <view class="action-item" bind:tap="goToMyLikes">
+      <text class="action-icon">💝</text>
+      <text class="action-text">我的喜欢</text>
+    </view>
+    <view class="action-item" bind:tap="shareCat">
+      <text class="action-icon">📤</text>
+      <text class="action-text">分享</text>
+    </view>
+  </view>
+
+  <!-- 评论区 -->
+  <view class="comment-section">
+    <view class="section-title">
+      <text>💬 评论 ({{comments.length}})</text>
+    </view>
+
+    <view class="comment-list" wx:if="{{comments.length > 0}}">
+      <view class="comment-item" wx:for="{{comments}}" wx:key="_id">
+        <image class="comment-avatar" src="{{item.avatarError ? '/assets/images/default-avatar.png' : (item.avatar || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onCommentAvatarError" data-index="{{index}}" />
+        <view class="comment-content">
+          <text class="comment-author">{{item.authorName}}</text>
+          <text class="comment-text">{{item.content}}</text>
+          <text class="comment-time">{{item.createTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="empty-comment" wx:else>
+      <text class="empty-icon">💭</text>
+      <text class="empty-text">还没有评论，快来抢沙发！</text>
+    </view>
+  </view>
+
+  <!-- 底部评论输入 -->
+  <view class="comment-input-bar">
+    <input
+      class="comment-input"
+      placeholder="说点什么吧..."
+      value="{{inputContent}}"
+      bindinput="onInputComment"
+      bindconfirm="submitComment"
+    />
+    <view class="send-btn" bind:tap="submitComment">
+      <text>发送</text>
+    </view>
+  </view>
+</view>
+
+<!-- 加载中 -->
+<view class="loading-page" wx:if="{{loading}}">
+  <text class="loading-icon">🐾</text>
+  <text class="loading-text">加载中...</text>
+</view>

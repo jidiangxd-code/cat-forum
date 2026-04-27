@@ -1,0 +1,92 @@
+<!--个人中心-->
+<view class="page-container">
+  <!-- 用户信息头部 -->
+  <view class="profile-header">
+    <view class="header-bg"></view>
+    <view class="user-card">
+      <image class="user-avatar" src="{{avatarError ? '/assets/images/default-avatar.png' : (userInfo.avatarUrl || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onAvatarError" />
+      <text class="user-name">{{userInfo.nickName || '爱猫同学'}}</text>
+      <text class="user-desc">🐱 校园猫咪守护者</text>
+    </view>
+  </view>
+
+  <!-- 统计数据 -->
+  <view class="stats-card">
+    <view class="stat-item">
+      <text class="stat-num">{{stats.publishCount}}</text>
+      <text class="stat-label">发布</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.likeCount}}</text>
+      <text class="stat-label">获赞</text>
+    </view>
+    <view class="stat-divider"></view>
+    <view class="stat-item">
+      <text class="stat-num">{{stats.likeCount}}</text>
+      <text class="stat-label">喜欢</text>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-card">
+    <view class="menu-title">
+      <text>📋 我的内容</text>
+    </view>
+    <view class="menu-item" bind:tap="goToMyPosts">
+      <view class="menu-left">
+        <text class="menu-icon">📝</text>
+        <text class="menu-text">我的发布</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bind:tap="goToMyLikes">
+      <view class="menu-left">
+        <text class="menu-icon">❤️</text>
+        <text class="menu-text">我喜欢的</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bind:tap="goToMyComments">
+      <view class="menu-left">
+        <text class="menu-icon">💬</text>
+        <text class="menu-text">我的评论</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 设置菜单 -->
+  <view class="menu-card">
+    <view class="menu-title">
+      <text>⚙️ 设置</text>
+    </view>
+    <view class="menu-item" bind:tap="editProfile">
+      <view class="menu-left">
+        <text class="menu-icon">👤</text>
+        <text class="menu-text">编辑资料</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bind:tap="clearCache">
+      <view class="menu-left">
+        <text class="menu-icon">🗑️</text>
+        <text class="menu-text">清除缓存</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bind:tap="aboutUs">
+      <view class="menu-left">
+        <text class="menu-icon">ℹ️</text>
+        <text class="menu-text">关于我们</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 版本号 -->
+  <view class="version-info">
+    <text>校园小猫论坛 v1.0.0</text>
+    <text class="version-sub">用爱守护每一只校园小猫 🐾</text>
+  </view>
+</view>

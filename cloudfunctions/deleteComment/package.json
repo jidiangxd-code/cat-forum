@@ -1,0 +1,9 @@
+{
+  "name": "deleteComment",
+  "version": "1.0.0",
+  "description": "删除评论（验证作者身份）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,112 @@
+<!-- pages/create-cat/create-cat.wxml -->
+<view class="page">
+
+  <!-- 封面图 -->
+  <view class="cover-section" bindtap="chooseCover">
+    <image
+      wx:if="{{coverLocalPath || form.coverImage}}"
+      class="cover-img"
+      src="{{coverLocalPath || form.coverImage}}"
+      mode="aspectFill"
+    />
+    <view class="cover-placeholder" wx:else>
+      <text class="cover-icon">📷</text>
+      <text class="cover-tip">点击添加封面图（选填）</text>
+    </view>
+  </view>
+
+  <!-- 表单 -->
+  <view class="form">
+
+    <!-- 名字 -->
+    <view class="form-group">
+      <view class="form-label">正式名字 <text class="required">*</text></view>
+      <input
+        class="form-input"
+        placeholder="给这只猫取个正式的名字"
+        value="{{form.fullName}}"
+        bindinput="onFullNameInput"
+        maxlength="30"
+      />
+    </view>
+
+    <!-- 外貌 -->
+    <view class="form-group">
+      <view class="form-label">外貌特征 <text class="required">*</text></view>
+      <view class="tag-wrap">
+        <view
+          wx:for="{{appearanceOptions}}"
+          wx:key="index"
+          class="tag {{form.appearance === item ? 'selected' : ''}}"
+          bindtap="onAppearanceTap"
+          data-val="{{item}}"
+        >{{item}}</view>
+      </view>
+    </view>
+
+    <!-- 性别 -->
+    <view class="form-group">
+      <view class="form-label">性别</view>
+      <view class="btn-group">
+        <view
+          wx:for="{{genderOptions}}"
+          wx:key="value"
+          class="option-btn {{form.gender === item.value ? 'selected' : ''}}"
+          bindtap="onGenderTap"
+          data-val="{{item.value}}"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 性格 -->
+    <view class="form-group">
+      <view class="form-label">性格描述 <text class="optional">（选填）</text></view>
+      <input
+        class="form-input"
+        placeholder="如：爱撒娇、胆小、贪吃..."
+        value="{{form.personality}}"
+        bindinput="onPersonalityInput"
+        maxlength="50"
+      />
+    </view>
+
+    <!-- 出没地点 -->
+    <view class="form-group">
+      <view class="form-label">出没地点 <text class="optional">（选填）</text></view>
+      <input
+        class="form-input"
+        placeholder="如：图书馆门口、南区食堂附近"
+        value="{{form.location}}"
+        bindinput="onLocationInput"
+        maxlength="50"
+      />
+    </view>
+
+    <!-- 状态 -->
+    <view class="form-group">
+      <view class="form-label">当前状态</view>
+      <view class="btn-group">
+        <view
+          wx:for="{{statusOptions}}"
+          wx:key="value"
+          class="option-btn {{form.status === item.value ? 'selected' : ''}}"
+          bindtap="onStatusTap"
+          data-val="{{item.value}}"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 提交 -->
+  <view class="submit-wrap">
+    <button
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="submit"
+      disabled="{{submitting}}"
+    >
+      {{submitting ? '保存中...' : (mode === 'edit' ? '保存修改' : '创建档案')}}
+    </button>
+  </view>
+
+</view>

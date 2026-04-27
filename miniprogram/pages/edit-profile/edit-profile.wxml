@@ -1,0 +1,55 @@
+<!-- 编辑资料 -->
+<view class="page-container">
+  <!-- 头像编辑 -->
+  <view class="avatar-section">
+    <view class="section-label">头像</view>
+    <view class="avatar-editor" bind:tap="chooseAvatar">
+      <image
+        class="avatar-preview"
+        src="{{avatarUrl || '/assets/images/default-avatar.png'}}"
+        mode="aspectFill"
+      />
+      <view class="avatar-tip">
+        <text class="tip-icon">📷</text>
+        <text class="tip-text">点击更换</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 昵称编辑 -->
+  <view class="form-section">
+    <view class="section-label">昵称</view>
+    <input
+      class="input-field"
+      placeholder="请输入昵称（2-20 个字符）"
+      value="{{nickName}}"
+      bindinput="onNickNameInput"
+      maxlength="20"
+    />
+    <view class="char-count">{{nickName.length}}/20</view>
+  </view>
+
+  <!-- 保存按钮 -->
+  <view class="save-section">
+    <button
+      class="save-btn"
+      bind:tap="submitEdit"
+      loading="{{saving}}"
+      disabled="{{saving}}"
+    >
+      {{saving ? '保存中...' : '保存'}}
+    </button>
+  </view>
+
+  <!-- 提示说明 -->
+  <view class="tips-section">
+    <view class="tip-item">
+      <text class="tip-icon">ℹ️</text>
+      <text class="tip-text">昵称修改后，其他用户可以看到你的新昵称</text>
+    </view>
+    <view class="tip-item">
+      <text class="tip-icon">🔒</text>
+      <text class="tip-text">头像会上传到云存储，请上传合适的图片</text>
+    </view>
+  </view>
+</view>

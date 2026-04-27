@@ -1,0 +1,115 @@
+<!-- pages/cat-list/cat-list.wxml -->
+<view class="page">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-top">
+      <text class="page-title">🐱 猫咪档案</text>
+      <view class="create-btn" bindtap="goCreateFormal">+ 建正式档案</view>
+    </view>
+    <!-- 搜索栏 -->
+    <view class="search-bar">
+      <input
+        class="search-input"
+        placeholder="搜索猫咪名字/代号/外貌..."
+        value="{{keyword}}"
+        bindinput="onKeywordInput"
+        bindconfirm="doSearch"
+      />
+      <view class="search-btn" bindtap="doSearch">搜索</view>
+      <view class="clear-btn" wx:if="{{searchMode}}" bindtap="clearSearch">✕</view>
+    </view>
+  </view>
+
+  <!-- 标签栏（搜索模式下隐藏） -->
+  <view class="tabs" wx:if="{{!searchMode}}">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="id"
+      class="tab {{currentTab === item.id ? 'active' : ''}}"
+      bindtap="onTabChange"
+      data-tab="{{item.id}}"
+    >{{item.name}}</view>
+  </view>
+
+  <!-- 搜索结果提示 -->
+  <view class="search-tip" wx:if="{{searchMode}}">
+    搜索"{{keyword}}"，找到 {{catList.length}} 只猫
+  </view>
+
+  <!-- 人气榜特殊样式 -->
+  <view class="rank-list" wx:if="{{currentTab === 'rank_total' && !searchMode}}">
+    <view
+      wx:for="{{catList}}"
+      wx:key="_id"
+      class="rank-item {{index < 3 ? 'top' + (index+1) : ''}}"
+      bindtap="onCatTap"
+      data-id="{{item._id}}"
+    >
+      <view class="rank-num">
+        <text wx:if="{{index === 0}}">🥇</text>
+        <text wx:elif="{{index === 1}}">🥈</text>
+        <text wx:elif="{{index === 2}}">🥉</text>
+        <text wx:else class="rank-num-text">{{index+1}}</text>
+      </view>
+      <image
+        wx:if="{{item.coverImage}}"
+        class="rank-avatar"
+        src="{{item.coverImage}}"
+        mode="aspectFill"
+      />
+      <view class="rank-avatar rank-avatar-empty" wx:else>🐱</view>
+      <view class="rank-info">
+        <text class="rank-name">{{item.fullName || item.codeName}}</text>
+        <text class="rank-meta">{{item.appearance}} {{item.gender === 'male' ? '♂' : item.gender === 'female' ? '♀' : ''}}</text>
+      </view>
+      <view class="rank-vote">
+        <text class="vote-num">{{item.totalVote || 0}}</text>
+        <text class="vote-label">票</text>
+      </view>
+    </view>
+    <view class="load-more" wx:if="{{loading}}">加载中...</view>
+    <view class="no-more" wx:elif="{{!hasMore && catList.length > 0}}">已加载全部</view>
+  </view>
+
+  <!-- 普通列表 -->
+  <view class="cat-grid" wx:if="{{currentTab !== 'rank_total' || searchMode}}">
+    <view
+      wx:for="{{catList}}"
+      wx:key="_id"
+      class="cat-card"
+      bindtap="onCatTap"
+      data-id="{{item._id}}"
+    >
+      <view class="cat-card-img-wrap">
+        <image
+          wx:if="{{item.coverImage}}"
+          class="cat-card-img"
+          src="{{item.coverImage}}"
+          mode="aspectFill"
+        />
+        <view class="cat-card-img cat-img-empty" wx:else>🐱</view>
+        <view class="cat-type-badge {{item.catType === 'formal' ? 'formal' : 'unknown'}}">
+          {{item.catType === 'formal' ? '正式' : '未知'}}
+        </view>
+      </view>
+      <view class="cat-card-body">
+        <text class="cat-card-name">{{item.fullName || item.codeName}}</text>
+        <text class="cat-card-meta">{{item.appearance}} · {{item.location || '地点未知'}}</text>
+        <view class="cat-card-footer">
+          <text class="vote-info">🏆 {{item.totalVote || 0}}票</text>
+          <text class="cat-status status-{{item.status}}">{{item.status === 'active' ? '活跃' : item.status === 'lost' ? '走失' : '已领养'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && catList.length === 0}}">
+    <text class="empty-icon">🐾</text>
+    <text class="empty-text">还没有猫咪档案</text>
+    <view class="empty-btn" bindtap="goCreateFormal">创建第一份正式档案</view>
+  </view>
+
+  <view class="load-more" wx:if="{{loading && catList.length > 0}}">加载中...</view>
+  <view class="no-more" wx:elif="{{!hasMore && catList.length > 0 && !loading}}">已加载全部</view>
+</view>

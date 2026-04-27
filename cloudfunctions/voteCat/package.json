@@ -1,0 +1,9 @@
+{
+  "name": "voteCat",
+  "version": "1.0.0",
+  "description": "每日投票（防刷票）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

@@ -1,0 +1,133 @@
+<!-- pages/promote-cat/promote-cat.wxml -->
+<view class="page" wx:if="{{!loading}}">
+
+  <!-- 当前未知猫信息预览 -->
+  <view class="current-cat">
+    <view class="current-header">
+      <text class="current-label">正在为这只猫办理转正</text>
+    </view>
+    <view class="current-card">
+      <image
+        wx:if="{{cat.coverImage}}"
+        class="current-avatar"
+        src="{{cat.coverImage}}"
+        mode="aspectFill"
+      />
+      <view class="current-avatar avatar-empty" wx:else>🐱</view>
+      <view class="current-info">
+        <text class="current-code">代号：{{cat.codeName}}</text>
+        <text class="current-appearance">外貌：{{cat.appearance}}</text>
+        <text class="current-type unknown-badge">未知代号猫</text>
+      </view>
+    </view>
+    <view class="arrow-down">⬇️ 完善信息后将自动转正</view>
+  </view>
+
+  <!-- 转正表单 -->
+  <view class="form">
+
+    <!-- 正式名字（必填） -->
+    <view class="form-group">
+      <view class="form-label">正式名字 <text class="required">*</text></view>
+      <input
+        class="form-input"
+        placeholder="给这只猫取一个正式的名字"
+        value="{{form.fullName}}"
+        bindinput="onFullNameInput"
+        maxlength="30"
+      />
+      <text class="form-hint">原代号「{{cat.codeName}}」将作为别称保留</text>
+    </view>
+
+    <!-- 封面图 -->
+    <view class="form-group" bindtap="chooseCover">
+      <view class="form-label">更新封面图 <text class="optional">（选填）</text></view>
+      <view class="cover-pick">
+        <image
+          wx:if="{{coverLocalPath || form.coverImage}}"
+          class="cover-preview"
+          src="{{coverLocalPath || form.coverImage}}"
+          mode="aspectFill"
+        />
+        <view class="cover-empty" wx:else>
+          <text>📷 点击选择图片</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 性别 -->
+    <view class="form-group">
+      <view class="form-label">性别</view>
+      <view class="btn-group">
+        <view
+          wx:for="{{genderOptions}}"
+          wx:key="value"
+          class="option-btn {{form.gender === item.value ? 'selected' : ''}}"
+          bindtap="onGenderTap"
+          data-val="{{item.value}}"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 性格 -->
+    <view class="form-group">
+      <view class="form-label">性格描述 <text class="optional">（选填）</text></view>
+      <input
+        class="form-input"
+        placeholder="爱撒娇、胆小、贪吃..."
+        value="{{form.personality}}"
+        bindinput="onPersonalityInput"
+        maxlength="50"
+      />
+    </view>
+
+    <!-- 地点 -->
+    <view class="form-group">
+      <view class="form-label">出没地点 <text class="optional">（选填）</text></view>
+      <input
+        class="form-input"
+        placeholder="图书馆门口、南区食堂..."
+        value="{{form.location}}"
+        bindinput="onLocationInput"
+        maxlength="50"
+      />
+    </view>
+
+    <!-- 状态 -->
+    <view class="form-group">
+      <view class="form-label">当前状态</view>
+      <view class="btn-group">
+        <view
+          wx:for="{{statusOptions}}"
+          wx:key="value"
+          class="option-btn {{form.status === item.value ? 'selected' : ''}}"
+          bindtap="onStatusTap"
+          data-val="{{item.value}}"
+        >{{item.label}}</view>
+      </view>
+    </view>
+
+    <!-- 说明 -->
+    <view class="info-tip">
+      <text class="tip-icon">ℹ️</text>
+      <text class="tip-text">提交后立即生效，历史帖子和票数全部保留</text>
+    </view>
+
+  </view>
+
+  <!-- 提交 -->
+  <view class="submit-wrap">
+    <button
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="doPromote"
+      disabled="{{submitting}}"
+    >
+      {{submitting ? '转正中...' : '确认转正为正式猫 🎉'}}
+    </button>
+  </view>
+
+</view>
+
+<view class="loading-page" wx:if="{{loading}}">
+  <text>加载中...</text>
+</view>

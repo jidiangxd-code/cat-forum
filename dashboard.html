@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐱 校园小猫论坛 - 项目看板</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid rgba(255,149,0,0.3);
+            margin-bottom: 30px;
+        }
+        .header h1 { font-size: 2.5em; color: #FF9500; margin-bottom: 10px; }
+        .header .subtitle { color: #888; font-size: 1.1em; }
+        
+        /* Overall Progress */
+        .overall-progress {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .progress-header h2 { color: #FF9500; }
+        .progress-percent { font-size: 2em; font-weight: bold; color: #FF9500; }
+        .progress-bar-bg {
+            height: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF9500, #FFD60A);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        /* Phase Cards */
+        .phases-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .phase-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #555;
+            transition: all 0.3s ease;
+        }
+        .phase-card.active { border-left-color: #FF9500; background: rgba(255,149,0,0.1); }
+        .phase-card.done { border-left-color: #34C759; background: rgba(52,199,89,0.1); }
+        .phase-card h3 { font-size: 1em; margin-bottom: 8px; }
+        .phase-card .dates { font-size: 0.8em; color: #888; }
+        .phase-card .phase-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-top: 8px;
+        }
+        .phase-status.not_started { background: #333; color: #888; }
+        .phase-status.in_progress { background: #FF9500; color: #000; }
+        .phase-status.done { background: #34C759; color: #000; }
+        
+        /* Team Section */
+        .team-section { margin-bottom: 30px; }
+        .team-section h2 { color: #FF9500; margin-bottom: 20px; font-size: 1.5em; }
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .team-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .team-card:hover { transform: translateY(-2px); border-color: rgba(255,149,0,0.3); }
+        .team-card .role-icon { font-size: 2em; margin-bottom: 10px; }
+        .team-card .role-name { font-size: 1.1em; font-weight: bold; margin-bottom: 5px; }
+        .team-card .role-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-bottom: 12px;
+        }
+        .role-status.active { background: #34C759; color: #000; }
+        .role-status.waiting { background: #555; color: #aaa; }
+        .role-status.busy { background: #FF9500; color: #000; }
+        .team-card .current-task {
+            font-size: 0.85em;
+            color: #aaa;
+            margin-bottom: 10px;
+            min-height: 40px;
+        }
+        .team-card .task-progress {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .team-card .task-progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .team-card .progress-text { font-size: 0.8em; color: #888; margin-top: 5px; text-align: right; }
+        
+        /* Activity Log */
+        .activity-log {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+        }
+        .activity-log h2 { color: #FF9500; margin-bottom: 20px; }
+        .log-entry {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            gap: 15px;
+        }
+        .log-entry:last-child { border-bottom: none; }
+        .log-time { color: #888; font-size: 0.85em; min-width: 140px; }
+        .log-role { 
+            background: rgba(255,149,0,0.2); 
+            color: #FF9500; 
+            padding: 2px 10px; 
+            border-radius: 10px; 
+            font-size: 0.8em;
+            min-width: 80px;
+            text-align: center;
+        }
+        .log-message { color: #ccc; font-size: 0.9em; }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .phases-grid { grid-template-columns: repeat(2, 1fr); }
+            .team-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .phases-grid { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🐱 校园小猫论坛</h1>
+            <p class="subtitle">微信小程序开发 · 项目实时看板</p>
+        </div>
+
+        <!-- Overall Progress -->
+        <div class="overall-progress">
+            <div class="progress-header">
+                <h2>📊 总体进度</h2>
+                <span class="progress-percent" id="overallPercent">5%</span>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="overallBar" style="width: 5%"></div>
+            </div>
+        </div>
+
+        <!-- Phases -->
+        <div class="phases-grid" id="phasesGrid">
+            <!-- Will be populated by JS -->
+        </div>
+
+        <!-- Team -->
+        <div class="team-section">
+            <h2>👥 团队工作状态</h2>
+            <div class="team-grid" id="teamGrid">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+
+        <!-- Activity Log -->
+        <div class="activity-log">
+            <h2>📝 活动日志</h2>
+            <div id="logEntries">
+                <!-- Will be populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load status data
+        const statusData = {
+            projectName: "校园小猫论坛",
+            lastUpdated: "2026-04-19 17:37",
+            overallProgress: 5,
+            phases: [
+                { name: "需求与设计", progress: 0, status: "not_started", dates: "4.19 - 4.21" },
+                { name: "开发实施", progress: 0, status: "not_started", dates: "4.22 - 4.25" },
+                { name: "测试验收", progress: 0, status: "not_started", dates: "4.26 - 4.27" },
+                { name: "上线部署", progress: 0, status: "not_started", dates: "4.28" }
+            ],
+            team: [
+                { role: "项目经理", icon: "🎯", status: "active", task: "项目初始化完成，开始协调各角色启动", progress: 10, color: "#FF9500" },
+                { role: "产品经理", icon: "📋", status: "waiting", task: "等待启动 - 即将开始需求分析", progress: 0, color: "#5856D6" },
+                { role: "UI设计师", icon: "🎨", status: "waiting", task: "等待需求文档输出", progress: 0, color: "#FF2D55" },
+                { role: "前端工程师", icon: "💻", status: "waiting", task: "等待技术方案确认", progress: 0, color: "#34C759" },
+                { role: "后端工程师", icon: "⚙️", status: "waiting", task: "等待数据库设计确认", progress: 0, color: "#007AFF" },
+                { role: "测试工程师", icon: "🧪", status: "waiting", task: "等待需求文档", progress: 0, color: "#AF52DE" }
+            ],
+            logs: [
+                { time: "2026-04-19 17:37", role: "项目经理", message: "项目初始化完成，创建看板系统" },
+                { time: "2026-04-19 17:37", role: "项目经理", message: "团队角色分配完成，等待各角色就位" }
+            ]
+        };
+
+        // Render phases
+        function renderPhases() {
+            const grid = document.getElementById('phasesGrid');
+            grid.innerHTML = statusData.phases.map(p => `
+                <div class="phase-card ${p.status === 'not_started' ? '' : p.status === 'in_progress' ? 'active' : 'done'}">
+                    <h3>${p.name}</h3>
+                    <div class="dates">📅 ${p.dates}</div>
+                    <div class="progress-bar-bg" style="margin-top: 10px; height: 8px;">
+                        <div class="progress-bar-fill" style="width: ${p.progress}%; background: ${p.status === 'done' ? '#34C759' : '#FF9500'}"></div>
+                    </div>
+                    <span class="phase-status ${p.status}">${p.status === 'not_started' ? '未开始' : p.status === 'in_progress' ? '进行中' : '已完成'}</span>
+                </div>
+            `).join('');
+        }
+
+        // Render team
+        function renderTeam() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = statusData.team.map(m => `
+                <div class="team-card">
+                    <div class="role-icon">${m.icon}</div>
+                    <div class="role-name">${m.role}</div>
+                    <span class="role-status ${m.status}">${m.status === 'active' ? '工作中' : m.status === 'busy' ? '忙碌中' : '等待中'}</span>
+                    <div class="current-task">${m.task}</div>
+                    <div class="task-progress">
+                        <div class="task-progress-fill" style="width: ${m.progress}%; background: ${m.color}"></div>
+                    </div>
+                    <div class="progress-text">${m.progress}%</div>
+                </div>
+            `).join('');
+        }
+
+        // Render logs
+        function renderLogs() {
+            const container = document.getElementById('logEntries');
+            container.innerHTML = statusData.logs.map(l => `
+                <div class="log-entry">
+                    <span class="log-time">${l.time}</span>
+                    <span class="log-role">${l.role}</span>
+                    <span class="log-message">${l.message}</span>
+                </div>
+            `).join('');
+        }
+
+        // Initialize
+        renderPhases();
+        renderTeam();
+        renderLogs();
+
+        // Auto-refresh every 10 seconds
+        setInterval(async () => {
+            try {
+                const response = await fetch('./status/team-status.json?t=' + Date.now());
+                const data = await response.json();
+                if (data) {
+                    statusData.lastUpdated = data.lastUpdated;
+                    statusData.overallProgress = data.overallProgress;
+                    statusData.phases = data.phases.map((p, i) => ({...p, ...statusData.phases[i], ...p}));
+                    statusData.team = data.team;
+                    if (data.logs) statusData.logs = data.logs;
+                    document.getElementById('overallPercent').textContent = data.overallProgress + '%';
+                    document.getElementById('overallBar').style.width = data.overallProgress + '%';
+                    renderPhases();
+                    renderTeam();
+                    renderLogs();
+                }
+            } catch(e) {}
+        }, 10000);
+    </script>
+</body>
+</html>

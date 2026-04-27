@@ -1,0 +1,151 @@
+# 校园小猫小程序目录功能说明
+
+## 项目根目录
+
+`c:\Users\郭旭东\Desktop\xiao_mao` 是项目的根目录，包含了整个小程序项目的所有文件和子目录。
+
+## 主要目录说明
+
+### 1. cloudfunctions 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\cloudfunctions` 目录用于存放微信云开发的云函数，包含各个云函数的实现代码。
+
+云函数是在云端运行的代码，用于处理后端逻辑，如数据库操作、用户认证等。该目录下包含以下云函数：
+- `addCat`：添加猫咪信息
+- `addComment`：添加评论
+- `contentCheck`：内容审核
+- `createCat`：创建猫咪档案
+- `deleteCat`：删除猫咪档案
+- `deleteComment`：删除评论
+- `getCatDetail`：获取猫咪详情
+- `getCatList`：获取猫咪列表
+- `getCatProfileList`：获取猫咪档案列表
+- `login`：用户登录，获取openid
+- `mergeCat`：合并重复猫咪
+- `publishPost`：发布帖子
+- `quickstartFunctions`：快速开始函数
+- `toggleFavorite`：切换收藏状态
+- `updateCat`：更新猫咪档案
+- `voteCat`：为猫咪投票
+
+每个云函数目录下都包含 `index.js` 文件（云函数的实现代码）和 `package.json` 文件（依赖配置）。
+
+### 2. design 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\design` 目录用于存放设计相关的文档，包含页面设计和设计规范。
+
+- `pages` 子目录：包含各个页面的设计文档，如 `detail.md`、`index.md`、`profile.md`、`publish.md`
+- `assets.md`：资源设计文档
+- `guidelines.md`：设计规范指南
+
+### 3. docs 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\docs` 目录用于存放项目文档，包含需求、测试、修复等相关文档。
+
+- `audit-checklist.md`：审核清单
+- `backend-fixes-v2.md`：后端修复文档
+- `backend-optimization.md`：后端优化文档
+- `bug-fixes-v2.md`：bug修复文档
+- `bug-report-v2.md`、`bug-report-v3.md`：bug报告
+- `bugs.md`：bug记录
+- `cloud-functions.md`：云函数文档
+- `cloud-setup-guide.md`：云开发设置指南
+- `database.md`：数据库文档
+- `fix-homepage-loading.md`：首页加载修复文档
+- `frontend-fixes-v2.md`：前端修复文档
+- `product-review-v2.md`：产品评审文档
+- `product-roadmap-v2.md`：产品路线图
+- `requirements.md`：需求文档
+- `test-cases.md`：测试用例
+- `test-plan.md`：测试计划
+- `user-stories.md`：用户故事
+
+### 4. miniprogram 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\miniprogram` 目录是微信小程序的前端代码目录，包含小程序的页面、组件、资源和配置文件。
+
+#### 4.1 assets 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\miniprogram\assets` 目录用于存放小程序的静态资源文件。
+
+- `icons` 子目录：存放图标文件，如 `home.png`、`profile.png` 等
+- `images` 子目录：存放图片文件，如 `default-avatar.png`、`default-cat.png` 等
+
+#### 4.2 components 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\miniprogram\components` 目录用于存放小程序的自定义组件。
+
+- `cat-card` 组件：猫咪卡片组件，用于展示猫咪信息
+- `cloudTipModal` 组件：云开发提示模态框组件
+
+每个组件目录下都包含 `.js`（组件逻辑）、`.json`（组件配置）、`.wxml`（组件模板）和 `.wxss`（组件样式）文件。
+
+#### 4.3 images 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\miniprogram\images` 目录用于存放小程序的图片资源，包含图标和示例图片。
+
+- `icons` 子目录：存放各种图标文件
+- 其他图片文件：如 `ai_example1.png`、`cloud_dev.png` 等
+
+#### 4.4 pages 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\miniprogram\pages` 目录用于存放小程序的页面文件，包含各个页面的相关代码和资源。
+
+每个页面都是一个子目录，包含 `.js`（页面逻辑）、`.json`（页面配置）、`.wxml`（页面模板）和 `.wxss`（页面样式）文件。主要页面包括：
+
+- `cat-home`：猫咪详情页，展示猫咪的详细信息
+- `cat-list`：猫咪列表页，展示所有猫咪的列表
+- `create-cat`：创建猫咪档案页，用于添加新猫咪
+- `detail`：帖子详情页，查看帖子内容和评论
+- `edit-profile`：编辑个人资料页
+- `index`：首页，展示帖子流
+- `merge-cat`：合并猫咪页，用于合并重复的猫咪档案
+- `my-comments`：我的评论页，查看用户发表的评论
+- `my-likes`：我的点赞页，查看用户点赞的帖子
+- `my-posts`：我的帖子页，查看用户发布的帖子
+- `profile`：个人中心页，展示用户信息和相关操作
+- `promote-cat`：升级猫咪页，用于将未知猫升级为正式猫
+- `publish`：发布帖子页，用于发布新帖子
+
+#### 4.5 utils 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\miniprogram\utils` 目录用于存放工具函数，主要包含 `api.js` 文件，用于封装云函数调用和数据库操作。
+
+#### 4.6 根配置文件
+- `app.js`：小程序的全局逻辑文件
+- `app.json`：小程序的全局配置文件，定义页面路径、窗口样式等
+- `app.wxss`：小程序的全局样式文件
+- `envList.js`：云开发环境配置文件
+- `sitemap.json`：小程序的站点地图配置文件
+
+### 5. roles 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\roles` 目录用于存放项目角色相关的文档，包含不同角色的职责说明。
+
+- `Backend.md`：后端开发人员职责
+- `Designer.md`：设计师职责
+- `Frontend.md`：前端开发人员职责
+- `Manager.md`：项目经理职责
+- `PM.md`：产品经理职责
+- `QA.md`：测试人员职责
+
+### 6. status 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\status` 目录用于存放项目状态相关的文件。
+
+- `activity-log.json`：活动日志
+- `team-status.json`：团队状态
+
+### 7. temp 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\temp` 目录用于存放临时文件，如 `frontend-fix-plan.md`（前端修复计划）。
+
+### 8. 备注 目录
+`c:\Users\郭旭东\Desktop\xiao_mao\备注` 目录用于存放项目相关的备注和说明文档。
+
+- `微信云开发操作指南.txt`：微信云开发控制台操作指南
+- `项目分析.txt`：项目结构和功能分析
+
+## 其他文件
+
+- `.gitignore`：Git版本控制的忽略文件配置
+- `PROJECT_PLAN.md`：项目计划文档
+- `README.md`：项目说明文档
+- `dashboard.html`：项目仪表盘
+- `project.config.json`：微信开发者工具的项目配置文件
+- `project.private.config.json`：微信开发者工具的私有配置文件
+- `uploadCloudFunction.sh`：云函数上传脚本
+
+## 总结
+
+校园小猫小程序项目采用了清晰的目录结构，将前端代码、后端云函数、设计文档和项目文档进行了合理的组织。这种结构便于开发人员理解和维护项目，也有利于团队协作。
+
+通过本说明文档，编程新手可以快速了解项目的整体结构和各个目录的功能，为后续的开发和维护工作提供参考。

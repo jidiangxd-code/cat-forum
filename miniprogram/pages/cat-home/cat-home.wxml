@@ -1,0 +1,119 @@
+<!-- pages/cat-home/cat-home.wxml - 猫咪专属主页 -->
+<view class="page" wx:if="{{!loading}}">
+
+  <!-- 顶部封面 + 基本信息 -->
+  <view class="hero">
+    <image
+      wx:if="{{cat.coverImage}}"
+      class="cover-img"
+      src="{{cat.coverImage}}"
+      mode="aspectFill"
+      bindtap="previewImage"
+      data-src="{{cat.coverImage}}"
+    />
+    <view class="cover-placeholder" wx:else>🐱</view>
+
+    <view class="hero-info">
+      <!-- 类型标签 -->
+      <view class="type-badge {{cat.catType === 'formal' ? 'formal' : 'unknown'}}">
+        {{cat.catType === 'formal' ? '正式档案' : '未知代号猫'}}
+      </view>
+
+      <!-- 名字 -->
+      <view class="name-area">
+        <text class="cat-name">{{cat.fullName || cat.codeName}}</text>
+        <text class="code-name" wx:if="{{cat.catType === 'formal' && cat.codeName}}">（别称：{{cat.codeName}}）</text>
+      </view>
+
+      <!-- 基本信息行 -->
+      <view class="meta-row">
+        <text class="meta-item">{{cat.appearance}}</text>
+        <text class="meta-sep">·</text>
+        <text class="meta-item">{{genderMap[cat.gender] || '性别未知'}}</text>
+        <text class="meta-sep" wx:if="{{cat.location}}">·</text>
+        <text class="meta-item" wx:if="{{cat.location}}">📍{{cat.location}}</text>
+      </view>
+
+      <!-- 状态 -->
+      <view class="status-row" wx:if="{{cat.status}}">
+        <text class="status-dot" style="color:{{statusColorMap[cat.status]}}">●</text>
+        <text class="status-text">{{statusMap[cat.status]}}</text>
+        <text class="personality" wx:if="{{cat.personality}}"> · {{cat.personality}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 票数 + 投票按钮 -->
+  <view class="vote-section">
+    <view class="vote-count-area">
+      <text class="vote-big">{{cat.totalVote || 0}}</text>
+      <text class="vote-unit">总人气票</text>
+    </view>
+    <view
+      class="vote-btn {{voted ? 'voted' : ''}} {{voteLoading ? 'loading' : ''}}"
+      bindtap="doVote"
+    >
+      <text>{{voted ? (votedCatId === catId ? '✅ 今日已投' : '已投其他猫') : '🏆 今日投票'}}</text>
+    </view>
+  </view>
+
+  <!-- 功能按钮区 -->
+  <view class="action-bar">
+    <view class="action-btn promote-btn" bindtap="goPromote" wx:if="{{cat.catType === 'unknown'}}">
+      <text>⬆️</text><text class="action-label">完善为正式猫</text>
+    </view>
+    <view class="action-btn edit-btn" bindtap="goEdit">
+      <text>✏️</text><text class="action-label">编辑资料</text>
+    </view>
+    <view class="action-btn merge-btn" bindtap="goMerge">
+      <text>🔗</text><text class="action-label">标记重复</text>
+    </view>
+  </view>
+
+  <!-- 历史帖子 -->
+  <view class="posts-section">
+    <view class="posts-header">
+      <text class="posts-title">📷 ta 的所有帖子</text>
+    </view>
+
+    <view class="empty-posts" wx:if="{{!postsLoading && posts.length === 0}}">
+      <text>还没有帖子，快去发布吧～</text>
+    </view>
+
+    <view class="post-card" wx:for="{{posts}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
+      <!-- 图片组 -->
+      <view class="post-imgs" wx:if="{{item.images && item.images.length > 0}}">
+        <image
+          wx:for="{{item.images}}"
+          wx:for-item="img"
+          wx:key="index"
+          wx:if="{{index < 3}}"
+          class="post-img {{item.images.length === 1 ? 'single' : ''}}"
+          src="{{img}}"
+          mode="aspectFill"
+          catchtap="previewPostImage"
+          data-images="{{item.images}}"
+          data-index="{{index}}"
+        />
+        <view class="img-more" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
+      </view>
+      <!-- 内容 -->
+      <view class="post-content">
+        <text class="post-text">{{item.content}}</text>
+      </view>
+      <view class="post-footer">
+        <text class="post-time">{{item.createTime}}</text>
+        <text class="post-like">❤️ {{item.likeCount || 0}}</text>
+      </view>
+    </view>
+
+    <view class="loading-more" wx:if="{{postsLoading}}">加载中...</view>
+    <view class="no-more" wx:elif="{{!hasMorePosts && posts.length > 0}}">没有更多了</view>
+  </view>
+
+</view>
+
+<!-- 加载中 -->
+<view class="page-loading" wx:if="{{loading}}">
+  <text>加载中...</text>
+</view>

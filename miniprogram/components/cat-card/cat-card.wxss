@@ -1,0 +1,159 @@
+/* 猫咪卡片组件样式 */
+.cat-card {
+  background-color: #ffffff;
+  border-radius: 24rpx;
+  overflow: hidden;
+  box-shadow: 0 6rpx 20rpx rgba(255, 154, 106, 0.15);
+  margin-bottom: 24rpx;
+}
+
+.cat-card:active {
+  opacity: 0.92;
+  transform: scale(0.99);
+  transition: all 0.15s ease;
+}
+
+/* 图片区域 */
+.card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 380rpx;
+}
+
+.card-image {
+  width: 100%;
+  height: 380rpx;
+}
+
+.image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
+}
+
+.location-badge {
+  position: absolute;
+  bottom: 16rpx;
+  left: 16rpx;
+  background-color: rgba(0, 0, 0, 0.45);
+  color: #ffffff;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  backdrop-filter: blur(4rpx);
+}
+
+/* 信息区域 */
+.card-info {
+  padding: 24rpx;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.cat-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #4A4A4A;
+}
+
+.category-badge {
+  padding: 6rpx 18rpx;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
+.category-badge.stray {
+  background-color: #E8F5E9;
+  color: #4CAF50;
+}
+
+.category-badge.pet {
+  background-color: #E3F2FD;
+  color: #2196F3;
+}
+
+.category-badge.lost {
+  background-color: #FFF3E0;
+  color: #FF9800;
+}
+
+/* 描述 */
+.card-desc {
+  font-size: 26rpx;
+  color: #666666;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+}
+
+/* 底部操作栏 */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #F5F5F5;
+}
+
+.footer-left {
+  display: flex;
+  gap: 32rpx;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.like-icon {
+  font-size: 32rpx;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.like-icon.liked {
+  animation: likeAnim 0.3s ease;
+}
+
+@keyframes likeAnim {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.like-count {
+  font-size: 24rpx;
+  color: #999999;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+}
+
+.action-icon {
+  font-size: 28rpx;
+}
+
+.action-text {
+  font-size: 22rpx;
+  color: #999999;
+}
+
+/* 发布时间 */
+.publish-time {
+  font-size: 20rpx;
+  color: #CCCCCC;
+}

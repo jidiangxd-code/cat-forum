@@ -1,0 +1,9 @@
+{
+  "name": "getCatProfileList",
+  "version": "1.0.0",
+  "description": "获取猫咪档案列表/排行榜",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

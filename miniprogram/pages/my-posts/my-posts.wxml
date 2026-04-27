@@ -1,0 +1,65 @@
+<!-- 我的发布 -->
+<view class="page-container">
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-icon">🐾</text>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:elif="{{empty}}">
+    <text class="empty-icon">📝</text>
+    <text class="empty-title">还没有发布</text>
+    <text class="empty-desc">快去分享校园里的可爱小猫吧</text>
+    <view class="empty-btn" bind:tap="goPublish">
+      <text>立即发布</text>
+    </view>
+  </view>
+
+  <!-- 帖子列表 -->
+  <view class="posts-list" wx:else>
+    <view
+      class="post-item"
+      wx:for="{{posts}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      data-name="{{item.name || '无名小猫'}}"
+      bind:tap="onPostTap"
+      bind:longpress="onLongPress"
+    >
+      <!-- 封面图片 -->
+      <image
+        class="post-cover"
+        src="{{item.coverError ? '/assets/images/default-cat.png' : (item.images[0] || '/assets/images/default-cat.png')}}"
+        mode="aspectFill"
+        binderror="onCoverError"
+        data-index="{{index}}"
+      />
+
+      <!-- 帖子信息 -->
+      <view class="post-info">
+        <view class="post-header">
+          <text class="post-title">{{item.name || '无名小猫'}}</text>
+          <view class="post-tag {{item.category}}">
+            <text>{{categoryMap[item.category] || '未知'}}</text>
+          </view>
+        </view>
+
+        <text class="post-desc">{{item.description}}</text>
+
+        <view class="post-footer">
+          <text class="post-location">📍 {{item.location || '未知'}}</text>
+          <view class="post-stats">
+            <text class="stat-item">❤️ {{item.likeCount || 0}}</text>
+            <text class="stat-item">💬 {{item.commentCount || 0}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 删除提示 -->
+      <view class="delete-hint">
+        <text class="delete-text">长按删除</text>
+      </view>
+    </view>
+  </view>
+</view>

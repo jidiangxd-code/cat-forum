@@ -1,0 +1,58 @@
+<!-- 我喜欢的 -->
+<view class="page-container">
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-icon">🐾</text>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:elif="{{empty}}">
+    <text class="empty-icon">💝</text>
+    <text class="empty-title">还没有喜欢的猫咪</text>
+    <text class="empty-desc">去首页发现更多可爱小猫吧</text>
+    <view class="empty-btn" bind:tap="goHome">
+      <text>去逛逛</text>
+    </view>
+  </view>
+
+  <!-- 喜欢列表 -->
+  <view class="likes-grid" wx:else>
+    <view
+      class="like-item"
+      wx:for="{{likes}}"
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bind:tap="onLikeTap"
+    >
+      <!-- 封面图片 -->
+      <image
+        class="like-cover"
+        src="{{item.coverError ? '/assets/images/default-cat.png' : (item.images[0] || '/assets/images/default-cat.png')}}"
+        mode="aspectFill"
+        binderror="onCoverError"
+        data-index="{{index}}"
+      />
+
+      <!-- 信息覆盖层 -->
+      <view class="like-overlay">
+        <text class="like-name">{{item.name || '无名小猫'}}</text>
+        <view class="like-footer">
+          <text class="like-location">📍 {{item.location || '未知'}}</text>
+          <view class="like-actions">
+            <text class="like-stat">❤️ {{item.likeCount || 0}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 取消喜欢按钮 -->
+      <view
+        class="unlike-btn"
+        catch:tap="onUnlike"
+        data-id="{{item._id}}"
+      >
+        <text class="unlike-icon">💔</text>
+      </view>
+    </view>
+  </view>
+</view>

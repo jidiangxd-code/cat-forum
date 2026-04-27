@@ -1,0 +1,9 @@
+{
+  "name": "mergeCat",
+  "version": "1.0.0",
+  "description": "合并重复猫咪档案",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

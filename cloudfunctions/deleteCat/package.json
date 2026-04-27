@@ -1,0 +1,9 @@
+{
+  "name": "deleteCat",
+  "version": "1.0.0",
+  "description": "删除猫咪帖子（软删除）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

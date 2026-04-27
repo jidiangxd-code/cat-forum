@@ -1,0 +1,48 @@
+<!-- 我的评论 -->
+<view class="page-container">
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-icon">🐾</text>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:elif="{{empty}}">
+    <text class="empty-icon">💬</text>
+    <text class="empty-title">还没有评论</text>
+    <text class="empty-desc">去和可爱小猫互动吧</text>
+    <view class="empty-btn" bind:tap="goHome">
+      <text>去首页</text>
+    </view>
+  </view>
+
+  <!-- 评论列表 -->
+  <view class="comments-list" wx:else>
+    <view class="comment-card" wx:for="{{comments}}" wx:key="_id">
+      <!-- 猫咪信息 -->
+      <view class="cat-info" bind:tap="onCatTap" data-catid="{{item.catId}}">
+        <image
+          class="cat-cover"
+          src="{{item.catImage || '/assets/images/default-cat.png'}}"
+          mode="aspectFill"
+        />
+        <view class="cat-text">
+          <text class="cat-name">🐱 {{item.catName}}</text>
+          <text class="cat-hint">点击查看猫咪详情</text>
+        </view>
+        <text class="cat-arrow">›</text>
+      </view>
+
+      <!-- 评论内容 -->
+      <view class="comment-content">
+        <text class="comment-text">{{item.content}}</text>
+        <view class="comment-footer">
+          <text class="comment-time">{{item.createTime}}</text>
+          <view class="comment-delete" catch:tap="onDeleteComment" data-id="{{item._id}}">
+            <text class="delete-text">删除</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

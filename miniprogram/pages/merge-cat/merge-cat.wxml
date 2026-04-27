@@ -1,0 +1,107 @@
+<!-- pages/merge-cat/merge-cat.wxml -->
+<view class="page" wx:if="{{!loading}}">
+
+  <!-- 操作说明 -->
+  <view class="notice">
+    <text class="notice-icon">🔗</text>
+    <view class="notice-text">
+      <text class="notice-title">标记重复猫</text>
+      <text class="notice-desc">如果你发现这只猫已有其他档案，可将本档案合并到正确档案。合并后本档案隐藏，帖子和票数迁移到目标档案。</text>
+    </view>
+  </view>
+
+  <!-- 当前猫（被合并方）-->
+  <view class="section">
+    <view class="section-label">当前档案（将被隐藏）</view>
+    <view class="cat-card from-card" wx:if="{{cat}}">
+      <image wx:if="{{cat.coverImage}}" class="cat-avatar" src="{{cat.coverImage}}" mode="aspectFill" />
+      <view class="cat-avatar avatar-empty" wx:else>🐱</view>
+      <view class="cat-info">
+        <text class="cat-name">{{cat.fullName || cat.codeName}}</text>
+        <text class="cat-meta">{{cat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{cat.appearance}}</text>
+        <text class="vote-text">当前票数：{{cat.totalVote || 0}} 票</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="arrow-section">
+    <text class="arrow">⬇️ 合并到</text>
+  </view>
+
+  <!-- 目标猫（合并到哪里）-->
+  <view class="section">
+    <view class="section-label">目标档案（保留此档案）</view>
+    <view class="cat-card to-card" wx:if="{{targetCat}}">
+      <image wx:if="{{targetCat.coverImage}}" class="cat-avatar" src="{{targetCat.coverImage}}" mode="aspectFill" />
+      <view class="cat-avatar avatar-empty" wx:else>🐱</view>
+      <view class="cat-info">
+        <text class="cat-name">{{targetCat.fullName || targetCat.codeName}}</text>
+        <text class="cat-meta">{{targetCat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{targetCat.appearance}}</text>
+        <text class="vote-text">当前票数：{{targetCat.totalVote || 0}} 票</text>
+      </view>
+      <view class="reset-btn" bindtap="resetTarget">更换</view>
+    </view>
+    <view class="pick-target-btn" wx:else bindtap="openPicker">
+      <text class="pick-icon">🔍</text>
+      <text class="pick-text">选择正确的猫咪档案</text>
+    </view>
+  </view>
+
+  <!-- 合并预览 -->
+  <view class="merge-preview" wx:if="{{targetCat}}">
+    <text class="preview-title">合并后效果预览：</text>
+    <text class="preview-item">✅ 票数：{{(cat.totalVote || 0) + (targetCat.totalVote || 0)}} 票</text>
+    <text class="preview-item">✅ 所有历史帖子迁移到「{{targetCat.fullName || targetCat.codeName}}」</text>
+    <text class="preview-item">❌ 本档案「{{cat.fullName || cat.codeName}}」将被隐藏</text>
+  </view>
+
+  <!-- 提交 -->
+  <view class="submit-wrap">
+    <button
+      class="submit-btn {{!targetCat || submitting ? 'disabled' : ''}}"
+      bindtap="doMerge"
+      disabled="{{!targetCat || submitting}}"
+    >
+      {{submitting ? '合并中...' : '确认合并'}}
+    </button>
+  </view>
+
+</view>
+
+<view class="loading-page" wx:if="{{loading}}"><text>加载中...</text></view>
+
+<!-- 目标猫选择弹窗 -->
+<view class="picker-mask" wx:if="{{showPicker}}" bindtap="closePicker" />
+<view class="cat-picker" wx:if="{{showPicker}}">
+  <view class="picker-header">
+    <text class="picker-title">选择目标猫咪档案</text>
+    <text class="picker-close" bindtap="closePicker">✕</text>
+  </view>
+  <view class="picker-search">
+    <input
+      class="search-input"
+      placeholder="搜索名字/代号..."
+      bindinput="onPickSearch"
+      value="{{pickKeyword}}"
+    />
+  </view>
+  <scroll-view class="picker-list" scroll-y>
+    <view class="loading-tip" wx:if="{{pickLoading}}">加载中...</view>
+    <view class="empty-tip" wx:elif="{{pickList.length === 0}}">没有找到猫咪</view>
+    <view
+      wx:for="{{pickList}}"
+      wx:key="_id"
+      class="picker-item"
+      bindtap="onPickTarget"
+      data-cat="{{item}}"
+    >
+      <image wx:if="{{item.coverImage}}" class="picker-avatar" src="{{item.coverImage}}" mode="aspectFill" />
+      <view class="picker-avatar picker-avatar-empty" wx:else>🐱</view>
+      <view class="picker-cat-info">
+        <text class="picker-cat-name">{{item.fullName || item.codeName}}</text>
+        <text class="picker-cat-meta">{{item.catType === 'formal' ? '正式猫' : '未知猫'}} · {{item.appearance}}</text>
+      </view>
+      <text class="picker-vote">{{item.totalVote || 0}}票</text>
+    </view>
+  </scroll-view>
+</view>

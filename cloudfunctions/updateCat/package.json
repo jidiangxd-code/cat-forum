@@ -1,0 +1,9 @@
+{
+  "name": "updateCat",
+  "version": "1.0.0",
+  "description": "更新猫咪档案（编辑/转正）",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

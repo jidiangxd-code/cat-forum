@@ -1,0 +1,169 @@
+<!-- pages/publish/publish.wxml - 发帖页（强制绑猫）-->
+<view class="page">
+
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">📸 发布帖子</text>
+    <text class="subtitle">发帖必须绑定一只猫咪</text>
+  </view>
+
+  <!-- 图片上传区域 -->
+  <view class="section">
+    <view class="section-label">照片 <text class="required">*</text></view>
+    <view class="image-grid">
+      <view class="img-item" wx:for="{{images}}" wx:key="index">
+        <image class="preview-img" src="{{item}}" mode="aspectFill" />
+        <view class="del-btn" bindtap="deleteImage" data-index="{{index}}">✕</view>
+      </view>
+      <view class="img-add" bindtap="chooseImage" wx:if="{{images.length < 9}}">
+        <text class="add-icon">+</text>
+        <text class="add-text">添加照片</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 帖子描述 -->
+  <view class="section">
+    <view class="section-label">描述 <text class="required">*</text></view>
+    <textarea
+      class="desc-input"
+      placeholder="分享一下这只猫咪的故事..."
+      value="{{content}}"
+      bindinput="onContentInput"
+      maxlength="500"
+      auto-height
+    />
+    <text class="char-count">{{content.length}}/500</text>
+  </view>
+
+  <!-- 绑猫区域 -->
+  <view class="section bind-section">
+    <view class="section-label">绑定猫咪 <text class="required">*</text> <text class="tip">（必须选择）</text></view>
+
+    <!-- 未选择时：显示三种方式 -->
+    <view class="bind-options" wx:if="{{!selectedCat && bindMode !== 'new_unknown'}}">
+      <view class="bind-btn bind-btn-a" bindtap="selectBindMode" data-mode="pick_formal">
+        <text class="bind-icon">📋</text>
+        <view class="bind-text-wrap">
+          <text class="bind-title">绑定已有正式猫</text>
+          <text class="bind-desc">从已建档的猫咪中选择</text>
+        </view>
+        <text class="bind-arrow">›</text>
+      </view>
+      <view class="bind-btn bind-btn-b" bindtap="selectBindMode" data-mode="pick_unknown">
+        <text class="bind-icon">🔍</text>
+        <view class="bind-text-wrap">
+          <text class="bind-title">绑定已有未知猫</text>
+          <text class="bind-desc">从未知代号猫中选择</text>
+        </view>
+        <text class="bind-arrow">›</text>
+      </view>
+      <view class="bind-btn bind-btn-c" bindtap="selectBindMode" data-mode="new_unknown">
+        <text class="bind-icon">✨</text>
+        <view class="bind-text-wrap">
+          <text class="bind-title">新建未知代号猫</text>
+          <text class="bind-desc">第一次见到，快速建档</text>
+        </view>
+        <text class="bind-arrow">›</text>
+      </view>
+    </view>
+
+    <!-- 已选择正式猫/未知猫 -->
+    <view class="selected-cat" wx:if="{{selectedCat}}">
+      <view class="cat-preview-card">
+        <image
+          wx:if="{{selectedCat.coverImage}}"
+          class="cat-avatar"
+          src="{{selectedCat.coverImage}}"
+          mode="aspectFill"
+        />
+        <view class="cat-avatar cat-avatar-placeholder" wx:else>🐱</view>
+        <view class="cat-info">
+          <text class="cat-name">{{selectedCat.fullName || selectedCat.codeName}}</text>
+          <text class="cat-meta">{{selectedCat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{selectedCat.appearance}}</text>
+        </view>
+      </view>
+      <view class="re-select" bindtap="resetBind">重新选择</view>
+    </view>
+
+    <!-- 新建未知猫内联表单 -->
+    <view class="new-unknown-form" wx:if="{{bindMode === 'new_unknown' && !selectedCat}}">
+      <view class="form-row">
+        <text class="form-label">代号 <text class="required">*</text></text>
+        <input
+          class="form-input"
+          placeholder="如：小橘、流浪白、猫3号"
+          value="{{newUnknownForm.codeName}}"
+          bindinput="onCodeNameInput"
+          maxlength="20"
+        />
+      </view>
+      <view class="form-row">
+        <text class="form-label">外貌 <text class="required">*</text></text>
+        <view class="appearance-grid">
+          <view
+            wx:for="{{appearanceOptions}}"
+            wx:key="index"
+            class="appearance-tag {{newUnknownForm.appearance === item ? 'selected' : ''}}"
+            bindtap="onAppearanceTap"
+            data-val="{{item}}"
+          >{{item}}</view>
+        </view>
+      </view>
+      <view class="cancel-new" bindtap="resetBind">取消，重新选择</view>
+    </view>
+  </view>
+
+  <!-- 提交按钮 -->
+  <view class="submit-wrap">
+    <button
+      class="submit-btn {{submitting ? 'disabled' : ''}}"
+      bindtap="submitPost"
+      disabled="{{submitting}}"
+    >
+      {{submitting ? '发布中...' : '发布帖子'}}
+    </button>
+  </view>
+
+</view>
+
+<!-- 猫咪选择弹窗 -->
+<view class="picker-mask" wx:if="{{showCatPicker}}" bindtap="closeCatPicker" />
+<view class="cat-picker" wx:if="{{showCatPicker}}">
+  <view class="picker-header">
+    <text class="picker-title">{{catPickMode === 'formal' ? '选择正式猫咪' : '选择未知代号猫'}}</text>
+    <text class="picker-close" bindtap="closeCatPicker">✕</text>
+  </view>
+  <view class="picker-search">
+    <input
+      class="search-input"
+      placeholder="搜索猫咪名字/代号..."
+      bindinput="onPickSearch"
+      value="{{catPickKeyword}}"
+    />
+  </view>
+  <scroll-view class="picker-list" scroll-y>
+    <view class="loading-tip" wx:if="{{catPickLoading}}">加载中...</view>
+    <view class="empty-tip" wx:elif="{{catPickList.length === 0}}">暂无猫咪，快去创建吧</view>
+    <view
+      wx:for="{{catPickList}}"
+      wx:key="_id"
+      class="picker-item"
+      bindtap="onPickCat"
+      data-cat="{{item}}"
+    >
+      <image
+        wx:if="{{item.coverImage}}"
+        class="picker-avatar"
+        src="{{item.coverImage}}"
+        mode="aspectFill"
+      />
+      <view class="picker-avatar picker-avatar-empty" wx:else>🐱</view>
+      <view class="picker-cat-info">
+        <text class="picker-cat-name">{{item.fullName || item.codeName}}</text>
+        <text class="picker-cat-meta">{{item.appearance}} · {{item.location || '地点未知'}}</text>
+      </view>
+      <text class="picker-cat-vote">{{item.totalVote || 0}}票</text>
+    </view>
+  </scroll-view>
+</view>

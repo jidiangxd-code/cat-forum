@@ -1,0 +1,95 @@
+<!-- pages/index/index.wxml - 首页（帖子流）-->
+<view class="page">
+
+  <!-- 顶部横幅 -->
+  <view class="banner">
+    <view class="banner-left">
+      <text class="banner-title">🐾 校园小猫</text>
+      <text class="banner-sub">发现每一只可爱的猫咪</text>
+    </view>
+    <view class="banner-right">
+      <view class="cat-rank-btn" bindtap="goCatList">猫咪榜 🏆</view>
+    </view>
+  </view>
+
+  <!-- 帖子流 -->
+  <view class="post-list">
+    <view class="post-card" wx:for="{{postList}}" wx:key="_id">
+
+      <!-- 猫咪头部信息 -->
+      <view
+        class="post-cat-header"
+        bindtap="onCatTap"
+        data-catid="{{item.catId}}"
+        wx:if="{{item.cat}}"
+      >
+        <image
+          wx:if="{{item.cat.coverImage}}"
+          class="cat-avatar"
+          src="{{item.cat.coverImage}}"
+          mode="aspectFill"
+        />
+        <view class="cat-avatar avatar-empty" wx:else>🐱</view>
+        <view class="cat-header-info">
+          <text class="cat-header-name">{{item.cat.fullName || item.cat.codeName}}</text>
+          <text class="cat-header-meta">{{item.cat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{item.cat.appearance}}</text>
+        </view>
+        <view class="cat-type-badge {{item.cat.catType}}">
+          {{item.cat.catType === 'formal' ? '正式' : '未知'}}
+        </view>
+      </view>
+
+      <!-- 图片组 -->
+      <view
+        class="post-imgs"
+        wx:if="{{item.images && item.images.length > 0}}"
+        bindtap="onPostTap"
+        data-id="{{item._id}}"
+      >
+        <image
+          wx:for="{{item.images}}"
+          wx:for-item="img"
+          wx:key="index"
+          wx:if="{{index < 3}}"
+          class="post-img {{item.images.length === 1 ? 'single' : ''}}"
+          src="{{img}}"
+          mode="aspectFill"
+          catchtap="previewImage"
+          data-images="{{item.images}}"
+          data-index="{{index}}"
+        />
+        <view class="img-more-badge" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
+      </view>
+
+      <!-- 文字内容 -->
+      <view class="post-content" bindtap="onPostTap" data-id="{{item._id}}">
+        <text class="post-text">{{item.content}}</text>
+      </view>
+
+      <!-- 底部：时间 + 点赞 -->
+      <view class="post-footer">
+        <text class="post-time">{{item.createTimeStr}}</text>
+        <view
+          class="like-btn {{item.liked ? 'liked' : ''}}"
+          catchtap="onLike"
+          data-id="{{item._id}}"
+          data-liked="{{item.liked}}"
+        >
+          <text>{{item.liked ? '❤️' : '🤍'}} {{item.likeCount || 0}}</text>
+        </view>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && postList.length === 0}}">
+    <text class="empty-icon">🐾</text>
+    <text class="empty-text">还没有帖子，快去发布第一只猫咪吧！</text>
+    <view class="empty-btn" bindtap="goPublish">去发布</view>
+  </view>
+
+  <view class="load-more" wx:if="{{loading && postList.length > 0}}">加载中...</view>
+  <view class="no-more" wx:elif="{{!hasMore && postList.length > 0}}">— 到底了 🐱 —</view>
+
+</view>

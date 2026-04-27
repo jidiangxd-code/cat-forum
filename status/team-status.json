@@ -1,0 +1,81 @@
+{
+  "projectName": "校园小猫论坛",
+  "lastUpdated": "2026-04-19 21:30",
+  "overallProgress": 98,
+  "phases": [
+    {
+      "name": "需求与设计",
+      "progress": 100,
+      "status": "done",
+      "dates": "4.19 - 4.21"
+    },
+    {
+      "name": "开发实施",
+      "progress": 100,
+      "status": "done",
+      "dates": "4.22 - 4.25"
+    },
+    {
+      "name": "测试验收",
+      "progress": 95,
+      "status": "in_progress",
+      "dates": "4.26 - 4.27"
+    },
+    {
+      "name": "上线部署",
+      "progress": 0,
+      "status": "not_started",
+      "dates": "4.28"
+    }
+  ],
+  "team": [
+    {
+      "role": "项目经理",
+      "icon": "🎯",
+      "status": "active",
+      "task": "全部角色完成修复，准备最终验收",
+      "progress": 98,
+      "color": "#FF9500"
+    },
+    {
+      "role": "产品经理",
+      "icon": "📋",
+      "status": "done",
+      "task": "✅ V2 功能完善路线图已完成",
+      "progress": 100,
+      "color": "#34C759"
+    },
+    {
+      "role": "UI设计师",
+      "icon": "🎨",
+      "status": "done",
+      "task": "✅ 设计规范 + 页面设计 + 资源规划已完成",
+      "progress": 100,
+      "color": "#FF2D55"
+    },
+    {
+      "role": "前端工程师",
+      "icon": "💻",
+      "status": "done",
+      "task": "✅ V2 修复完成：6个核心Bug + 16个文件修改",
+      "progress": 100,
+      "color": "#34C759"
+    },
+    {
+      "role": "后端工程师",
+      "icon": "⚙️",
+      "status": "done",
+      "task": "✅ V2 修复完成：3个新云函数 + 字段统一 + 安全加固",
+      "progress": 100,
+      "color": "#007AFF"
+    },
+    {
+      "role": "测试工程师",
+      "icon": "🧪",
+      "status": "done",
+      "task": "✅ V3 Bug 审查完成，确认 9个已修复 + 发现 2个回归",
+      "progress": 100,
+      "color": "#AF52DE"
+    }
+  ]
+}
