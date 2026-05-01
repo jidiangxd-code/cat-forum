@@ -1,0 +1,150 @@
+<!-- pages/search/search.wxml - 搜索页 -->
+<view class="page">
+
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrap">
+      <text class="search-icon">🔍</text>
+      <input
+        class="search-input"
+        placeholder="搜索猫咪或帖子..."
+        value="{{keyword}}"
+        bindinput="onInput"
+        bindconfirm="doSearch"
+        focus="{{autoFocus}}"
+      />
+      <text class="search-clear" wx:if="{{keyword}}" bindtap="clearInput">✕</text>
+    </view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="search-tabs" wx:if="{{hasSearched}}">
+    <view
+      class="tab-item {{activeTab === 'cats' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="cats"
+    >
+      🐱 猫咪 ({{catsResult.length}})
+    </view>
+    <view
+      class="tab-item {{activeTab === 'posts' ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-tab="posts"
+    >
+      📝 帖子 ({{postsResult.length}})
+    </view>
+  </view>
+
+  <!-- 搜索结果：猫咪 -->
+  <view class="result-list" wx:if="{{hasSearched && activeTab === 'cats'}}">
+    <view
+      class="cat-card"
+      wx:for="{{catsResult}}"
+      wx:key="_id"
+      bindtap="onCatTap"
+      data-id="{{item._id}}"
+    >
+      <view class="cat-avatar">
+        <image
+          src="{{item.coverImage || (item.images && item.images[0]) || '/assets/images/default-cat.png'}}"
+          mode="aspectFill"
+        />
+      </view>
+      <view class="cat-info">
+        <text class="cat-name">{{item.fullName || item.codeName}}</text>
+        <text class="cat-meta">
+          {{item.appearance}} · {{item.gender === 'male' ? '♂公' : item.gender === 'female' ? '♀母' : '性别未知'}}
+          <text wx:if="{{item.location}}"> · 📍{{item.location}}</text>
+        </text>
+      </view>
+      <text class="cat-vote">🏆 {{item.totalVote || 0}}</text>
+    </view>
+
+    <!-- 无结果 -->
+    <view class="empty-result" wx:if="{{!loadingCats && catsResult.length === 0}}">
+      <text class="empty-icon">🐱</text>
+      <text class="empty-text">没有找到匹配的猫咪</text>
+    </view>
+  </view>
+
+  <!-- 搜索结果：帖子 -->
+  <view class="result-list" wx:if="{{hasSearched && activeTab === 'posts'}}">
+    <view
+      class="post-card"
+      wx:for="{{postsResult}}"
+      wx:key="_id"
+      bindtap="onPostTap"
+      data-id="{{item._id}}"
+    >
+      <!-- 猫咪来源 -->
+      <view class="post-header" wx:if="{{item.cat}}">
+        <text class="post-cat-name">🐱 {{item.cat.fullName || item.cat.codeName}}</text>
+        <view class="cat-type-badge {{item.cat.catType}}" wx:if="{{item.cat}}">
+          {{item.cat.catType === 'formal' ? '正式' : '未知'}}
+        </view>
+      </view>
+
+      <!-- 分类标签 -->
+      <view class="post-category-tag" wx:if="{{item.category}}">
+        {{categoryMap[item.category] || item.category}}
+      </view>
+
+      <text class="post-text">{{item.content}}</text>
+
+      <view class="post-footer">
+        <text class="post-time">{{item.createTimeStr}}</text>
+        <text class="post-stats">❤️ {{item.likeCount || 0}} · 💬 {{item.commentCount || 0}}</text>
+      </view>
+    </view>
+
+    <!-- 无结果 -->
+    <view class="empty-result" wx:if="{{!loadingPosts && postsResult.length === 0}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">没有找到匹配的帖子</text>
+    </view>
+  </view>
+
+  <!-- 未搜索状态：展示搜索历史 + 热门搜索 -->
+  <view wx:if="{{!hasSearched}}">
+
+    <!-- 搜索历史 -->
+    <view class="history-section" wx:if="{{searchHistory.length > 0}}">
+      <view class="history-header">
+        <text class="history-title">🕐 搜索历史</text>
+        <text class="history-clear" bindtap="clearHistory">清空</text>
+      </view>
+      <view class="history-tags">
+        <view
+          class="history-tag"
+          wx:for="{{searchHistory}}"
+          wx:key="index"
+          bindtap="onHistoryTap"
+          data-keyword="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 热门搜索 -->
+    <view class="hot-section">
+      <text class="hot-title">🔥 热门搜索</text>
+      <view class="hot-tags">
+        <view
+          class="hot-tag"
+          wx:for="{{hotKeywords}}"
+          wx:key="index"
+          bindtap="onHistoryTap"
+          data-keyword="{{item}}"
+        >
+          {{item}}
+        </view>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-tip" wx:if="{{loadingCats || loadingPosts}}">搜索中...</view>
+
+</view>

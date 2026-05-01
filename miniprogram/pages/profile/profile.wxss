@@ -52,6 +52,30 @@
   margin-bottom: 16rpx;
 }
 
+/* 登录相关 */
+.login-avatar-wrap {
+  position: relative;
+  margin-bottom: 16rpx;
+}
+.login-badge {
+  position: absolute;
+  bottom: 0; right: -10rpx;
+  background: #FF9A6A; color: #fff;
+  padding: 4rpx 16rpx; border-radius: 16rpx;
+  font-size: 20rpx; font-weight: bold;
+}
+.avatar-btn {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: normal !important;
+  width: 140rpx !important;
+  height: 140rpx !important;
+}
+.avatar-btn::after { border: none; }
+.avatar-btn .user-avatar { margin-bottom: 0; }
+
 .user-name {
   font-size: 36rpx;
   font-weight: bold;

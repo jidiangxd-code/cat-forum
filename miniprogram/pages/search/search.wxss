@@ -1,0 +1,286 @@
+/* pages/search/search.wxss - 搜索页样式 */
+.page {
+  min-height: 100vh;
+  background-color: #FFF5EB;
+}
+
+/* 搜索框区域 */
+.search-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: linear-gradient(135deg, #FF9A6A, #FF7043);
+  padding: 16rpx 24rpx 24rpx;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 40rpx;
+  padding: 0 24rpx;
+  height: 72rpx;
+}
+
+.search-icon {
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+  height: 72rpx;
+  line-height: 72rpx;
+}
+
+.search-clear {
+  font-size: 32rpx;
+  color: #ccc;
+  padding: 8rpx;
+}
+
+/* Tab 切换 */
+.search-tabs {
+  display: flex;
+  background-color: #ffffff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #999;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #FF8C42;
+  font-weight: bold;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: #FF8C42;
+  border-radius: 4rpx;
+}
+
+/* 搜索历史 */
+.history-section {
+  padding: 20rpx 24rpx;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.history-title {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.history-clear {
+  font-size: 24rpx;
+  color: #FF9A6A;
+}
+
+.history-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.history-tag {
+  background-color: #fff;
+  color: #666;
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  border: 1rpx solid #f0f0f0;
+}
+
+.history-tag:active {
+  background-color: #FFF0E0;
+  color: #FF8C42;
+}
+
+/* 搜索结果 */
+.result-list {
+  padding: 16rpx 0;
+}
+
+/* ===== 猫咪卡片 ===== */
+.cat-card {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 20rpx 24rpx;
+  margin: 0 16rpx 12rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(255, 154, 106, 0.08);
+}
+
+.cat-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #FFE0C0;
+}
+
+.cat-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.cat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cat-name {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cat-meta {
+  font-size: 22rpx;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cat-vote {
+  font-size: 24rpx;
+  color: #FF9A6A;
+  font-weight: bold;
+  flex-shrink: 0;
+  margin-left: 12rpx;
+}
+
+/* ===== 帖子卡片 ===== */
+.post-card {
+  background: #fff;
+  margin: 0 16rpx 12rpx;
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(255, 154, 106, 0.08);
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.post-cat-name {
+  font-size: 24rpx;
+  color: #FF8C42;
+  margin-left: 8rpx;
+}
+
+.post-text {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.post-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10rpx;
+}
+
+.post-time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+.post-stats {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+/* 空状态 */
+.empty-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 120rpx 40rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  text-align: center;
+}
+
+/* 热门搜索 */
+.hot-section {
+  padding: 20rpx 24rpx;
+}
+
+.hot-title {
+  font-size: 26rpx;
+  color: #999;
+  margin-bottom: 16rpx;
+}
+
+.hot-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.hot-tag {
+  background-color: #fff;
+  color: #666;
+  padding: 10rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  border: 1rpx solid #f0f0f0;
+}
+
+.hot-tag:active {
+  background-color: #FFF0E0;
+  color: #FF8C42;
+}
+
+/* 加载提示 */
+.loading-tip {
+  text-align: center;
+  padding: 40rpx;
+  font-size: 26rpx;
+  color: #bbb;
+}

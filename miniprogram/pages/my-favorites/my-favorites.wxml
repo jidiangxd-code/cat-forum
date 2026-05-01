@@ -1,0 +1,64 @@
+<!-- pages/my-favorites/my-favorites.wxml - 我的收藏 -->
+<view class="page-container">
+
+  <!-- 收藏列表 -->
+  <view class="post-list" wx:if="{{posts.length > 0}}">
+    <view class="post-card" wx:for="{{posts}}" wx:key="_id">
+
+      <!-- 图片组 -->
+      <view
+        class="post-imgs"
+        wx:if="{{item.images && item.images.length > 0}}"
+        bindtap="onPostTap"
+        data-id="{{item._id}}"
+      >
+        <image
+          wx:for="{{item.images}}"
+          wx:for-item="img"
+          wx:key="index"
+          wx:if="{{index < 3}}"
+          class="post-img {{item.images.length === 1 ? 'single' : ''}}"
+          src="{{img}}"
+          mode="aspectFill"
+          catchtap="previewImage"
+          data-images="{{item.images}}"
+          data-index="{{index}}"
+        />
+        <view class="img-more-badge" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
+      </view>
+
+      <!-- 文字内容 -->
+      <view class="post-content" bindtap="onPostTap" data-id="{{item._id}}">
+        <view class="post-category-tag" wx:if="{{item.category}}">
+          {{categoryMap[item.category] || item.category}}
+        </view>
+        <text class="post-text">{{item.content}}</text>
+      </view>
+
+      <!-- 底部：时间 + 取消收藏 -->
+      <view class="post-footer">
+        <text class="post-time">{{item.timeStr}}</text>
+        <view class="unfav-btn" catchtap="unfavorite" data-id="{{item._id}}">
+          <text>⭐ 取消收藏</text>
+        </view>
+      </view>
+
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && empty}}">
+    <text class="empty-icon">⭐</text>
+    <text class="empty-text">还没有收藏，快去发现喜欢的帖子吧！</text>
+    <view class="empty-btn" bindtap="goPublish">去逛逛</view>
+  </view>
+
+  <view class="load-more" wx:if="{{loading && posts.length > 0}}">加载中...</view>
+  <view class="no-more" wx:elif="{{!hasMore && posts.length > 0}}">— 到底了 🐱 —</view>
+
+  <!-- 加载中 -->
+  <view class="loading-page" wx:if="{{loading && posts.length === 0}}">
+    <text class="loading-icon">🐾</text>
+    <text class="loading-text">加载中...</text>
+  </view>
+</view>

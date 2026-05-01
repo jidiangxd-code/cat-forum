@@ -4,10 +4,12 @@ Page({
   data: {
     userInfo: null,
     avatarError: false,
+    isLoggedIn: false,
     stats: {
       publishCount: 0,
       likeCount: 0,
-      collectCount: 0
+      collectCount: 0,
+      favCount: 0
     }
   },
 
@@ -18,38 +20,100 @@ Page({
 
   onShow() {
     // 每次显示时刷新数据
+    this.loadUserInfo();
     this.loadStats();
   },
 
   // 加载用户信息
   loadUserInfo() {
     const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
-      this.setData({ userInfo });
+    const openId = api.getOpenId();
+    this.setData({
+      userInfo: userInfo || null,
+      isLoggedIn: !!openId && openId !== 'guest'
+    });
+  },
+
+  // 微信登录
+  async doLogin() {
+    try {
+      wx.showLoading({ title: '登录中...' });
+      const loginRes = await wx.cloud.callFunction({ name: 'login' });
+      const openid = loginRes.result?.openid || loginRes.result?.openId || '';
+      if (!openid) {
+        wx.hideLoading();
+        wx.showToast({ title: '登录失败，请重试', icon: 'none' });
+        return;
+      }
+      wx.setStorageSync('openId', openid);
+
+      // 获取用户信息（使用头像昵称填写能力）
+      this.setData({ isLoggedIn: true });
+      wx.hideLoading();
+      wx.showToast({ title: '登录成功 🎉', icon: 'success' });
+      this.loadStats();
+    } catch (err) {
+      wx.hideLoading();
+      console.error('登录失败:', err);
+      wx.showToast({ title: '登录失败', icon: 'none' });
+    }
+  },
+
+  // 选择头像
+  onChooseAvatar(e) {
+    const avatarUrl = e.detail.avatarUrl;
+    if (avatarUrl) {
+      const userInfo = this.data.userInfo || {};
+      userInfo.avatarUrl = avatarUrl;
+      wx.setStorageSync('userInfo', userInfo);
+      this.setData({ userInfo, avatarError: false });
     }
   },
 
   // 加载统计数据
   async loadStats() {
+    const openId = api.getOpenId();
+    if (!openId || openId === 'guest') {
+      this.setData({
+        stats: { publishCount: 0, likeCount: 0, collectCount: 0 }
+      });
+      return;
+    }
     try {
-      const myOpenId = api.getOpenId();
-      const stats = await api.getUserStats(myOpenId);
+      const db = wx.cloud.database();
+      const _ = db.command;
+      // 获取发布数量
+      const postCountRes = await db.collection('posts')
+        .where({ authorId: openId })
+        .count();
+      // 获取获赞总数
+      const myPostsRes = await db.collection('posts')
+        .where({ authorId: openId })
+        .field({ likeCount: true })
+        .get();
+      const likeCount = (myPostsRes.data || []).reduce((sum, p) => sum + (p.likeCount || 0), 0);
+
+      // 获取收藏数
+      let favCount = 0;
+      try {
+        const favCountRes = await db.collection('favorites')
+          .where({ userOpenid: openId })
+          .count();
+        favCount = favCountRes.total || 0;
+      } catch (e) {}
 
       this.setData({
         stats: {
-          publishCount: stats.publishCount || 0,
-          likeCount: stats.likeCount || 0,  // 获赞数 = 别人给我的点赞
-          collectCount: stats.likeCount || 0  // 喜欢数 = 我点赞的猫咪数（和上面一样）
+          publishCount: postCountRes.total || 0,
+          likeCount: likeCount,
+          collectCount: likeCount,
+          favCount
         }
       });
     } catch (err) {
       console.error('获取统计数据失败', err);
       this.setData({
-        stats: {
-          publishCount: 0,
-          likeCount: 0,
-          collectCount: 0
-        }
+        stats: { publishCount: 0, likeCount: 0, collectCount: 0 }
       });
     }
   },
@@ -72,6 +136,11 @@ Page({
   // 我的评论
   goToMyComments() {
     wx.navigateTo({ url: '/pages/my-comments/my-comments' });
+  },
+
+  // 我的收藏
+  goToMyFavorites() {
+    wx.navigateTo({ url: '/pages/my-favorites/my-favorites' });
   },
 
   // 编辑资料

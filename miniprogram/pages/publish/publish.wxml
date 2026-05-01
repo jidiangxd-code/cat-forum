@@ -36,6 +36,20 @@
     <text class="char-count">{{content.length}}/500</text>
   </view>
 
+  <!-- 帖子分类 -->
+  <view class="section">
+    <view class="section-label">分类 <text class="required">*</text></view>
+    <view class="category-grid">
+      <view
+        wx:for="{{categoryList}}"
+        wx:key="value"
+        class="category-tag {{category === item.value ? 'selected' : ''}}"
+        bindtap="onCategoryTap"
+        data-val="{{item.value}}"
+      >{{item.label}}</view>
+    </view>
+  </view>
+
   <!-- 绑猫区域 -->
   <view class="section bind-section">
     <view class="section-label">绑定猫咪 <text class="required">*</text> <text class="tip">（必须选择）</text></view>

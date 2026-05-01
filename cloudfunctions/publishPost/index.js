@@ -12,6 +12,7 @@ exports.main = async (event, context) => {
     catId,          // 必须绑定一只猫（已存在的猫的_id）
     images = [],    // 图片 fileID 数组
     content = '',   // 帖子描述
+    category = 'daily', // 帖子分类：daily/rescue/neuter/adopt/lost/other
   } = event;
 
   // 强制绑猫校验
@@ -47,6 +48,7 @@ exports.main = async (event, context) => {
         catType: cat.catType,
         images,
         content: content.trim(),
+        category,
         authorId: openid,
         likeCount: 0,
         likedBy: [],
