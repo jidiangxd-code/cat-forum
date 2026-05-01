@@ -96,6 +96,23 @@
       </view>
     </view>
 
+    <!-- 健康标签 -->
+    <view class="form-group">
+      <view class="form-label">健康标签 <text class="optional">（选填，可多选）</text></view>
+      <view class="tag-wrap">
+        <view
+          wx:for="{{healthTagOptions}}"
+          wx:key="value"
+          class="tag {{form.healthTags && form.healthTags.includes(item.value) ? 'selected' : ''}}"
+          bindtap="onHealthTagTap"
+          data-val="{{item.value}}"
+        >{{item.label}}</view>
+      </view>
+      <view class="health-tip" wx:if="{{form.healthTags && form.healthTags.length > 0}}">
+        已选：{{form.healthTags.length}} 个标签
+      </view>
+    </view>
+
   </view>
 
   <!-- 提交 -->

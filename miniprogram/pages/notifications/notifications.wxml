@@ -1,0 +1,102 @@
+<view class="container">
+  <!-- 顶部 Tab 筛选 -->
+  <view class="tab-bar">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="type"
+      class="tab-item {{activeTab === item.type ? 'active' : ''}}"
+      bindtap="switchTab"
+      data-type="{{item.type}}"
+    >
+      {{item.label}}
+      <text class="tab-count" wx:if="{{item.type === 'all' && unreadCount > 0}}">{{unreadCount > 99 ? '99+' : unreadCount}}</text>
+    </view>
+  </view>
+
+  <!-- 通知列表 -->
+  <scroll-view
+    scroll-y
+    class="notification-list"
+    bindrefresherrefresh="onRefresh"
+    refresher-enabled
+    bindscrolltolower="loadMore"
+    lower-threshold="100"
+  >
+    <!-- 加载中 -->
+    <view class="loading-wrapper" wx:if="{{loading && list.length === 0}}">
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-wrapper" wx:elif="{{!loading && list.length === 0}}">
+      <image class="empty-icon" src="/miniprogram/images/default-avatar.png" mode="aspectFit" />
+      <text class="empty-text">{{activeTab === 'all' ? '暂无通知' : '此类通知为空'}}</text>
+    </view>
+
+    <!-- 通知列表 -->
+    <block wx:else>
+      <view
+        wx:for="{{list}}"
+        wx:key="_id"
+        class="notification-item {{item.read ? 'read' : 'unread'}}"
+        bindtap="onNotificationTap"
+        data-item="{{item}}"
+      >
+        <!-- 头像 -->
+        <view class="notif-avatar">
+          <image
+            wx:if="{{item.fromUserAvatar}}"
+            src="{{item.fromUserAvatar}}"
+            class="avatar-img"
+            mode="aspectFill"
+          />
+          <view wx:else class="avatar-placeholder">
+            <text>{{item.fromUserName ? item.fromUserName.substring(0, 1) : '?'}}</text>
+          </view>
+          <!-- 类型图标 -->
+          <view class="notif-type-icon type-{{item.type}}">
+            <text wx:if="{{item.type === 'like_post' || item.type === 'like_cat'}}">❤️</text>
+            <text wx:elif="{{item.type === 'comment' || item.type === 'reply'}}">💬</text>
+            <text wx:elif="{{item.type === 'follow'}}">➕</text>
+            <text wx:else>🔔</text>
+          </view>
+        </view>
+
+        <!-- 内容区 -->
+        <view class="notif-content">
+          <view class="notif-header">
+            <text class="notif-user">{{item.fromUserName || '某用户'}}</text>
+            <text class="notif-action">{{getNotifText(item.type)}}</text>
+          </view>
+          <text class="notif-text" wx:if="{{item.content}}">{{item.content}}</text>
+          <text class="notif-target" wx:if="{{item.targetTitle}}">「{{item.targetTitle}}」</text>
+          <text class="notif-time">{{item.timeAgo || item.createTime}}</text>
+        </view>
+
+        <!-- 封面图 -->
+        <image
+          wx:if="{{item.coverImage}}"
+          src="{{item.coverImage}}"
+          class="notif-cover"
+          mode="aspectFill"
+          binderror="onImageError"
+          data-index="{{index}}"
+        />
+        <view wx:elif="{{item.postContent}}" class="notif-preview">
+          <text>{{item.postContent}}</text>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view class="load-more" wx:if="{{list.length > 0}}">
+        <text wx:if="{{loadingMore}}">加载中...</text>
+        <text wx:elif="{{!hasMore}}" class="no-more">没有更多了</text>
+      </view>
+    </block>
+  </scroll-view>
+
+  <!-- 全部已读按钮 -->
+  <view class="mark-all-bar" wx:if="{{unreadCount > 0}}" bindtap="markAllRead">
+    <text>全部已读</text>
+  </view>
+</view>

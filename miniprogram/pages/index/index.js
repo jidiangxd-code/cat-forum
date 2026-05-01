@@ -8,6 +8,8 @@ Page({
     hasMore: true,
     page: 1,
     pageSize: 15,
+    // 排序：'latest' 最新 | 'hot' 最热
+    sortBy: 'latest',
     // 猫咪档案缓存（catId -> cat）
     catCache: {},
     // 分类映射
@@ -41,7 +43,7 @@ Page({
     this.setData({ loading: true });
 
     try {
-      const res = await api.getPostList({ page: this.data.page, pageSize: this.data.pageSize });
+      const res = await api.getPostList({ page: this.data.page, pageSize: this.data.pageSize, sort: this.data.sortBy });
       const posts = res.data || [];
 
       // 批量获取未缓存的猫咪档案
@@ -137,7 +139,16 @@ Page({
     wx.switchTab({ url: '/pages/cat-list/cat-list' });
   },
 
+  // 搜索
   goSearch() {
     wx.navigateTo({ url: '/pages/search/search' });
+  },
+
+  // 排序切换
+  switchSort(e) {
+    const sort = e.currentTarget.dataset.sort;
+    if (sort === this.data.sortBy) return;
+    this.setData({ sortBy: sort, page: 1, hasMore: true, postList: [] });
+    this.loadPosts(true);
   }
 });

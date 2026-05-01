@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "openapi": []
+  },
+  "requiredPrivatePermissions": [],
+  "desc": "发送通知"
+}

@@ -13,6 +13,20 @@
     </view>
   </view>
 
+  <!-- 排序切换 Tab -->
+  <view class="sort-tabs">
+    <view
+      class="sort-tab {{sortBy === 'latest' ? 'active' : ''}}"
+      bindtap="switchSort"
+      data-sort="latest"
+    >🕐 最新</view>
+    <view
+      class="sort-tab {{sortBy === 'hot' ? 'active' : ''}}"
+      bindtap="switchSort"
+      data-sort="hot"
+    >🔥 热门</view>
+  </view>
+
   <!-- 帖子流 -->
   <view class="post-list">
     <view class="post-card" wx:for="{{postList}}" wx:key="_id">

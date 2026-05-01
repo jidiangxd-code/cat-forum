@@ -10,7 +10,8 @@ Page({
       likeCount: 0,
       collectCount: 0,
       favCount: 0
-    }
+    },
+    unreadCount: 0
   },
 
   onLoad() {
@@ -22,6 +23,7 @@ Page({
     // 每次显示时刷新数据
     this.loadUserInfo();
     this.loadStats();
+    this.loadUnreadCount();
   },
 
   // 加载用户信息
@@ -143,9 +145,42 @@ Page({
     wx.navigateTo({ url: '/pages/my-favorites/my-favorites' });
   },
 
-  // 编辑资料
+  // 我的关注
+  goToMyFollows() {
+    wx.navigateTo({ url: '/pages/my-follows/my-follows?type=following' });
+  },
+
+  // 我的粉丝
+  goToMyFollowers() {
+    wx.navigateTo({ url: '/pages/my-follows/my-follows?type=followers' });
+  },
+
+  // 消息通知
+  goToNotifications() {
+    wx.navigateTo({ url: '/pages/notifications/notifications' });
+  },
+
+  // 加载未读通知数
   editProfile() {
     wx.navigateTo({ url: '/pages/edit-profile/edit-profile' });
+  },
+
+  // 加载未读通知数
+  async loadUnreadCount() {
+    if (!this.data.isLoggedIn) {
+      this.setData({ unreadCount: 0 });
+      return;
+    }
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'getNotifications',
+        data: { page: 1, pageSize: 1 }
+      });
+      if (res.result && res.result.success) {
+        const count = res.result.data.unreadCount || 0;
+        this.setData({ unreadCount: count });
+      }
+    } catch (e) {}
   },
 
   // 清除缓存

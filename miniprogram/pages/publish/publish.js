@@ -36,7 +36,9 @@ Page({
     showCatPicker: false,
     catPickMode: '',  // 'formal' | 'unknown'
     // 提交状态
-    submitting: false
+    submitting: false,
+    // 预览模式
+    previewMode: false
   },
 
   onLoad() {
@@ -160,26 +162,27 @@ Page({
     this.setData({ category: e.currentTarget.dataset.val });
   },
 
-  // ===== 提交 =====
-  async submitPost() {
-    // 校验图片
+  // ===== 预览功能 =====
+  
+  /**
+   * 显示预览
+   */
+  showPreview() {
+    // 前置校验
     if (this.data.images.length === 0) {
-      wx.showToast({ title: '请至少上传一张照片', icon: 'none' });
+      wx.showToast({ title: '请先添加照片', icon: 'none' });
       return;
     }
-    // 校验内容
     if (!this.data.content.trim()) {
-      wx.showToast({ title: '请填写描述内容', icon: 'none' });
+      wx.showToast({ title: '请先填写描述', icon: 'none' });
       return;
     }
-    // 校验分类
     if (!this.data.category) {
-      wx.showToast({ title: '请选择帖子分类', icon: 'none' });
+      wx.showToast({ title: '请先选择分类', icon: 'none' });
       return;
     }
-    // 校验绑猫
     if (!this.data.bindMode) {
-      wx.showToast({ title: '请选择或创建一只猫咪', icon: 'none' });
+      wx.showToast({ title: '请先绑定猫咪', icon: 'none' });
       return;
     }
     if ((this.data.bindMode === 'pick_formal' || this.data.bindMode === 'pick_unknown') && !this.data.selectedCat) {
@@ -196,7 +199,39 @@ Page({
         return;
       }
     }
+    
+    this.setData({ previewMode: true });
+  },
 
+  /**
+   * 关闭预览
+   */
+  closePreview() {
+    this.setData({ previewMode: false });
+  },
+
+  /**
+   * 返回编辑
+   */
+  goBackToEdit() {
+    this.setData({ previewMode: false });
+  },
+
+  /**
+   * 预览图片
+   */
+  onPreviewImage(e) {
+    const index = e.currentTarget.dataset.index;
+    wx.previewImage({
+      current: this.data.images[index],
+      urls: this.data.images
+    });
+  },
+
+  /**
+   * 从预览确认发布
+   */
+  async confirmPublish() {
     this.setData({ submitting: true });
     wx.showLoading({ title: '发布中...', mask: true });
 
@@ -204,7 +239,7 @@ Page({
       // 1. 内容安全审核
       const checkResult = await api.checkContent({
         content: this.data.content.trim(),
-        images: [] // 图片上传后再审核
+        images: []
       });
       if (!checkResult.success) {
         wx.hideLoading();
@@ -213,7 +248,7 @@ Page({
           content: checkResult.reason || '内容包含违规信息，请修改后重试',
           showCancel: false
         });
-        this.setData({ submitting: false });
+        this.setData({ submitting: false, previewMode: false });
         return;
       }
 
@@ -229,7 +264,7 @@ Page({
           content: imgCheckResult.reason || '图片包含违规内容，请更换后重试',
           showCancel: false
         });
-        this.setData({ submitting: false });
+        this.setData({ submitting: false, previewMode: false });
         return;
       }
 

@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "openapi": []
+  },
+  "requiredPrivatePermissions": [],
+  "desc": "标记通知已读"
+}
