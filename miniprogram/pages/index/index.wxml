@@ -9,6 +9,7 @@
     </view>
     <view class="banner-right">
       <view class="cat-rank-btn" bindtap="goCatList">猫咪榜 🏆</view>
+      <view class="search-btn" bindtap="goSearch">🔍</view>
     </view>
   </view>
 
@@ -63,6 +64,9 @@
 
       <!-- 文字内容 -->
       <view class="post-content" bindtap="onPostTap" data-id="{{item._id}}">
+        <view class="post-category-tag" wx:if="{{item.category}}">
+          {{categoryMap[item.category] || item.category}}
+        </view>
         <text class="post-text">{{item.content}}</text>
       </view>
 

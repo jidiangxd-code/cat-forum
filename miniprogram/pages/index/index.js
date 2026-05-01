@@ -4,12 +4,21 @@ const api = require('../../utils/api.js');
 Page({
   data: {
     postList: [],
-    loading: false,
+    loading: true,
     hasMore: true,
     page: 1,
     pageSize: 15,
     // 猫咪档案缓存（catId -> cat）
-    catCache: {}
+    catCache: {},
+    // 分类映射
+    categoryMap: {
+      daily: '日常',
+      rescue: '救助',
+      neuter: '绝育',
+      adopt: '领养',
+      lost: '寻猫',
+      other: '其他'
+    }
   },
 
   onLoad() {
@@ -126,5 +135,9 @@ Page({
 
   goCatList() {
     wx.switchTab({ url: '/pages/cat-list/cat-list' });
+  },
+
+  goSearch() {
+    wx.navigateTo({ url: '/pages/search/search' });
   }
 });
