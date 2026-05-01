@@ -1,0 +1,155 @@
+/* pages/my-favorites/my-favorites.wxss */
+.page-container {
+  min-height: 100vh;
+  background-color: #FFF5EB;
+  padding-bottom: 30rpx;
+}
+
+/* 帖子列表 */
+.post-list {
+  padding: 20rpx 24rpx;
+}
+
+.post-card {
+  background-color: #ffffff;
+  border-radius: 20rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
+}
+
+/* 图片组 */
+.post-imgs {
+  display: flex;
+  gap: 6rpx;
+  padding: 20rpx 20rpx 0;
+}
+
+.post-img {
+  width: 220rpx;
+  height: 220rpx;
+  border-radius: 12rpx;
+  flex-shrink: 0;
+}
+
+.post-img.single {
+  width: 100%;
+  height: 400rpx;
+  border-radius: 12rpx;
+}
+
+.img-more-badge {
+  position: absolute;
+  right: 16rpx;
+  bottom: 16rpx;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  padding: 4rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+}
+
+/* 文字内容 */
+.post-content {
+  padding: 20rpx;
+}
+
+.post-category-tag {
+  display: inline-block;
+  background-color: #FFF0E0;
+  color: #FF8C42;
+  padding: 4rpx 16rpx;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  margin-bottom: 10rpx;
+}
+
+.post-text {
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+/* 底部 */
+.post-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  border-top: 1rpx solid #F5F5F5;
+}
+
+.post-time {
+  font-size: 22rpx;
+  color: #bbb;
+}
+
+.unfav-btn {
+  font-size: 22rpx;
+  color: #FF9A6A;
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  background-color: #FFF5EB;
+}
+
+.unfav-btn:active {
+  background-color: #FFE0CC;
+}
+
+/* 空状态 */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 200rpx;
+}
+
+.empty-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 30rpx;
+}
+
+.empty-btn {
+  background: linear-gradient(135deg, #FFB74D, #FF8C42);
+  color: #ffffff;
+  padding: 16rpx 48rpx;
+  border-radius: 30rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 加载状态 */
+.load-more, .no-more {
+  text-align: center;
+  padding: 30rpx;
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+.loading-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+}
+
+.loading-icon {
+  font-size: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}

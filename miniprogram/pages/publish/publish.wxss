@@ -55,6 +55,17 @@
 }
 .char-count { display: block; text-align: right; font-size: 22rpx; color: #bbb; margin-top: 8rpx; }
 
+/* 分类选择 */
+.category-grid { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.category-tag {
+  padding: 12rpx 28rpx; border-radius: 30rpx;
+  border: 2rpx solid #eee; font-size: 26rpx; color: #555;
+  background: #f9f9f9;
+}
+.category-tag.selected {
+  background: #FF9A6A; border-color: #FF9A6A; color: #fff;
+}
+
 /* 绑猫区 */
 .bind-section {}
 .bind-options { display: flex; flex-direction: column; gap: 16rpx; }

@@ -8,6 +8,16 @@ Page({
     uploadedUrls: [],
     // 帖子内容
     content: '',
+    // 帖子分类
+    categoryList: [
+      { label: '日常', value: 'daily' },
+      { label: '救助', value: 'rescue' },
+      { label: '绝育', value: 'neuter' },
+      { label: '领养', value: 'adopt' },
+      { label: '寻猫', value: 'lost' },
+      { label: '其他', value: 'other' }
+    ],
+    category: '',
     // 绑猫模式: null | 'pick_formal' | 'pick_unknown' | 'new_unknown'
     bindMode: null,
     // 已选猫咪
@@ -145,6 +155,11 @@ Page({
     this.setData({ 'newUnknownForm.appearance': val });
   },
 
+  // 帖子分类选择
+  onCategoryTap(e) {
+    this.setData({ category: e.currentTarget.dataset.val });
+  },
+
   // ===== 提交 =====
   async submitPost() {
     // 校验图片
@@ -155,6 +170,11 @@ Page({
     // 校验内容
     if (!this.data.content.trim()) {
       wx.showToast({ title: '请填写描述内容', icon: 'none' });
+      return;
+    }
+    // 校验分类
+    if (!this.data.category) {
+      wx.showToast({ title: '请选择帖子分类', icon: 'none' });
       return;
     }
     // 校验绑猫
@@ -181,10 +201,39 @@ Page({
     wx.showLoading({ title: '发布中...', mask: true });
 
     try {
-      // 1. 上传图片
+      // 1. 内容安全审核
+      const checkResult = await api.checkContent({
+        content: this.data.content.trim(),
+        images: [] // 图片上传后再审核
+      });
+      if (!checkResult.success) {
+        wx.hideLoading();
+        wx.showModal({
+          title: '内容审核未通过',
+          content: checkResult.reason || '内容包含违规信息，请修改后重试',
+          showCancel: false
+        });
+        this.setData({ submitting: false });
+        return;
+      }
+
+      // 2. 上传图片
       const imageUrls = await api.uploadImages(this.data.images, 'posts');
 
-      // 2. 如果是新建未知猫，先创建档案
+      // 3. 图片安全审核
+      const imgCheckResult = await api.checkContent({ content: '', images: imageUrls });
+      if (!imgCheckResult.success) {
+        wx.hideLoading();
+        wx.showModal({
+          title: '图片审核未通过',
+          content: imgCheckResult.reason || '图片包含违规内容，请更换后重试',
+          showCancel: false
+        });
+        this.setData({ submitting: false });
+        return;
+      }
+
+      // 4. 如果是新建未知猫，先创建档案
       let catId = this.data.selectedCat ? this.data.selectedCat._id : null;
 
       if (this.data.bindMode === 'new_unknown') {
@@ -198,11 +247,12 @@ Page({
         catId = catRes.data._id;
       }
 
-      // 3. 发布帖子
+      // 5. 发布帖子
       await api.publishPost({
         catId,
         images: imageUrls,
-        content: this.data.content.trim()
+        content: this.data.content.trim(),
+        category: this.data.category
       });
 
       wx.hideLoading();

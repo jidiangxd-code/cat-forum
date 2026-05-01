@@ -13,6 +13,10 @@
   background: rgba(255,255,255,0.2); color: #fff;
   padding: 12rpx 24rpx; border-radius: 30rpx; font-size: 24rpx;
 }
+.search-btn {
+  font-size: 32rpx;
+  padding: 12rpx 16rpx;
+}
 
 /* 帖子流 */
 .post-list { padding: 16rpx 0; }
@@ -57,6 +61,10 @@
 
 /* 文字内容 */
 .post-content { padding: 16rpx 24rpx 12rpx; }
+.post-category-tag {
+  display: inline-block; padding: 4rpx 16rpx; border-radius: 12rpx;
+  background: #FFF0E0; color: #FF9A6A; font-size: 22rpx; margin-bottom: 8rpx;
+}
 .post-text {
   font-size: 28rpx; color: #333; line-height: 1.7;
   display: -webkit-box; -webkit-box-orient: vertical;

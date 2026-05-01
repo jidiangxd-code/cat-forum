@@ -3,7 +3,7 @@
   <!-- 头部 -->
   <view class="header">
     <view class="header-top">
-      <text class="page-title">🐱 猫咪档案</text>
+      <text class="page-title">🔍 发现</text>
       <view class="create-btn" bindtap="goCreateFormal">+ 建正式档案</view>
     </view>
     <!-- 搜索栏 -->

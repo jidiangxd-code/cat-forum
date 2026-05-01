@@ -128,7 +128,7 @@ async function getTodayVote() {
 
 /**
  * 发布帖子（强制绑猫）
- * @param {object} params - catId, images, content
+ * @param {object} params - catId, images, content, category
  */
 function publishPost(params) {
   return callCloud('publishPost', params);
@@ -219,6 +219,103 @@ function togglePostLike(postId, userId, liked) {
   }
 }
 
+// ==================== 收藏 ====================
+
+/**
+ * 收藏/取消收藏帖子
+ * 使用独立的 favorites 集合，不依赖 users 集合
+ * @param {string} postId - 帖子ID
+ * @param {boolean} favorite - true=收藏, false=取消
+ */
+async function toggleFavorite(postId, favorite) {
+  const db = getDB();
+  const openid = getOpenId();
+  if (!openid) return Promise.reject(new Error('未登录'));
+
+  if (favorite) {
+    // 检查是否已收藏
+    const existRes = await db.collection('favorites')
+      .where({ postId, userOpenid: openid })
+      .count();
+    if (existRes.total > 0) {
+      return { success: true, action: 'already_favorited' };
+    }
+    await db.collection('favorites').add({
+      data: {
+        postId,
+        userOpenid: openid,
+        createTime: db.serverDate()
+      }
+    });
+    return { success: true, action: 'added' };
+  } else {
+    // 取消收藏
+    const res = await db.collection('favorites')
+      .where({ postId, userOpenid: openid })
+      .get();
+    if (res.data && res.data.length > 0) {
+      await db.collection('favorites').doc(res.data[0]._id).remove();
+    }
+    return { success: true, action: 'removed' };
+  }
+}
+
+/**
+ * 获取用户收藏列表（帖子）
+ * @param {number} page
+ * @param {number} pageSize
+ */
+async function getFavoritePosts(page = 1, pageSize = 20) {
+  const db = getDB();
+  const openid = getOpenId();
+  if (!openid) return { data: [], total: 0 };
+
+  const favRes = await db.collection('favorites')
+    .where({ userOpenid: openid })
+    .orderBy('createTime', 'desc')
+    .skip((page - 1) * pageSize)
+    .limit(pageSize)
+    .get();
+
+  const favList = favRes.data || [];
+  if (favList.length === 0) return { data: [], total: 0 };
+
+  // 批量获取帖子详情
+  const postIds = favList.map(f => f.postId);
+  const _ = db.command;
+  const postsRes = await db.collection('posts')
+    .where({ _id: _.in(postIds) })
+    .get();
+
+  const postMap = {};
+  (postsRes.data || []).forEach(p => { postMap[p._id] = p; });
+
+  // 按收藏时间排列，附带帖子详情
+  const result = favList.map(f => ({
+    ...postMap[f.postId],
+    favoriteId: f._id,
+    favoriteTime: f.createTime
+  })).filter(p => p._id); // 过滤掉已删除的帖子
+
+  // 获取总数
+  const totalRes = await db.collection('favorites')
+    .where({ userOpenid: openid })
+    .count();
+
+  return { data: result, total: totalRes.total };
+}
+
+// ==================== 内容安全审核 ====================
+
+/**
+ * 内容安全审核（文字+图片）
+ * @param {object} params - content: 文字内容, images: 图片URL数组
+ * @returns {object} { success: boolean, reason: string }
+ */
+function checkContent(params) {
+  return callCloud('checkContent', params);
+}
+
 // ==================== 图片上传 ====================
 
 async function uploadImages(filePaths, folder = 'cats') {
@@ -231,6 +328,45 @@ async function uploadImages(filePaths, folder = 'cats') {
     return result.fileID;
   });
   return Promise.all(uploadPromises);
+}
+
+/**
+ * 搜索帖子（按内容关键词）
+ * @param {string} keyword
+ */
+async function searchPosts(keyword) {
+  const db = getDB();
+  const _ = db.command;
+  if (!keyword || !keyword.trim()) return [];
+  const kw = keyword.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const reg = db.RegExp({ regexp: kw, options: 'i' });
+  try {
+    const res = await db.collection('posts')
+      .where({
+        status: _.or([_.eq('active'), _.exists(false)]),
+        content: reg
+      })
+      .orderBy('createTime', 'desc')
+      .limit(30)
+      .get();
+    return res.data || [];
+  } catch (e) {
+    return [];
+  }
+}
+
+/**
+ * 搜索猫咪档案（按名字/代号），返回带封面和投票数
+ * @param {string} keyword
+ */
+async function searchCats(keyword) {
+  const cats = await searchCatProfiles(keyword);
+  // 补充投票数据
+  return cats.map(c => ({
+    ...c,
+    totalVote: c.totalVote || 0,
+    coverImage: c.coverImage || (c.images && c.images[0]) || ''
+  }));
 }
 
 // ==================== 外貌选项 ====================
@@ -254,6 +390,7 @@ const STATUS_OPTIONS = [
 
 module.exports = {
   getOpenId,
+  checkContent,
   createCat,
   updateCat,
   getCatProfile,
@@ -270,7 +407,11 @@ module.exports = {
   addComment,
   deleteComment,
   togglePostLike,
+  toggleFavorite,
+  getFavoritePosts,
   uploadImages,
+  searchPosts,
+  searchCats,
   APPEARANCE_OPTIONS,
   GENDER_OPTIONS,
   STATUS_OPTIONS

@@ -15,45 +15,55 @@ Page({
     this.loadMyComments();
   },
 
-  /**
-   * 加载我的评论
-   * Bug #09 修复：通过 api.js 调用
-   */
   async loadMyComments() {
     this.setData({ loading: true });
 
     try {
-      const myOpenId = api.getOpenId();
+      const openId = api.getOpenId();
+      if (!openId || openId === 'guest') {
+        this.setData({ comments: [], loading: false, empty: true });
+        return;
+      }
 
+      const db = wx.cloud.database();
       // 查询我的评论
-      const res = await api.getMyComments(myOpenId);
+      const res = await db.collection('comments')
+        .where({ authorId: openId })
+        .orderBy('createTime', 'desc')
+        .get();
 
-      // 关联查询猫咪信息
-      const commentsWithCat = await Promise.all(
-        res.data.map(async (comment) => {
-          try {
-            const catRes = await api.getCatDetail(comment.catId);
-            return {
-              ...comment,
-              catName: catRes.data.name || '无名小猫',
-              catImage: catRes.data.images && catRes.data.images[0] ? catRes.data.images[0] : '',
-              catId: comment.catId
-            };
-          } catch (err) {
-            return {
-              ...comment,
-              catName: '未知猫咪',
-              catImage: '',
-              catId: comment.catId
-            };
+      const comments = (res.data || []).map(c => ({
+        ...c,
+        timeStr: this._formatTime(c.createTime)
+      }));
+
+      // 批量关联查询帖子信息
+      const postIds = [...new Set(comments.map(c => c.postId).filter(Boolean))];
+      const postCache = {};
+      if (postIds.length > 0) {
+        const postResults = await Promise.allSettled(
+          postIds.map(id => db.collection('posts').doc(id).get())
+        );
+        postResults.forEach((r, i) => {
+          if (r.status === 'fulfilled' && r.value.data) {
+            postCache[postIds[i]] = r.value.data;
           }
-        })
-      );
+        });
+      }
+
+      const enriched = comments.map(c => {
+        const post = postCache[c.postId];
+        return {
+          ...c,
+          postContent: post ? (post.content || '').substring(0, 30) : '帖子已删除',
+          postImage: post && post.images && post.images[0] ? post.images[0] : ''
+        };
+      });
 
       this.setData({
-        comments: commentsWithCat,
+        comments: enriched,
         loading: false,
-        empty: commentsWithCat.length === 0
+        empty: enriched.length === 0
       });
     } catch (err) {
       console.error('加载我的评论失败', err);
@@ -61,28 +71,29 @@ Page({
     }
   },
 
-  /**
-   * 点击跳转到对应的猫咪详情
-   * Bug #03 修复：增加 catId 有效性检查
-   */
-  onCatTap(e) {
-    const id = e.currentTarget.dataset.catid;
-    if (!id) {
-      wx.showToast({ title: '猫咪信息无效', icon: 'none' });
-      return;
-    }
-    wx.navigateTo({
-      url: `/pages/detail/detail?id=${id}`
-    });
+  _formatTime(t) {
+    if (!t) return '';
+    const d = t instanceof Date ? t : new Date(t);
+    if (isNaN(d)) return '';
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60000) return '刚刚';
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
+    return `${d.getMonth() + 1}月${d.getDate()}日`;
   },
 
-  /**
-   * 删除评论
-   * Bug #09 修复：通过 api.js 调用
-   */
+  onPostTap(e) {
+    const postId = e.currentTarget.dataset.postid;
+    if (!postId) {
+      wx.showToast({ title: '帖子不存在', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({ url: `/pages/detail/detail?id=${postId}` });
+  },
+
   async onDeleteComment(e) {
     const id = e.currentTarget.dataset.id;
-
     wx.showModal({
       title: '删除评论',
       content: '确定要删除这条评论吗？',
@@ -95,10 +106,7 @@ Page({
             this.loadMyComments();
             wx.showToast({ title: '删除成功', icon: 'success' });
           } catch (err) {
-            // 本地移除
-            const comments = this.data.comments.filter(item => item._id !== id);
-            this.setData({ comments, empty: comments.length === 0 });
-            wx.showToast({ title: '删除成功', icon: 'success' });
+            wx.showToast({ title: '删除失败', icon: 'none' });
           }
         }
       }

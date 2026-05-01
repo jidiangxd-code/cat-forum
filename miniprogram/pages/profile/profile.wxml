@@ -4,9 +4,23 @@
   <view class="profile-header">
     <view class="header-bg"></view>
     <view class="user-card">
-      <image class="user-avatar" src="{{avatarError ? '/assets/images/default-avatar.png' : (userInfo.avatarUrl || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onAvatarError" />
-      <text class="user-name">{{userInfo.nickName || '爱猫同学'}}</text>
-      <text class="user-desc">🐱 校园猫咪守护者</text>
+      <!-- 未登录：显示登录按钮 -->
+      <block wx:if="{{!isLoggedIn}}">
+        <view class="login-avatar-wrap" bindtap="doLogin">
+          <image class="user-avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
+          <view class="login-badge">登录</view>
+        </view>
+        <text class="user-name">点击登录</text>
+        <text class="user-desc">登录后即可发布和评论 🐱</text>
+      </block>
+      <!-- 已登录：显示用户信息 -->
+      <block wx:else>
+        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
+          <image class="user-avatar" src="{{avatarError ? '/assets/images/default-avatar.png' : (userInfo.avatarUrl || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onAvatarError" />
+        </button>
+        <text class="user-name">{{userInfo.nickName || '爱猫同学'}}</text>
+        <text class="user-desc">🐱 校园猫咪守护者</text>
+      </block>
     </view>
   </view>
 
@@ -23,8 +37,8 @@
     </view>
     <view class="stat-divider"></view>
     <view class="stat-item">
-      <text class="stat-num">{{stats.likeCount}}</text>
-      <text class="stat-label">喜欢</text>
+      <text class="stat-num">{{stats.favCount}}</text>
+      <text class="stat-label">收藏</text>
     </view>
   </view>
 
@@ -33,24 +47,31 @@
     <view class="menu-title">
       <text>📋 我的内容</text>
     </view>
-    <view class="menu-item" bind:tap="goToMyPosts">
+    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyPosts' : 'doLogin'}}">
       <view class="menu-left">
         <text class="menu-icon">📝</text>
         <text class="menu-text">我的发布</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" bind:tap="goToMyLikes">
+    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyLikes' : 'doLogin'}}">
       <view class="menu-left">
         <text class="menu-icon">❤️</text>
         <text class="menu-text">我喜欢的</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" bind:tap="goToMyComments">
+    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyComments' : 'doLogin'}}">
       <view class="menu-left">
         <text class="menu-icon">💬</text>
         <text class="menu-text">我的评论</text>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyFavorites' : 'doLogin'}}">
+      <view class="menu-left">
+        <text class="menu-icon">⭐</text>
+        <text class="menu-text">我的收藏</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
@@ -61,21 +82,21 @@
     <view class="menu-title">
       <text>⚙️ 设置</text>
     </view>
-    <view class="menu-item" bind:tap="editProfile">
+    <view class="menu-item" bindtap="{{isLoggedIn ? 'editProfile' : 'doLogin'}}">
       <view class="menu-left">
         <text class="menu-icon">👤</text>
         <text class="menu-text">编辑资料</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" bind:tap="clearCache">
+    <view class="menu-item" bindtap="clearCache">
       <view class="menu-left">
         <text class="menu-icon">🗑️</text>
         <text class="menu-text">清除缓存</text>
       </view>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" bind:tap="aboutUs">
+    <view class="menu-item" bindtap="aboutUs">
       <view class="menu-left">
         <text class="menu-icon">ℹ️</text>
         <text class="menu-text">关于我们</text>

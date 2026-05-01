@@ -9,10 +9,12 @@
     "pages/publish/publish",
     "pages/detail/detail",
     "pages/profile/profile",
+    "pages/search/search",
     "pages/my-posts/my-posts",
     "pages/my-likes/my-likes",
     "pages/my-comments/my-comments",
-    "pages/edit-profile/edit-profile"
+    "pages/edit-profile/edit-profile",
+    "pages/my-favorites/my-favorites"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -35,7 +37,7 @@
       },
       {
         "pagePath": "pages/cat-list/cat-list",
-        "text": "猫咪",
+        "text": "发现",
         "iconPath": "assets/icons/publish.png",
         "selectedIconPath": "assets/icons/publish-active.png"
       },
