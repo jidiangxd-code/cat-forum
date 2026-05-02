@@ -13,6 +13,9 @@ exports.main = async (event, context) => {
     images = [],    // 图片 fileID 数组
     content = '',   // 帖子描述
     category = 'daily', // 帖子分类：daily/rescue/neuter/adopt/lost/other
+    location = '',  // 位置名称/描述（可选）
+    latitude = null, // GPS 纬度（可选）
+    longitude = null, // GPS 经度（可选）
   } = event;
 
   // 强制绑猫校验
@@ -49,6 +52,9 @@ exports.main = async (event, context) => {
         images,
         content: content.trim(),
         category,
+        location: location || '',
+        latitude: latitude || null,
+        longitude: longitude || null,
         authorId: openid,
         likeCount: 0,
         likedBy: [],

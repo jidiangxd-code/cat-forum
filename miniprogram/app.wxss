@@ -1,5 +1,4 @@
-/* 全局样式 - 温暖可爱的猫咪主题 */
-
+/* 全局样式 - 温暖橘猫主题 + 深色模式 */
 page {
   background-color: #FFF5EB;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
@@ -9,13 +8,138 @@ page {
   line-height: 1.6;
 }
 
-/* 全局变量 */
+/* 深色模式覆盖 */
+page.dark {
+  background-color: #1a1a2e !important;
+  color: #e0e0e0 !important;
+}
+
+/* ========== 全局变量 ========== */
+page {
+  /* 亮色主题 */
+  --color-bg: #FFF5EB;
+  --color-bg-card: #ffffff;
+  --color-bg-input: #ffffff;
+  --color-bg-hover: #FFF0E0;
+  --color-bg-tab: #ffffff;
+  --color-bg-banner: linear-gradient(135deg, #FF9A6A, #FF7043);
+  --color-bg-modal: rgba(0, 0, 0, 0.6);
+  --color-bg-tag: #FFF0E0;
+  --color-bg-tag-health: #E8F5E9;
+  --color-bg-badge: #FF9A6A;
+  --color-bg-image: #f0f0f0;
+  --color-bg-divider: #f0f0f0;
+  --color-bg-active: #FFF5EB;
+  --color-bg-disabled: #f5f5f5;
+  --color-bg-btn-primary: linear-gradient(135deg, #FFB74D 0%, #FF8C42 100%);
+  --color-bg-btn-secondary: #FFF5EB;
+  --color-bg-btn-danger: #FF5252;
+
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-desc: #999999;
+  --color-text-hint: #bbbbbb;
+  --color-text-muted: #cccccc;
+  --color-text-placeholder: #c0c0c0;
+  --color-text-accent: #FF8C42;
+  --color-text-accent-light: #FF9A6A;
+  --color-text-tag: #E67E22;
+  --color-text-tag-health: #4CAF50;
+  --color-text-white: #ffffff;
+  --color-text-blue: #4A90E2;
+  --color-text-red: #FF5252;
+  --color-text-success: #4CAF50;
+
+  --color-border: #f0f0f0;
+  --color-border-light: #f5f5f5;
+  --color-border-accent: #FFB74D;
+  --color-border-tag: #FFB74D;
+
+  --color-shadow: rgba(255, 154, 106, 0.15);
+  --color-shadow-card: 0 4rpx 16rpx rgba(255, 154, 106, 0.15);
+  --color-shadow-btn: rgba(255, 140, 66, 0.35);
+  --color-shadow-modal: rgba(0, 0, 0, 0.15);
+
+  --nav-bg: #FF9A6A;
+  --nav-title: #ffffff;
+  --tab-bar-bg: #ffffff;
+  --tab-bar-border: white;
+  --tab-bar-color: #999999;
+  --tab-bar-active: #FF9A6A;
+
+  --avatar-bg: #FFE0C0;
+  --empty-color: #cccccc;
+}
+
+/* ========== 深色主题 ========== */
+page.dark {
+  --color-bg: #1a1a2e;
+  --color-bg-card: #252540;
+  --color-bg-input: #2a2a45;
+  --color-bg-hover: #2a2a45;
+  --color-bg-tab: #252540;
+  --color-bg-banner: linear-gradient(135deg, #6C5CE7 0%, #5B4ED4 100%);
+  --color-bg-modal: rgba(0, 0, 0, 0.7);
+  --color-bg-tag: #3a3a5c;
+  --color-bg-tag-health: #1a3a2a;
+  --color-bg-badge: #6C5CE7;
+  --color-bg-image: #333355;
+  --color-bg-divider: #333355;
+  --color-bg-active: #2a2a45;
+  --color-bg-disabled: #333355;
+  --color-bg-btn-primary: linear-gradient(135deg, #a29bfe 0%, #6C5CE7 100%);
+  --color-bg-btn-secondary: #2a2a45;
+  --color-bg-btn-danger: #E74C3C;
+
+  --color-text-primary: #e0e0e0;
+  --color-text-secondary: #b0b0b0;
+  --color-text-desc: #909090;
+  --color-text-hint: #707070;
+  --color-text-muted: #606060;
+  --color-text-placeholder: #555555;
+  --color-text-accent: #a29bfe;
+  --color-text-accent-light: #6C5CE7;
+  --color-text-tag: #a29bfe;
+  --color-text-tag-health: #6CFF6C;
+  --color-text-white: #ffffff;
+  --color-text-blue: #74b9ff;
+  --color-text-red: #ff7675;
+  --color-text-success: #6CFF6C;
+
+  --color-border: #333355;
+  --color-border-light: #3a3a5c;
+  --color-border-accent: #a29bfe;
+  --color-border-tag: #a29bfe;
+
+  --color-shadow: rgba(0, 0, 0, 0.3);
+  --color-shadow-card: 0 4rpx 16rpx rgba(0, 0, 0, 0.4);
+  --color-shadow-btn: rgba(108, 92, 231, 0.4);
+  --color-shadow-modal: rgba(0, 0, 0, 0.4);
+
+  --nav-bg: #252540;
+  --nav-title: #e0e0e0;
+  --tab-bar-bg: #252540;
+  --tab-bar-border: #333355;
+  --tab-bar-color: #707070;
+  --tab-bar-active: #a29bfe;
+
+  --avatar-bg: #3a3a5c;
+  --empty-color: #444466;
+}
+
+/* ========== 通用工具类 ========== */
+page {
+  --rpx: 1rpx;
+}
+
+/* 通用容器 */
 .container {
   padding: 20rpx;
   box-sizing: border-box;
+  background-color: var(--color-bg);
 }
 
-/* 标题样式 */
+/* 页面标题 */
 .page-title {
   font-size: 40rpx;
   font-weight: bold;
@@ -23,7 +147,11 @@ page {
   text-align: center;
   padding: 30rpx 0;
 }
+page.dark .page-title {
+  color: #a29bfe;
+}
 
+/* 区块标题 */
 .section-title {
   font-size: 32rpx;
   font-weight: bold;
@@ -31,57 +159,73 @@ page {
   margin-bottom: 20rpx;
   padding-left: 16rpx;
   border-left: 6rpx solid #FFB74D;
+  background-color: var(--color-bg);
+}
+page.dark .section-title {
+  color: #a29bfe;
+  border-left-color: #a29bfe;
 }
 
 /* 卡片通用样式 */
 .card {
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
   border-radius: 24rpx;
   padding: 24rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(255, 154, 106, 0.15);
+  box-shadow: var(--color-shadow-card);
 }
 
-/* 按钮通用样式 */
+/* 主要按钮 */
 .btn-primary {
-  background: linear-gradient(135deg, #FFB74D 0%, #FF8C42 100%);
-  color: #ffffff;
+  background: var(--color-bg-btn-primary);
+  color: var(--color-text-white);
   border: none;
   border-radius: 40rpx;
   padding: 20rpx 48rpx;
   font-size: 30rpx;
   font-weight: bold;
   text-align: center;
-  box-shadow: 0 6rpx 16rpx rgba(255, 140, 66, 0.35);
+  box-shadow: var(--color-shadow-btn);
 }
+.btn-primary::after { border: none; }
+.btn-primary.hover { opacity: 0.85; transform: scale(0.97); }
 
-.btn-primary:active {
-  opacity: 0.85;
-  transform: scale(0.97);
-}
-
+/* 次要按钮 */
 .btn-secondary {
-  background-color: #FFF5EB;
-  color: #FF8C42;
-  border: 2rpx solid #FFB74D;
+  background-color: var(--color-bg-btn-secondary);
+  color: var(--color-text-accent);
+  border: 2rpx solid var(--color-border-accent);
   border-radius: 40rpx;
   padding: 18rpx 40rpx;
   font-size: 28rpx;
   text-align: center;
 }
+.btn-secondary::after { border: none; }
+
+/* 危险按钮 */
+.btn-danger {
+  background: var(--color-bg-btn-danger);
+  color: #ffffff;
+  border: none;
+  border-radius: 40rpx;
+  padding: 20rpx 48rpx;
+  font-size: 30rpx;
+  text-align: center;
+}
+.btn-danger::after { border: none; }
 
 /* 分割线 */
 .divider {
   height: 2rpx;
-  background: linear-gradient(to right, transparent, #FFE0CC, transparent);
+  background: var(--color-bg-divider);
   margin: 24rpx 0;
 }
 
 /* 标签样式 */
 .tag {
   display: inline-block;
-  background-color: #FFF0E0;
-  color: #E67E22;
+  background-color: var(--color-bg-tag);
+  color: var(--color-text-tag);
   border-radius: 20rpx;
   padding: 6rpx 16rpx;
   font-size: 22rpx;
@@ -89,13 +233,33 @@ page {
   margin-bottom: 8rpx;
 }
 
+/* 健康标签（绿色） */
+.tag-health {
+  background-color: var(--color-bg-tag-health);
+  color: var(--color-text-tag-health);
+}
+
+/* 输入框 */
+.input {
+  background-color: var(--color-bg-input);
+  color: var(--color-text-primary);
+  border: 2rpx solid var(--color-border);
+  border-radius: 16rpx;
+  padding: 20rpx 24rpx;
+  font-size: 28rpx;
+}
+.input::after { border: none; }
+.input:focus {
+  border-color: var(--color-border-accent);
+  outline: none;
+}
+
 /* 空状态 */
 .empty-state {
   text-align: center;
   padding: 80rpx 40rpx;
-  color: #CCCCCC;
+  color: var(--color-text-muted);
 }
-
 .empty-state .icon {
   font-size: 100rpx;
   margin-bottom: 20rpx;
@@ -105,6 +269,37 @@ page {
 .loading-tip {
   text-align: center;
   padding: 30rpx;
-  color: #999999;
+  color: var(--color-text-muted);
   font-size: 26rpx;
+}
+
+/* 危险/红色文字 */
+.text-danger { color: var(--color-text-red); }
+/* 成功/绿色文字 */
+.text-success { color: var(--color-text-success); }
+/* 蓝色文字 */
+.text-blue { color: var(--color-text-blue); }
+
+/* 通用边框 */
+.border { border: 1rpx solid var(--color-border); }
+.border-bottom { border-bottom: 1rpx solid var(--color-border); }
+.border-top { border-top: 1rpx solid var(--color-border); }
+
+/* Flex工具 */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-center { align-items: center; justify-content: center; }
+.flex-between { align-items: center; justify-content: space-between; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-shrink-0 { flex-shrink: 0; }
+.flex-1 { flex: 1; }
+.gap-8 { gap: 8rpx; }
+.gap-12 { gap: 12rpx; }
+.gap-16 { gap: 16rpx; }
+.gap-24 { gap: 24rpx; }
+
+/* ========== 深色模式 - 导航栏 ========== */
+page.dark [data-wechat-theme="dark"] navigator,
+page.dark .navigation-wrapper {
+  background-color: var(--tab-bar-bg) !important;
 }

@@ -11,15 +11,19 @@ Page({
       collectCount: 0,
       favCount: 0
     },
-    unreadCount: 0
+    unreadCount: 0,
+    // 深色模式
+    isDarkMode: wx.getStorageSync('darkMode') || false
   },
 
   onLoad() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     this.loadUserInfo();
     this.loadStats();
   },
 
   onShow() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     // 每次显示时刷新数据
     this.loadUserInfo();
     this.loadStats();
@@ -208,5 +212,20 @@ Page({
       content: '🐱 校园小猫论坛 v1.0.0\n\n用爱守护每一只校园小猫\n\n这是一个温暖的社区，让我们一起关爱校园里的流浪小猫，分享每一只可爱小猫的故事~',
       showCancel: false
     });
+  },
+
+  // 深色模式切换
+  toggleDarkMode() {
+    const newDark = !this.data.isDarkMode;
+    this.setData({ isDarkMode: newDark });
+    try {
+      if (newDark) wx.setStorageSync('darkMode', true);
+      else wx.removeStorageSync('darkMode');
+    } catch(e) {}
+    try {
+      const pages = getCurrentPages();
+      pages.forEach(p => { try { p.setData({ isDarkMode: newDark }); } catch(e) {} });
+    } catch(e) {}
+    try { getApp()._applyDarkMode(newDark); } catch(e) {}
   }
 });
