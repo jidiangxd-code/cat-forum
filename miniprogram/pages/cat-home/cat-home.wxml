@@ -40,6 +40,14 @@
         <text class="status-text">{{statusMap[cat.status]}}</text>
         <text class="personality" wx:if="{{cat.personality}}"> · {{cat.personality}}</text>
       </view>
+
+      <!-- 健康标签 -->
+      <view class="health-tags-row" wx:if="{{cat.healthTags && cat.healthTags.length > 0}}">
+        <view class="health-tag {{tag === '生病/受伤' ? 'warning' : (tag === '需要关注' ? 'warn' : 'normal')}}"
+              wx:for="{{cat.healthTags}}" wx:key="index">
+          {{item}}
+        </view>
+      </view>
     </view>
   </view>
 
@@ -70,40 +78,47 @@
     </view>
   </view>
 
-  <!-- 历史帖子 -->
-  <view class="posts-section">
-    <view class="posts-header">
-      <text class="posts-title">📷 ta 的所有帖子</text>
+  <!-- 历史帖子时间线 -->
+  <view class="timeline-section">
+    <view class="timeline-header">
+      <view class="timeline-line"/>
+      <text class="timeline-title">📋 猫咪动态时间线</text>
+      <text class="timeline-count" wx:if="{{posts.length > 0}}">{{posts.length}} 条动态</text>
     </view>
 
     <view class="empty-posts" wx:if="{{!postsLoading && posts.length === 0}}">
       <text>还没有帖子，快去发布吧～</text>
     </view>
 
-    <view class="post-card" wx:for="{{posts}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
-      <!-- 图片组 -->
-      <view class="post-imgs" wx:if="{{item.images && item.images.length > 0}}">
-        <image
-          wx:for="{{item.images}}"
-          wx:for-item="img"
-          wx:key="index"
-          wx:if="{{index < 3}}"
-          class="post-img {{item.images.length === 1 ? 'single' : ''}}"
-          src="{{img}}"
-          mode="aspectFill"
-          catchtap="previewPostImage"
-          data-images="{{item.images}}"
-          data-index="{{index}}"
-        />
-        <view class="img-more" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
-      </view>
-      <!-- 内容 -->
-      <view class="post-content">
-        <text class="post-text">{{item.content}}</text>
-      </view>
-      <view class="post-footer">
-        <text class="post-time">{{item.createTime}}</text>
-        <text class="post-like">❤️ {{item.likeCount || 0}}</text>
+    <view class="timeline-list">
+      <view class="timeline-item" wx:for="{{posts}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
+        <view class="timeline-dot"/>
+        <view class="timeline-card">
+          <!-- 图片组 -->
+          <view class="post-imgs" wx:if="{{item.images && item.images.length > 0}}">
+            <image
+              wx:for="{{item.images}}"
+              wx:for-item="img"
+              wx:key="index"
+              wx:if="{{index < 3}}"
+              class="post-img {{item.images.length === 1 ? 'single' : ''}}"
+              src="{{img}}"
+              mode="aspectFill"
+              catchtap="previewPostImage"
+              data-images="{{item.images}}"
+              data-index="{{index}}"
+            />
+            <view class="img-more" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
+          </view>
+          <!-- 内容 -->
+          <view class="post-content">
+            <text class="post-text">{{item.content}}</text>
+          </view>
+          <view class="post-footer">
+            <text class="post-time">📅 {{item.createTime}}</text>
+            <text class="post-stats">❤️ {{item.likeCount || 0}}  💬 {{item.commentCount || 0}}</text>
+          </view>
+        </view>
       </view>
     </view>
 

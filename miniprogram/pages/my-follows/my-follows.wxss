@@ -1,0 +1,141 @@
+.page-container {
+  min-height: 100vh;
+  background-color: #FFF5EB;
+  padding-bottom: 40rpx;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx 32rpx 24rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f0e8e0;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+.page-count {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 用户列表 */
+.user-list {
+  background: #fff;
+  margin: 24rpx;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  padding: 28rpx 32rpx;
+  border-bottom: 1rpx solid #f5f0eb;
+}
+
+.user-item:last-child {
+  border-bottom: none;
+}
+
+.user-avatar {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  margin-right: 24rpx;
+  border: 3rpx solid #FFE4C4;
+  flex-shrink: 0;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.user-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-id {
+  font-size: 22rpx;
+  color: #bbb;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 关注按钮 */
+.follow-btn {
+  padding: 10rpx 32rpx;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  background: #FF7043;
+  color: #fff;
+  flex-shrink: 0;
+  border: none;
+}
+
+.follow-btn.following {
+  background: #f5f5f5;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.empty-icon {
+  font-size: 96rpx;
+  margin-bottom: 32rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 加载状态 */
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 40rpx 0;
+}
+
+.loading-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 没有更多 */
+.no-more {
+  display: flex;
+  justify-content: center;
+  padding: 32rpx 0;
+}
+
+.no-more-text {
+  font-size: 24rpx;
+  color: #ccc;
+}

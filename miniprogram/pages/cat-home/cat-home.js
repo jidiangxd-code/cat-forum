@@ -39,7 +39,7 @@ Page({
   },
 
   async loadAll() {
-    this.setData({ loading: true });
+    this.setData({ loading: true, posts: [], postsPage: 1, hasMorePosts: true });
     await Promise.all([
       this.loadCatProfile(),
       this.loadTodayVote()
@@ -90,6 +90,7 @@ Page({
   },
 
   async loadMorePosts() {
+    if (!this.data.hasMorePosts || this.data.postsLoading) return;
     await this.loadPosts(false);
   },
 

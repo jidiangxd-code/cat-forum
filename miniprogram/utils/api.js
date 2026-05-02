@@ -139,9 +139,8 @@ function publishPost(params) {
  */
 function getCatPosts(catId, page = 1, pageSize = 20) {
   const db = getDB();
-  const _ = db.command;
   return db.collection('posts')
-    .where({ catId, status: _.or([_.eq('active'), _.exists(false)]) })
+    .where({ catId })
     .orderBy('createTime', 'desc')
     .skip((page - 1) * pageSize)
     .limit(pageSize)
@@ -162,11 +161,17 @@ function getPostDetail(postId) {
  */
 function getPostList(params = {}) {
   const db = getDB();
-  const _ = db.command;
-  const { page = 1, pageSize = 15 } = params;
-  return db.collection('posts')
-    .where({ status: _.or([_.eq('active'), _.exists(false)]) })
-    .orderBy('createTime', 'desc')
+  const { page = 1, pageSize = 15, sort = 'latest' } = params;
+
+  let query = db.collection('posts');
+
+  if (sort === 'hot') {
+    query = query.orderBy('likeCount', 'desc').orderBy('createTime', 'desc');
+  } else {
+    query = query.orderBy('createTime', 'desc');
+  }
+
+  return query
     .skip((page - 1) * pageSize)
     .limit(pageSize)
     .get()
@@ -183,18 +188,22 @@ function getComments(postId) {
     .get();
 }
 
+/**
+ * 添加评论（调用云函数，触发通知 + 评论数更新）
+ * @param {object} params - postId, catId, content, authorId, authorName, authorAvatar,
+ *                           parentId, replyToUserId, replyToUserName
+ */
 function addComment(params) {
-  const db = getDB();
-  return db.collection('comments').add({
-    data: {
-      postId: params.postId,
-      catId: params.catId,
-      content: params.content,
-      authorId: params.authorId,
-      authorName: params.authorName || '匿名用户',
-      authorAvatar: params.authorAvatar || '',
-      createTime: db.serverDate()
-    }
+  return callCloud('addComment', {
+    postId: params.postId || '',
+    catId: params.catId || '',
+    content: params.content,
+    authorId: params.authorId,
+    authorName: params.authorName || '匿名用户',
+    authorAvatar: params.authorAvatar || '',
+    parentId: params.parentId || '',
+    replyToUserId: params.replyToUserId || '',
+    replyToUserName: params.replyToUserName || ''
   });
 }
 
@@ -369,6 +378,96 @@ async function searchCats(keyword) {
   }));
 }
 
+// ==================== 举报 ====================
+
+/**
+ * 举报帖子/评论
+ * @param {object} params - postId, commentId(可选), reason(abuse/ad/fake/other), description(可选)
+ */
+function reportPost(params) {
+  const openid = getOpenId();
+  if (!openid) return Promise.reject(new Error('未登录'));
+
+  const userInfo = wx.getStorageSync('userInfo') || {};
+  return callCloud('reportPost', {
+    postId: params.postId,
+    commentId: params.commentId || '',
+    reporterId: openid,
+    reporterName: userInfo.nickName || '匿名用户',
+    reason: params.reason,
+    description: params.description || ''
+  });
+}
+
+// ==================== 通知相关 ====================
+
+/**
+ * 获取通知列表
+ * @param {number} page
+ * @param {number} pageSize
+ * @param {string} type - ''|'like_post'|'like_cat'|'comment'|'reply'|'follow'
+ */
+function getNotifications(page = 1, pageSize = 20, type = '') {
+  return callCloud('getNotifications', { page, pageSize, type });
+}
+
+/**
+ * 标记通知已读
+ * @param {string} notificationId - 通知ID（空则全部已读）
+ * @param {boolean} markAll - 是否全部标记
+ */
+function markNotificationRead(notificationId = '', markAll = false) {
+  return callCloud('markNotificationRead', { notificationId, markAll });
+}
+
+// ==================== 关注用户 ====================
+
+/**
+ * 关注/取消关注用户
+ * @param {string} toUserId - 被关注者 ID
+ * @param {boolean} follow - true=关注, false=取消
+ */
+function followUser(toUserId, follow) {
+  const openid = getOpenId();
+  if (!openid) return Promise.reject(new Error('未登录'));
+  return callCloud('followUser', {
+    action: follow ? 'follow' : 'unfollow',
+    fromUserId: openid,
+    toUserId
+  });
+}
+
+/**
+ * 检查当前用户是否已关注某用户
+ * @param {string} toUserId - 被检查的用户 ID
+ * @returns {boolean}
+ */
+async function isFollowing(toUserId) {
+  const openid = getOpenId();
+  if (!openid) return false;
+  const db = getDB();
+  try {
+    const res = await db.collection('follows')
+      .where({ fromUserId: openid, toUserId })
+      .count();
+    return res.total > 0;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * 获取关注/粉丝列表
+ * @param {string} type - 'following'|'followers'
+ * @param {number} page
+ * @param {number} pageSize
+ */
+function getFollowList(type, page = 1, pageSize = 20) {
+  const openid = getOpenId();
+  if (!openid) return Promise.reject(new Error('未登录'));
+  return callCloud('getFollowList', { userId: openid, type, page, pageSize });
+}
+
 // ==================== 外貌选项 ====================
 
 const APPEARANCE_OPTIONS = [
@@ -412,6 +511,12 @@ module.exports = {
   uploadImages,
   searchPosts,
   searchCats,
+  reportPost,
+  getNotifications,
+  markNotificationRead,
+  followUser,
+  isFollowing,
+  getFollowList,
   APPEARANCE_OPTIONS,
   GENDER_OPTIONS,
   STATUS_OPTIONS

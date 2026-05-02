@@ -29,7 +29,7 @@ exports.main = async (event, context) => {
       if (cat.catType !== 'unknown') {
         return { success: false, code: 400, message: '只有未知猫才能执行转正操作' };
       }
-      const { fullName, gender, personality, location, status, coverImage } = fields;
+      const { fullName, gender, personality, location, status, coverImage, healthTags } = fields;
       if (!fullName || !fullName.trim()) {
         return { success: false, code: 400, message: '转正必须填写正式名字' };
       }
@@ -40,6 +40,7 @@ exports.main = async (event, context) => {
       if (location !== undefined) updateData.location = location.trim();
       if (status) updateData.status = status;
       if (coverImage) updateData.coverImage = coverImage;
+      if (healthTags !== undefined && Array.isArray(healthTags)) updateData.healthTags = healthTags;
 
       // 记录编辑日志
       updateData.editLog = _.push({
@@ -51,7 +52,7 @@ exports.main = async (event, context) => {
 
     } else {
       // 普通编辑
-      const { fullName, codeName, gender, personality, location, status, coverImage, appearance } = fields;
+      const { fullName, codeName, gender, personality, location, status, coverImage, appearance, healthTags } = fields;
       if (fullName !== undefined) updateData.fullName = fullName.trim();
       if (codeName !== undefined) updateData.codeName = codeName.trim();
       if (gender !== undefined) updateData.gender = gender;
@@ -60,6 +61,7 @@ exports.main = async (event, context) => {
       if (status !== undefined) updateData.status = status;
       if (coverImage !== undefined) updateData.coverImage = coverImage;
       if (appearance !== undefined && appearance.trim()) updateData.appearance = appearance.trim();
+      if (healthTags !== undefined && Array.isArray(healthTags)) updateData.healthTags = healthTags;
 
       // 记录编辑日志
       updateData.editLog = _.push({

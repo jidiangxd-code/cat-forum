@@ -4,10 +4,14 @@ const api = require('../../utils/api.js');
 Page({
   data: {
     postList: [],
-    loading: true,
+    loading: false,
     hasMore: true,
     page: 1,
     pageSize: 15,
+    // 排序：'latest' 最新 | 'hot' 最热
+    sortBy: 'latest',
+    // 深色模式
+    isDarkMode: wx.getStorageSync('darkMode') || false,
     // 猫咪档案缓存（catId -> cat）
     catCache: {},
     // 分类映射
@@ -22,7 +26,12 @@ Page({
   },
 
   onLoad() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     this.loadPosts(true);
+  },
+
+  onShow() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
   },
 
   onPullDownRefresh() {
@@ -41,7 +50,7 @@ Page({
     this.setData({ loading: true });
 
     try {
-      const res = await api.getPostList({ page: this.data.page, pageSize: this.data.pageSize });
+      const res = await api.getPostList({ page: this.data.page, pageSize: this.data.pageSize, sort: this.data.sortBy });
       const posts = res.data || [];
 
       // 批量获取未缓存的猫咪档案
@@ -137,7 +146,39 @@ Page({
     wx.switchTab({ url: '/pages/cat-list/cat-list' });
   },
 
+  // 搜索
   goSearch() {
     wx.navigateTo({ url: '/pages/search/search' });
+  },
+
+  // 排序切换
+  switchSort(e) {
+    const sort = e.currentTarget.dataset.sort;
+    if (sort === this.data.sortBy) return;
+    this.setData({ sortBy: sort, page: 1, hasMore: true, postList: [] });
+    this.loadPosts(true);
+  },
+
+  // 深色模式切换
+  toggleDarkMode() {
+    const newDark = !this.data.isDarkMode;
+    this.setData({ isDarkMode: newDark });
+    try {
+      if (newDark) {
+        wx.setStorageSync('darkMode', true);
+      } else {
+        wx.removeStorageSync('darkMode');
+      }
+    } catch(e) {}
+    // 全局通知所有页面
+    try {
+      const pages = getCurrentPages();
+      pages.forEach(p => {
+        try { p.setData({ isDarkMode: newDark }); } catch(e) {}
+      });
+    } catch(e) {}
+    // 尝试通知 app 同步
+    const app = getApp();
+    try { app._applyDarkMode(newDark); } catch(e) {}
   }
 });

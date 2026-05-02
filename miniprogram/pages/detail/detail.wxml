@@ -1,5 +1,28 @@
-<!--详情页 - 帖子详情 + 评论-->
+<!--详情页 - 帖子详情 + 评论（含子评论/回复）-->
 <view class="page-container" wx:if="{{post}}">
+  <!-- 发布者信息（独立区块） -->
+  <view class="author-card" wx:if="{{post.authorId && post.authorId !== 'guest'}}">
+    <view class="author-left" bindtap="onAuthorTap">
+      <image
+        class="author-avatar"
+        src="{{authorAvatarError ? '/assets/images/default-avatar.png' : (post.authorAvatar || '/assets/images/default-avatar.png')}}"
+        mode="aspectFill"
+        binderror="onAuthorAvatarError"
+      />
+      <view class="author-info">
+        <text class="author-name">{{post.authorName || '爱猫同学'}}</text>
+        <text class="author-meta">{{post.createTimeStr || ''}}{{post.location ? ' · ' + post.location : ''}}</text>
+      </view>
+    </view>
+    <view
+      class="follow-btn {{isFollowing ? 'following' : ''}}"
+      bindtap="toggleFollow"
+      wx:if="{{post.authorId && post.authorId !== currentUserId}}"
+    >
+      <text>{{isFollowing ? '已关注' : '+ 关注'}}</text>
+    </view>
+  </view>
+
   <!-- 图片轮播 -->
   <swiper class="image-swiper" indicator-dots circular autoplay wx:if="{{post.images && post.images.length > 0}}">
     <swiper-item wx:for="{{post.images}}" wx:key="*this">
@@ -70,21 +93,86 @@
       <text class="action-icon">📤</text>
       <text class="action-text">分享</text>
     </button>
+    <view class="action-item" bindtap="showMoreMenu">
+        <text class="action-icon">⋯</text>
+        <text class="action-text">更多</text>
+    </view>
+  </view>
+
+  <!-- 举报弹窗 -->
+  <view class="report-overlay" wx:if="{{showReport}}" bindtap="hideReport">
+    <view class="report-modal" catchtap="">
+      <text class="report-title">举报内容</text>
+      <text class="report-subtitle">请选择举报原因</text>
+      <view class="report-reasons">
+        <view class="report-reason-item {{selectedReason === item.value ? 'selected' : ''}}" wx:for="{{reportReasons}}" wx:key="value" bindtap="selectReason" data-value="{{item.value}}">
+          <text class="reason-icon">{{item.icon}}</text>
+          <text class="reason-text">{{item.label}}</text>
+          <text class="reason-check" wx:if="{{selectedReason === item.value}}">✓</text>
+        </view>
+      </view>
+      <textarea class="report-desc" placeholder="补充说明（选填）" maxlength="200" bindinput="onReportDescInput" value="{{reportDescription}}" />
+      <view class="report-actions">
+        <view class="report-btn report-cancel-btn" bindtap="hideReport">取消</view>
+        <view class="report-btn report-submit-btn {{selectedReason ? '' : 'disabled'}}" bindtap="submitReport">提交举报</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 举报成功提示 -->
+  <view class="report-success-toast" wx:if="{{reportSuccess}}">
+    <text class="toast-icon">✅</text>
+    <text class="toast-text">举报已提交，我们会尽快处理</text>
   </view>
 
   <!-- 评论区 -->
   <view class="comment-section">
     <view class="section-title">
-      <text>💬 评论 ({{comments.length}})</text>
+      <text>💬 评论 ({{post.commentCount || comments.length}})</text>
     </view>
 
+    <!-- 评论列表：主评论 + 子评论嵌套 -->
     <view class="comment-list" wx:if="{{comments.length > 0}}">
-      <view class="comment-item" wx:for="{{comments}}" wx:key="_id">
-        <image class="comment-avatar" src="{{item.avatarError ? '/assets/images/default-avatar.png' : (item.authorAvatar || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onCommentAvatarError" data-index="{{index}}" />
-        <view class="comment-content">
-          <text class="comment-author">{{item.authorName}}</text>
+      <!-- 主评论 -->
+      <view class="comment-item {{!item.read ? 'comment-unread' : ''}}" wx:for="{{comments}}" wx:key="_id" wx:if="{{!item.parentId}}">
+        <image
+          class="comment-avatar"
+          src="{{item.avatarError ? '/assets/images/default-avatar.png' : (item.authorAvatar || '/assets/images/default-avatar.png')}}"
+          mode="aspectFill"
+          binderror="onCommentAvatarError"
+          data-index="{{index}}"
+        />
+        <view class="comment-body">
+          <view class="comment-top">
+            <text class="comment-author">{{item.authorName}}</text>
+            <text class="comment-time">{{item.timeStr || item.createTime}}</text>
+          </view>
           <text class="comment-text">{{item.content}}</text>
-          <text class="comment-time">{{item.timeStr || item.createTime}}</text>
+          <!-- 回复按钮 -->
+          <view class="comment-actions">
+            <text class="reply-btn" bindtap="onReplyComment" data-comment="{{item}}">回复</text>
+          </view>
+
+          <!-- 子评论列表 -->
+          <view class="reply-list" wx:if="{{item.replies && item.replies.length > 0}}">
+            <view class="reply-item" wx:for="{{item.replies}}" wx:key="_id" wx:for-item="reply">
+              <view class="reply-header">
+                <image
+                  class="reply-avatar"
+                  src="{{reply.avatarError ? '/assets/images/default-avatar.png' : (reply.authorAvatar || '/assets/images/default-avatar.png')}}"
+                  mode="aspectFill"
+                  binderror="onReplyAvatarError"
+                  data-index="{{index}}"
+                  data-parent="{{index}}"
+                />
+                <text class="reply-author">{{reply.authorName}}</text>
+                <text class="reply-connector" wx:if="{{reply.replyToUserName}}">回复</text>
+                <text class="reply-to" wx:if="{{reply.replyToUserName}}">@{{reply.replyToUserName}}</text>
+                <text class="comment-time">{{reply.timeStr || reply.createTime}}</text>
+              </view>
+              <text class="reply-text">{{reply.content}}</text>
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -96,16 +184,24 @@
   </view>
 
   <!-- 底部评论输入 -->
-  <view class="comment-input-bar">
-    <input
-      class="comment-input"
-      placeholder="说点什么吧..."
-      value="{{inputContent}}"
-      bindinput="onInputComment"
-      bindconfirm="submitComment"
-    />
-    <view class="send-btn" bindtap="submitComment">
-      <text>发送</text>
+  <view class="comment-input-bar" style="padding-bottom: {{isReply ? '160rpx' : '16rpx'}}">
+    <!-- 回复提示条 -->
+    <view class="reply-hint-bar" wx:if="{{isReply}}">
+      <text class="reply-hint-text">回复 @{{replyToUserName}}</text>
+      <text class="reply-cancel" bindtap="onCancelReply">取消</text>
+    </view>
+    <view class="input-row">
+      <input
+        class="comment-input"
+        placeholder="{{replyPlaceholder}}"
+        value="{{inputContent}}"
+        bindinput="onInputComment"
+        bindconfirm="submitComment"
+        focus="{{isReply}}"
+      />
+      <view class="send-btn" bindtap="submitComment">
+        <text>发送</text>
+      </view>
     </view>
   </view>
 </view>

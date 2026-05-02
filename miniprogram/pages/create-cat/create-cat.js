@@ -13,13 +13,21 @@ Page({
       personality: '',
       location: '',
       status: 'active',
-      coverImage: null
+      coverImage: null,
+      healthTags: []
     },
     coverLocalPath: null,
     // 选项
     appearanceOptions: [],
     genderOptions: [],
     statusOptions: [],
+    healthTagOptions: [
+      { label: '🦄 已绝育', value: '已绝育' },
+      { label: '💉 已驱虫', value: '已驱虫' },
+      { label: '🤰 怀孕中', value: '怀孕中' },
+      { label: '🏥 生病/受伤', value: '生病/受伤' },
+      { label: '⚠️ 需要关注', value: '需要关注' }
+    ],
     submitting: false
   },
 
@@ -53,7 +61,8 @@ Page({
           personality: cat.personality || '',
           location: cat.location || '',
           status: cat.status || 'active',
-          coverImage: cat.coverImage || null
+          coverImage: cat.coverImage || null,
+          healthTags: Array.isArray(cat.healthTags) ? cat.healthTags : []
         }
       });
       wx.hideLoading();
@@ -84,6 +93,18 @@ Page({
   onGenderTap(e) { this.setData({ 'form.gender': e.currentTarget.dataset.val }); },
 
   onStatusTap(e) { this.setData({ 'form.status': e.currentTarget.dataset.val }); },
+
+  onHealthTagTap(e) {
+    const val = e.currentTarget.dataset.val;
+    const tags = [...(this.data.form.healthTags || [])];
+    const idx = tags.indexOf(val);
+    if (idx >= 0) {
+      tags.splice(idx, 1);
+    } else {
+      tags.push(val);
+    }
+    this.setData({ 'form.healthTags': tags });
+  },
 
   async submit() {
     const { form, mode, catId, coverLocalPath } = this.data;
@@ -119,7 +140,8 @@ Page({
           personality: form.personality.trim(),
           location: form.location.trim(),
           status: form.status,
-          coverImage
+          coverImage,
+          healthTags: form.healthTags
         });
 
         wx.hideLoading();
@@ -137,7 +159,8 @@ Page({
           personality: form.personality.trim(),
           location: form.location.trim(),
           status: form.status,
-          coverImage
+          coverImage,
+          healthTags: form.healthTags
         });
 
         wx.hideLoading();

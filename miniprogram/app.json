@@ -1,4 +1,5 @@
 {
+  "darkmode": true,
   "pages": [
     "pages/index/index",
     "pages/cat-list/cat-list",
@@ -8,18 +9,20 @@
     "pages/merge-cat/merge-cat",
     "pages/publish/publish",
     "pages/detail/detail",
+    "pages/notifications/notifications",
     "pages/profile/profile",
     "pages/search/search",
     "pages/my-posts/my-posts",
     "pages/my-likes/my-likes",
     "pages/my-comments/my-comments",
     "pages/edit-profile/edit-profile",
-    "pages/my-favorites/my-favorites"
+    "pages/my-favorites/my-favorites",
+    "pages/my-follows/my-follows"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#FF9A6A",
-    "navigationBarTitleText": "🐱 校园小猫",
+    "navigationBarTitleText": "橘橘校园猫",
     "navigationBarTextStyle": "white",
     "backgroundColor": "#FFF5EB"
   },
@@ -29,32 +32,13 @@
     "backgroundColor": "#ffffff",
     "borderStyle": "white",
     "list": [
-      {
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "assets/icons/home.png",
-        "selectedIconPath": "assets/icons/home-active.png"
-      },
-      {
-        "pagePath": "pages/cat-list/cat-list",
-        "text": "发现",
-        "iconPath": "assets/icons/publish.png",
-        "selectedIconPath": "assets/icons/publish-active.png"
-      },
-      {
-        "pagePath": "pages/publish/publish",
-        "text": "发布",
-        "iconPath": "assets/icons/publish.png",
-        "selectedIconPath": "assets/icons/publish-active.png"
-      },
-      {
-        "pagePath": "pages/profile/profile",
-        "text": "我的",
-        "iconPath": "assets/icons/profile.png",
-        "selectedIconPath": "assets/icons/profile-active.png"
-      }
+      { "pagePath": "pages/index/index", "text": "首页", "iconPath": "assets/icons/home.png", "selectedIconPath": "assets/icons/home-active.png" },
+      { "pagePath": "pages/cat-list/cat-list", "text": "发现", "iconPath": "assets/icons/publish.png", "selectedIconPath": "assets/icons/publish-active.png" },
+      { "pagePath": "pages/publish/publish", "text": "发布", "iconPath": "assets/icons/publish.png", "selectedIconPath": "assets/icons/publish-active.png" },
+      { "pagePath": "pages/profile/profile", "text": "我的", "iconPath": "assets/icons/profile.png", "selectedIconPath": "assets/icons/profile-active.png" }
     ]
   },
   "sitemapLocation": "sitemap.json",
-  "cloud": true
+  "cloud": true,
+  "resizable": true
 }

@@ -2,7 +2,7 @@ App({
   globalData: {
     userInfo: null,
     baseUrl: 'https://example.com',
-    cloudEnvId: null // 云环境ID，首次启动时自动获取
+    cloudEnvId: null
   },
 
   async onLaunch() {
@@ -14,14 +14,14 @@ App({
       console.log('✅ 云开发初始化完成');
     }
 
-    // 获取用户 openid（有降级策略，不阻塞首页加载）
-    this._initOpenId();
-
-    // 检查本地存储的用户信息
-    const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
-      this.globalData.userInfo = userInfo;
+    // 检查本地存储的深色模式偏好
+    const savedDark = wx.getStorageSync('darkMode');
+    if (savedDark) {
+      this._applyDarkMode(true);
     }
+
+    // 获取用户 openid
+    this._initOpenId();
   },
 
   async _initOpenId() {
@@ -31,7 +31,6 @@ App({
         timeout: 15000
       });
       console.log('[login] 完整返回:', JSON.stringify(res));
-      // 兼容多种返回格式：openid / openId / result.data.openid
       const openid = res.result?.openid || res.result?.openId || res.result?.data?.openid || '';
       if (openid) {
         wx.setStorageSync('openId', openid);
@@ -46,7 +45,32 @@ App({
     }
   },
 
+  _watchTheme() {
+    try {
+      wx.onThemeChange((res) => {
+        this._applyDarkMode(res.theme === 'dark');
+      });
+    } catch (e) {}
+  },
+
+  _applyDarkMode(dark) {
+    try {
+      const pages = getCurrentPages();
+      for (let i = 0; i < pages.length; i++) {
+        try {
+          pages[i].setData({ isDarkMode: dark });
+        } catch (e) {}
+      }
+      if (dark) {
+        wx.setStorageSync('darkMode', true);
+      } else {
+        wx.removeStorageSync('darkMode');
+      }
+    } catch (e) {}
+  },
+
   onShow() {
+    this._watchTheme();
     console.log('小程序显示');
   },
 

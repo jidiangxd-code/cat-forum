@@ -9,7 +9,16 @@ const db = cloud.database()
  * 运行成功后可删除此云函数
  */
 exports.main = async (event, context) => {
-  const collections = ['cats_profile', 'posts', 'comments', 'votes']
+  const collections = [
+    'cats_profile',   // 猫咪档案
+    'posts',          // 帖子
+    'comments',       // 评论
+    'votes',          // 投票
+    'favorites',      // 收藏
+    'notifications',  // 通知
+    'reports',        // 举报
+    'follows'         // 关注关系
+  ]
   const results = []
 
   for (const name of collections) {

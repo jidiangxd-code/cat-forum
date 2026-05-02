@@ -1,0 +1,50 @@
+<view class="page-container">
+  <!-- 页面头部 -->
+  <view class="page-header">
+    <text class="page-title">{{type === 'following' ? '我的关注' : '我的粉丝'}}</text>
+    <text class="page-count">{{list.length > 0 ? '共 ' + list.length + ' 人' : ''}}</text>
+  </view>
+
+  <!-- 列表 -->
+  <view class="user-list" wx:if="{{list.length > 0}}">
+    <view class="user-item" wx:for="{{list}}" wx:key="id">
+      <image
+        class="user-avatar"
+        src="{{item.avatarError ? '/assets/images/default-avatar.png' : (item.avatarUrl || '/assets/images/default-avatar.png')}}"
+        mode="aspectFill"
+        binderror="onAvatarError"
+        data-index="{{index}}"
+      />
+      <view class="user-info">
+        <text class="user-name">{{item.nickName || '爱猫同学'}}</text>
+        <text class="user-id">ID: {{item.userId}}</text>
+      </view>
+      <!-- 操作按钮 -->
+      <view
+        class="follow-btn {{item.justFollowed ? 'following' : ''}}"
+        bindtap="toggleFollow"
+        data-userid="{{item.userId}}"
+        data-index="{{index}}"
+      >
+        <text wx:if="{{type === 'following'}}">已关注</text>
+        <text wx:else>{{item.justFollowed ? '已关注' : '+ 关注'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty-state" wx:if="{{!loading && list.length === 0}}">
+    <text class="empty-icon">{{type === 'following' ? '💔' : '🐱'}}</text>
+    <text class="empty-text">{{emptyText}}</text>
+  </view>
+
+  <!-- 加载中 -->
+  <view class="loading-state" wx:if="{{loading}}">
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 没有更多 -->
+  <view class="no-more" wx:if="{{!hasMore && list.length > 0}}">
+    <text class="no-more-text">— 没有更多了 —</text>
+  </view>
+</view>

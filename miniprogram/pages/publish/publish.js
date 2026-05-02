@@ -1,5 +1,12 @@
-// pages/publish/publish.js - 发帖页（强制绑猫）
+// pages/publish/publish.js - 发帖页（强制绑猫 + GPS定位）
 const api = require('../../utils/api.js');
+
+// 预设校园地点列表（可按需修改）
+const CAMPUS_LOCATIONS = [
+  '图书馆', '食堂门口', '宿舍楼下', '教学楼', '操场', '体育馆',
+  '行政楼', '实验楼', '校医院', '东门', '南门', '北门',
+  '花园', '湖边', '自习室', '快递站'
+];
 
 Page({
   data: {
@@ -18,6 +25,14 @@ Page({
       { label: '其他', value: 'other' }
     ],
     category: '',
+    // 位置
+    locationList: CAMPUS_LOCATIONS,
+    selectedLocation: '',
+    hasLocation: false,
+    locationLoading: false,
+    latitude: null,
+    longitude: null,
+    locationLabel: '',
     // 绑猫模式: null | 'pick_formal' | 'pick_unknown' | 'new_unknown'
     bindMode: null,
     // 已选猫咪
@@ -34,16 +49,119 @@ Page({
     catPickLoading: false,
     catPickKeyword: '',
     showCatPicker: false,
-    catPickMode: '',  // 'formal' | 'unknown'
+    catPickMode: '',
     // 提交状态
-    submitting: false
+    submitting: false,
+    // 预览模式
+    previewMode: false,
+    // 深色模式
+    isDarkMode: wx.getStorageSync('darkMode') || false
+  },
+
+  onShow() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
   },
 
   onLoad() {
-    this.setData({ appearanceOptions: api.APPEARANCE_OPTIONS });
+    this.setData({ appearanceOptions: api.APPEARANCE_OPTIONS, locationList: CAMPUS_LOCATIONS, isDarkMode: wx.getStorageSync('darkMode') || false });
+    this._autoGetLocation();
   },
 
-  // 选择图片
+  // ===== 位置功能 =====
+
+  /**
+   * 自动获取 GPS 位置（静默，失败不弹窗）
+   */
+  _autoGetLocation() {
+    if (!wx.getLocation) return;
+    wx.getLocation({
+      type: 'gcj02',
+      success: (res) => {
+        this.setData({
+          latitude: res.latitude,
+          longitude: res.longitude,
+          locationLabel: `${res.latitude.toFixed(4)}, ${res.longitude.toFixed(4)}`,
+          locationLoading: false
+        });
+      },
+      fail: () => {
+        this.setData({ locationLoading: false });
+      }
+    });
+  },
+
+  /**
+   * 点击标签选择校园地点
+   */
+  onLocationTap(e) {
+    const loc = e.currentTarget.dataset.loc;
+    const isSelected = this.data.selectedLocation === loc;
+    this.setData({
+      selectedLocation: isSelected ? '' : loc,
+      hasLocation: !isSelected,
+      locationLabel: isSelected ? '' : loc
+    });
+  },
+
+  /**
+   * 手动获取 GPS（点击按钮触发，含授权引导）
+   */
+  getGpsLocation() {
+    wx.getSetting({
+      success: (res) => {
+        if (!res.authSetting['scope.userLocation']) {
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success: () => { this._doGetLocation(); },
+            fail: () => {
+              wx.showToast({ title: '可从下方标签选择地点', icon: 'none', duration: 2000 });
+            }
+          });
+        } else {
+          this._doGetLocation();
+        }
+      }
+    });
+  },
+
+  _doGetLocation() {
+    this.setData({ locationLoading: true });
+    wx.getLocation({
+      type: 'gcj02',
+      success: (res) => {
+        const label = `${res.latitude.toFixed(4)}, ${res.longitude.toFixed(4)}`;
+        this.setData({
+          latitude: res.latitude,
+          longitude: res.longitude,
+          locationLabel: label,
+          selectedLocation: '',
+          hasLocation: true,
+          locationLoading: false
+        });
+        wx.showToast({ title: '定位成功', icon: 'success', duration: 1200 });
+      },
+      fail: () => {
+        this.setData({ locationLoading: false });
+        wx.showToast({ title: '获取定位失败，请手动选择地点', icon: 'none', duration: 2000 });
+      }
+    });
+  },
+
+  /**
+   * 清除位置选择
+   */
+  clearLocation() {
+    this.setData({
+      selectedLocation: '',
+      hasLocation: false,
+      locationLabel: '',
+      latitude: null,
+      longitude: null
+    });
+  },
+
+  // ===== 图片选择 =====
+
   chooseImage() {
     const remain = 9 - this.data.images.length;
     if (remain <= 0) return;
@@ -75,6 +193,7 @@ Page({
   },
 
   // ===== 绑猫模式选择 =====
+
   selectBindMode(e) {
     const mode = e.currentTarget.dataset.mode;
     this.setData({ bindMode: mode, selectedCat: null });
@@ -84,17 +203,14 @@ Page({
     } else if (mode === 'pick_unknown') {
       this._openCatPicker('unknown');
     }
-    // new_unknown 直接在页面内填写
   },
 
-  // 打开猫咪选择器
   async _openCatPicker(mode) {
     this.setData({ showCatPicker: true, catPickMode: mode, catPickLoading: true, catPickList: [] });
     try {
       const modeKey = mode === 'formal' ? 'list' : 'unknown_list';
       const res = await api.getCatProfileList({ mode: modeKey, pageSize: 50 });
       const list = (res.data && res.data.list) || [];
-      // 过滤掉 formal 模式下的 unknown 猫
       const filtered = mode === 'formal'
         ? list.filter(c => c.catType === 'formal')
         : list.filter(c => c.catType === 'unknown');
@@ -105,7 +221,6 @@ Page({
     }
   },
 
-  // 搜索猫咪
   async onPickSearch(e) {
     const kw = e.detail.value;
     this.setData({ catPickKeyword: kw });
@@ -126,7 +241,6 @@ Page({
     }
   },
 
-  // 选择某只猫
   onPickCat(e) {
     const cat = e.currentTarget.dataset.cat;
     this.setData({ selectedCat: cat, showCatPicker: false });
@@ -139,73 +253,74 @@ Page({
     }
   },
 
-  // 取消选猫，重新选择
   resetBind() {
     this.setData({ bindMode: null, selectedCat: null });
   },
 
-  // 新建未知猫：代号输入
   onCodeNameInput(e) {
     this.setData({ 'newUnknownForm.codeName': e.detail.value });
   },
 
-  // 新建未知猫：外貌选择
   onAppearanceTap(e) {
     const val = e.currentTarget.dataset.val;
     this.setData({ 'newUnknownForm.appearance': val });
   },
 
-  // 帖子分类选择
   onCategoryTap(e) {
     this.setData({ category: e.currentTarget.dataset.val });
   },
 
-  // ===== 提交 =====
-  async submitPost() {
-    // 校验图片
+  // ===== 预览功能 =====
+
+  showPreview() {
     if (this.data.images.length === 0) {
-      wx.showToast({ title: '请至少上传一张照片', icon: 'none' });
-      return;
+      wx.showToast({ title: '请先添加照片', icon: 'none' }); return;
     }
-    // 校验内容
     if (!this.data.content.trim()) {
-      wx.showToast({ title: '请填写描述内容', icon: 'none' });
-      return;
+      wx.showToast({ title: '请先填写描述', icon: 'none' }); return;
     }
-    // 校验分类
     if (!this.data.category) {
-      wx.showToast({ title: '请选择帖子分类', icon: 'none' });
-      return;
+      wx.showToast({ title: '请先选择分类', icon: 'none' }); return;
     }
-    // 校验绑猫
     if (!this.data.bindMode) {
-      wx.showToast({ title: '请选择或创建一只猫咪', icon: 'none' });
-      return;
+      wx.showToast({ title: '请先绑定猫咪', icon: 'none' }); return;
     }
     if ((this.data.bindMode === 'pick_formal' || this.data.bindMode === 'pick_unknown') && !this.data.selectedCat) {
-      wx.showToast({ title: '请从列表选择一只猫', icon: 'none' });
-      return;
+      wx.showToast({ title: '请从列表选择一只猫', icon: 'none' }); return;
     }
     if (this.data.bindMode === 'new_unknown') {
       if (!this.data.newUnknownForm.codeName.trim()) {
-        wx.showToast({ title: '请为这只猫填写代号', icon: 'none' });
-        return;
+        wx.showToast({ title: '请为这只猫填写代号', icon: 'none' }); return;
       }
       if (!this.data.newUnknownForm.appearance) {
-        wx.showToast({ title: '请选择猫咪外貌', icon: 'none' });
-        return;
+        wx.showToast({ title: '请选择猫咪外貌', icon: 'none' }); return;
       }
     }
+    this.setData({ previewMode: true });
+  },
 
+  closePreview() {
+    this.setData({ previewMode: false });
+  },
+
+  goBackToEdit() {
+    this.setData({ previewMode: false });
+  },
+
+  onPreviewImage(e) {
+    const index = e.currentTarget.dataset.index;
+    wx.previewImage({ current: this.data.images[index], urls: this.data.images });
+  },
+
+  // ===== 发布流程 =====
+
+  async confirmPublish() {
     this.setData({ submitting: true });
     wx.showLoading({ title: '发布中...', mask: true });
 
     try {
       // 1. 内容安全审核
-      const checkResult = await api.checkContent({
-        content: this.data.content.trim(),
-        images: [] // 图片上传后再审核
-      });
+      const checkResult = await api.checkContent({ content: this.data.content.trim(), images: [] });
       if (!checkResult.success) {
         wx.hideLoading();
         wx.showModal({
@@ -213,7 +328,7 @@ Page({
           content: checkResult.reason || '内容包含违规信息，请修改后重试',
           showCancel: false
         });
-        this.setData({ submitting: false });
+        this.setData({ submitting: false, previewMode: false });
         return;
       }
 
@@ -229,7 +344,7 @@ Page({
           content: imgCheckResult.reason || '图片包含违规内容，请更换后重试',
           showCancel: false
         });
-        this.setData({ submitting: false });
+        this.setData({ submitting: false, previewMode: false });
         return;
       }
 
@@ -247,13 +362,23 @@ Page({
         catId = catRes.data._id;
       }
 
-      // 5. 发布帖子
-      await api.publishPost({
+      // 5. 发布帖子（携带位置信息）
+      const postData = {
         catId,
         images: imageUrls,
         content: this.data.content.trim(),
         category: this.data.category
-      });
+      };
+      // 注入位置
+      if (this.data.selectedLocation) {
+        postData.location = this.data.selectedLocation;
+      } else if (this.data.latitude && this.data.longitude) {
+        postData.location = `${this.data.latitude.toFixed(4)}, ${this.data.longitude.toFixed(4)}`;
+      }
+      if (this.data.latitude) postData.latitude = this.data.latitude;
+      if (this.data.longitude) postData.longitude = this.data.longitude;
+
+      await api.publishPost(postData);
 
       wx.hideLoading();
       wx.showToast({ title: '发布成功 🎉', icon: 'success' });
@@ -270,5 +395,21 @@ Page({
     } finally {
       this.setData({ submitting: false });
     }
+  },
+
+  // 深色模式切换
+  toggleDarkMode() {
+    const newDark = !this.data.isDarkMode;
+    this.setData({ isDarkMode: newDark });
+    try {
+      if (newDark) wx.setStorageSync('darkMode', true);
+      else wx.removeStorageSync('darkMode');
+    } catch(e) {}
+    try {
+      const pages = getCurrentPages();
+      pages.forEach(p => { try { p.setData({ isDarkMode: newDark }); } catch(e) {} });
+    } catch(e) {}
+    try { getApp()._applyDarkMode(newDark); } catch(e) {}
   }
 });
+

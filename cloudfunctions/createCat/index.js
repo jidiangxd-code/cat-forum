@@ -47,6 +47,8 @@ exports.main = async (event, context) => {
     mergedTo: null,
     createdBy: openid,
     editLog: [],                               // 编辑日志
+    // 健康标签：['已绝育', '已驱虫', '怀孕中', '生病/受伤', '需要关注']
+    healthTags: Array.isArray(event.healthTags) ? event.healthTags : [],
     createTime: now,
     updateTime: now
   };
