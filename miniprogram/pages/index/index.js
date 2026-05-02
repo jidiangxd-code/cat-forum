@@ -10,8 +10,6 @@ Page({
     pageSize: 15,
     // 排序：'latest' 最新 | 'hot' 最热
     sortBy: 'latest',
-    // 深色模式
-    isDarkMode: wx.getStorageSync('darkMode') || false,
     // 猫咪档案缓存（catId -> cat）
     catCache: {},
     // 分类映射
@@ -26,12 +24,7 @@ Page({
   },
 
   onLoad() {
-    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     this.loadPosts(true);
-  },
-
-  onShow() {
-    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
   },
 
   onPullDownRefresh() {
@@ -157,28 +150,5 @@ Page({
     if (sort === this.data.sortBy) return;
     this.setData({ sortBy: sort, page: 1, hasMore: true, postList: [] });
     this.loadPosts(true);
-  },
-
-  // 深色模式切换
-  toggleDarkMode() {
-    const newDark = !this.data.isDarkMode;
-    this.setData({ isDarkMode: newDark });
-    try {
-      if (newDark) {
-        wx.setStorageSync('darkMode', true);
-      } else {
-        wx.removeStorageSync('darkMode');
-      }
-    } catch(e) {}
-    // 全局通知所有页面
-    try {
-      const pages = getCurrentPages();
-      pages.forEach(p => {
-        try { p.setData({ isDarkMode: newDark }); } catch(e) {}
-      });
-    } catch(e) {}
-    // 尝试通知 app 同步
-    const app = getApp();
-    try { app._applyDarkMode(newDark); } catch(e) {}
   }
 });

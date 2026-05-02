@@ -138,13 +138,6 @@
       </view>
       <text class="menu-arrow">›</text>
     </view>
-    <view class="menu-item" bindtap="toggleDarkMode">
-      <view class="menu-left">
-        <text class="menu-icon">{{isDarkMode ? '☀️' : '🌙'}}</text>
-        <text class="menu-text">{{isDarkMode ? '切换亮色模式' : '切换深色模式'}}</text>
-      </view>
-      <text class="menu-arrow">›</text>
-    </view>
     <view class="menu-item" bindtap="aboutUs">
       <view class="menu-left">
         <text class="menu-icon">ℹ️</text>

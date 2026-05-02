@@ -1,1 +1,0 @@
-[System.IO.File]::ReadAllText('C:\Users\???\Desktop\MIAOMAO\cat-forum\scripts_patch_app.py',[Text.Encoding]::UTF8)|[System.IO.File]::WriteAllText('C:\Users\???\Desktop\MIAOMAO\cat-forum\scripts_patch_app.py',[Text.Encoding]::UTF8)
