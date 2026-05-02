@@ -50,6 +50,37 @@
     </view>
   </view>
 
+  <!-- 位置标记 -->
+  <view class="section location-section">
+    <view class="section-label">
+      位置 <text class="optional">(可选)</text>
+    </view>
+    <!-- GPS 定位按钮 -->
+    <view class="location-top">
+      <button
+        class="gps-btn {{locationLoading ? 'loading' : ''}}"
+        bindtap="getGpsLocation"
+        disabled="{{locationLoading}}"
+      >
+        {{locationLoading ? '定位中...' : '📍 获取 GPS 定位'}}
+      </button>
+      <view class="location-current" wx:if="{{locationLabel}}">
+        <text class="location-label-text">{{locationLabel}}</text>
+        <text class="location-clear" bindtap="clearLocation">清除</text>
+      </view>
+    </view>
+    <!-- 校园地点标签 -->
+    <view class="location-tags">
+      <view
+        wx:for="{{locationList}}"
+        wx:key="index"
+        class="location-tag {{selectedLocation === item ? 'selected' : ''}}"
+        bindtap="onLocationTap"
+        data-loc="{{item}}"
+      >{{item}}</view>
+    </view>
+  </view>
+
   <!-- 绑猫区域 -->
   <view class="section bind-section">
     <view class="section-label">绑定猫咪 <text class="required">*</text> <text class="tip">（必须选择）</text></view>
@@ -200,9 +231,19 @@
         <text>{{content}}</text>
       </view>
 
+      <!-- 位置信息 -->
+      <view class="preview-location" wx:if="{{locationLabel}}">
+        <text class="preview-location-text">📍 {{locationLabel}}</text>
+      </view>
+
       <!-- 提示 -->
       <view class="preview-tip">
         <text>📌 这是帖子发布后的预览效果，确认无误后点击下方按钮发布</text>
+      </view>
+
+      <!-- 预览模式下的位置编辑入口 -->
+      <view class="preview-location-edit" bindtap="goBackToEdit">
+        <text>编辑位置 ›</text>
       </view>
     </view>
   </scroll-view>

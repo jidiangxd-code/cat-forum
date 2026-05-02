@@ -16,11 +16,18 @@ Page({
     page: 1,
     pageSize: 20,
     keyword: '',
-    searchMode: false
+    searchMode: false,
+    // 深色模式
+    isDarkMode: wx.getStorageSync('darkMode') || false
   },
 
   onLoad() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     this.loadList();
+  },
+
+  onShow() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
   },
 
   onPullDownRefresh() {
@@ -98,5 +105,20 @@ Page({
   // 去创建正式猫
   goCreateFormal() {
     wx.navigateTo({ url: '/pages/create-cat/create-cat?type=formal' });
+  },
+
+  // 深色模式切换
+  toggleDarkMode() {
+    const newDark = !this.data.isDarkMode;
+    this.setData({ isDarkMode: newDark });
+    try {
+      if (newDark) wx.setStorageSync('darkMode', true);
+      else wx.removeStorageSync('darkMode');
+    } catch(e) {}
+    try {
+      const pages = getCurrentPages();
+      pages.forEach(p => { try { p.setData({ isDarkMode: newDark }); } catch(e) {} });
+    } catch(e) {}
+    try { getApp()._applyDarkMode(newDark); } catch(e) {}
   }
 });

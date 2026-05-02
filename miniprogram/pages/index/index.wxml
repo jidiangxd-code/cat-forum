@@ -10,6 +10,7 @@
     <view class="banner-right">
       <view class="cat-rank-btn" bindtap="goCatList">猫咪榜 🏆</view>
       <view class="search-btn" bindtap="goSearch">🔍</view>
+      <view class="search-btn" bindtap="toggleDarkMode" style="font-size:26rpx;">{{isDarkMode ? '☀️' : '🌙'}}</view>
     </view>
   </view>
 

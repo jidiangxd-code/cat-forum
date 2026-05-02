@@ -30,25 +30,19 @@ Page({
     // 关注相关
     isFollowing: false,
     currentUserId: '',
-    authorAvatarError: false
+    authorAvatarError: false,
+    // 举报相关
+    showReport: false,
+    selectedReason: '',
+    reportDescription: '',
+    reportSuccess: false,
+    reportReasons: [
+      { value: 'abuse', label: '色情暴力', icon: '🚫' },
+      { value: 'ad', label: '广告骚扰', icon: '📢' },
+      { value: 'fake', label: '虚假信息', icon: '⚠️' },
+      { value: 'other', label: '其他', icon: '💬' }
+    ]
   },
-
-  // 关注相关
-  isFollowing: false,
-  currentUserId: '',
-  authorAvatarError: false,
-
-  // 举报相关
-  showReport: false,
-  selectedReason: '',
-  reportDescription: '',
-  reportSuccess: false,
-  reportReasons: [
-    { value: 'abuse', label: '色情暴力', icon: '🚫' },
-    { value: 'ad', label: '广告骚扰', icon: '📢' },
-    { value: 'fake', label: '虚假信息', icon: '⚠️' },
-    { value: 'other', label: '其他', icon: '💬' }
-  ],
 
   onLoad(options) {
     if (options.id) {
