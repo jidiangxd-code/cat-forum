@@ -4,7 +4,7 @@ const api = require('../../utils/api.js');
 Page({
   data: {
     postList: [],
-    loading: true,
+    loading: false,
     hasMore: true,
     page: 1,
     pageSize: 15,

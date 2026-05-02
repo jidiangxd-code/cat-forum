@@ -1,4 +1,4 @@
-﻿{
+{
   "darkmode": true,
   "pages": [
     "pages/index/index",
@@ -40,5 +40,5 @@
   },
   "sitemapLocation": "sitemap.json",
   "cloud": true,
-  "resizable": "yes"
+  "resizable": true
 }

@@ -139,9 +139,8 @@ function publishPost(params) {
  */
 function getCatPosts(catId, page = 1, pageSize = 20) {
   const db = getDB();
-  const _ = db.command;
   return db.collection('posts')
-    .where({ catId, status: _.or([_.eq('active'), _.exists(false)]) })
+    .where({ catId })
     .orderBy('createTime', 'desc')
     .skip((page - 1) * pageSize)
     .limit(pageSize)
@@ -162,16 +161,13 @@ function getPostDetail(postId) {
  */
 function getPostList(params = {}) {
   const db = getDB();
-  const _ = db.command;
   const { page = 1, pageSize = 15, sort = 'latest' } = params;
 
-  let query = db.collection('posts').where({ status: _.or([_.eq('active'), _.exists(false)]) });
+  let query = db.collection('posts');
 
   if (sort === 'hot') {
-    // 热门：按 likeCount 降序，再按评论数降序
     query = query.orderBy('likeCount', 'desc').orderBy('createTime', 'desc');
   } else {
-    // 最新：按时间降序
     query = query.orderBy('createTime', 'desc');
   }
 
@@ -475,9 +471,6 @@ function getFollowList(type, page = 1, pageSize = 20) {
 // ==================== 外貌选项 ====================
 
 const APPEARANCE_OPTIONS = [
-  '橘猫', '橘白', '狸花', '白猫', '黑猫', '黑白', '三花', '玳瑁',
-  '蓝猫', '暹罗', '折耳', '英短', '美短', '布偶', '其他'
-];
   '橘猫', '橘白', '狸花', '白猫', '黑猫', '黑白', '三花', '玳瑁',
   '蓝猫', '暹罗', '折耳', '英短', '美短', '布偶', '其他'
 ];
