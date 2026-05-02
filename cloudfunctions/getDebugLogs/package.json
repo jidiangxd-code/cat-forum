@@ -1,0 +1,1 @@
+{"name": "getDebugLogs", "version": "1.0.0", "description": "读取 debug_logs 错误日志", "main": "index.js", "dependencies": {"wx-server-sdk": "~2.6.3"}}

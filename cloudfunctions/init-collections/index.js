@@ -17,7 +17,8 @@ exports.main = async (event, context) => {
     'favorites',      // 收藏
     'notifications',  // 通知
     'reports',        // 举报
-    'follows'         // 关注关系
+    'follows',        // 关注关系
+    'debug_logs'      // 全局错误日志（自动上报）
   ]
   const results = []
 
