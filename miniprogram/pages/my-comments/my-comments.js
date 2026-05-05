@@ -26,9 +26,13 @@ Page({
       }
 
       const db = wx.cloud.database();
+      const _ = db.command;
       // 查询我的评论
       const res = await db.collection('comments')
-        .where({ authorId: openId })
+        .where({
+          authorId: openId,
+          status: _.or([_.eq('active'), _.exists(false)])
+        })
         .orderBy('createTime', 'desc')
         .get();
 

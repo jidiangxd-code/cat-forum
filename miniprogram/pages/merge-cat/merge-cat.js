@@ -1,19 +1,19 @@
 // pages/merge-cat/merge-cat.js - 标记重复猫、发起合并
-const api = require('../../utils/api.js');
+const api = require("../../utils/api.js");
 
 Page({
   data: {
-    catId: '',          // 当前（被合并的）猫
-    cat: null,          // 当前猫信息
+    catId: "", // 当前（被合并的）猫
+    cat: null, // 当前猫信息
     loading: true,
     // 选择目标猫
     targetCat: null,
     showPicker: false,
     pickList: [],
     pickLoading: false,
-    pickKeyword: '',
+    pickKeyword: "",
     // 提交
-    submitting: false
+    submitting: false,
   },
 
   onLoad(options) {
@@ -34,12 +34,17 @@ Page({
 
   // 打开目标猫选择器
   async openPicker() {
-    this.setData({ showPicker: true, pickLoading: true, pickList: [], pickKeyword: '' });
+    this.setData({
+      showPicker: true,
+      pickLoading: true,
+      pickList: [],
+      pickKeyword: "",
+    });
     try {
-      const res = await api.getCatProfileList({ mode: 'list', pageSize: 50 });
+      const res = await api.getCatProfileList({ mode: "list", pageSize: 50 });
       const all = (res.data && res.data.list) || [];
       // 排除自身
-      const filtered = all.filter(c => c._id !== this.data.catId);
+      const filtered = all.filter((c) => c._id !== this.data.catId);
       this.setData({ pickList: filtered, pickLoading: false });
     } catch (e) {
       this.setData({ pickLoading: false });
@@ -60,7 +65,7 @@ Page({
     this.setData({ pickLoading: true });
     try {
       const results = await api.searchCatProfiles(kw);
-      const filtered = results.filter(c => c._id !== this.data.catId);
+      const filtered = results.filter((c) => c._id !== this.data.catId);
       this.setData({ pickList: filtered, pickLoading: false });
     } catch (e) {
       this.setData({ pickLoading: false });
@@ -79,40 +84,41 @@ Page({
   // 确认合并
   async doMerge() {
     if (!this.data.targetCat) {
-      wx.showToast({ title: '请选择目标档案', icon: 'none' });
+      wx.showToast({ title: "请选择目标档案", icon: "none" });
       return;
     }
 
     const { cat, targetCat } = this.data;
 
     wx.showModal({
-      title: '确认合并',
+      title: "确认合并",
       content: `确认将「${cat.fullName || cat.codeName}」合并到「${targetCat.fullName || targetCat.codeName}」？\n\n合并后旧档案将隐藏，所有帖子和票数迁移到目标猫，此操作不可撤销。`,
-      confirmText: '确认合并',
-      confirmColor: '#FF7043',
+      confirmText: "确认合并",
+      confirmColor: "#FF7043",
       success: async (res) => {
         if (!res.confirm) return;
 
         this.setData({ submitting: true });
-        wx.showLoading({ title: '合并中...', mask: true });
+        wx.showLoading({ title: "合并中...", mask: true });
 
         try {
           await api.mergeCat(this.data.catId, this.data.targetCat._id);
           wx.hideLoading();
-          wx.showToast({ title: '合并成功 ✅', icon: 'success' });
+          wx.showToast({ title: "合并成功 ✅", icon: "success" });
 
           // 跳转到目标猫主页
           setTimeout(() => {
-            wx.redirectTo({ url: `/pages/cat-home/cat-home?id=${this.data.targetCat._id}` });
+            wx.redirectTo({
+              url: `/pages/cat-home/cat-home?id=${this.data.targetCat._id}`,
+            });
           }, 1500);
-
         } catch (e) {
           wx.hideLoading();
-          const msg = (e && e.message) || '合并失败';
-          wx.showToast({ title: msg, icon: 'none', duration: 2500 });
+          const msg = (e && e.message) || "合并失败";
+          wx.showToast({ title: msg, icon: "none", duration: 2500 });
           this.setData({ submitting: false });
         }
-      }
+      },
     });
-  }
+  },
 });

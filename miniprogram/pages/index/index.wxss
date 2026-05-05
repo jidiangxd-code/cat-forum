@@ -1,5 +1,8 @@
 /* pages/index/index.wxss */
 .page { background: #FFF5EB; min-height: 100vh; }
+.page.dark {
+  background: #1a1a2e;
+}
 
 /* 顶部横幅 */
 .banner {
@@ -7,15 +10,66 @@
   padding: 24rpx 28rpx;
   display: flex; align-items: center; justify-content: space-between;
 }
+.page.dark .banner {
+  background: linear-gradient(135deg, #332d5d, #2a284b);
+}
+.banner-left { display: flex; flex-direction: column; }
 .banner-title { display: block; font-size: 36rpx; font-weight: bold; color: #fff; }
 .banner-sub { display: block; font-size: 22rpx; color: rgba(255,255,255,0.8); margin-top: 4rpx; }
+.banner-right { display: flex; align-items: center; gap: 16rpx; }
 .cat-rank-btn {
   background: rgba(255,255,255,0.2); color: #fff;
   padding: 12rpx 24rpx; border-radius: 30rpx; font-size: 24rpx;
 }
+.page.dark .cat-rank-btn {
+  background: rgba(255,255,255,0.08);
+}
 .search-btn {
   font-size: 32rpx;
   padding: 12rpx 16rpx;
+}
+.page.dark .search-btn {
+  color: #e0e0e0;
+}
+
+/* 排序切换 Tab */
+.sort-tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+.page.dark .sort-tabs {
+  background: #252540;
+  border-bottom-color: #333355;
+}
+.sort-tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  color: #999;
+  position: relative;
+}
+.page.dark .sort-tab {
+  color: #707070;
+}
+.sort-tab.active {
+  color: #FF9A6A;
+  font-weight: bold;
+}
+.page.dark .sort-tab.active {
+  color: #a29bfe;
+}
+.sort-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background: #FF9A6A;
+  border-radius: 2rpx;
 }
 
 /* 帖子流 */
@@ -23,11 +77,17 @@
 .post-card {
   background: #fff; margin: 0 0 16rpx;
 }
+.page.dark .post-card {
+  background: #252540;
+}
 
 /* 猫咪头部 */
 .post-cat-header {
   display: flex; align-items: center; padding: 16rpx 24rpx;
   border-bottom: 1rpx solid #f5f5f5;
+}
+.page.dark .post-cat-header {
+  border-bottom-color: #333355;
 }
 .cat-avatar {
   width: 72rpx; height: 72rpx; border-radius: 50%; margin-right: 16rpx;
@@ -37,19 +97,29 @@
   background: #FFE0C0; display: flex; align-items: center;
   justify-content: center; font-size: 36rpx; border-radius: 50%;
 }
+.page.dark .avatar-empty {
+  background: #3a3a5c;
+}
 .cat-header-info { flex: 1; }
 .cat-header-name { display: block; font-size: 26rpx; font-weight: bold; color: #333; }
 .cat-header-meta { display: block; font-size: 20rpx; color: #999; margin-top: 2rpx; }
+.page.dark .cat-header-name { color: #e0e0e0; }
+.page.dark .cat-header-meta { color: #b0b0b0; }
 .cat-type-badge {
   padding: 4rpx 12rpx; border-radius: 12rpx; font-size: 20rpx; font-weight: bold;
 }
 .cat-type-badge.formal { background: #FF9A6A; color: #fff; }
 .cat-type-badge.unknown { background: #88BBFF; color: #fff; }
+.page.dark .cat-type-badge.formal { background: #ff9a6a; }
+.page.dark .cat-type-badge.unknown { background: #6d9cff; }
 
 /* 帖子图片 */
 .post-imgs {
   display: flex; gap: 4rpx; position: relative;
   background: #f0f0f0; max-height: 500rpx; overflow: hidden;
+}
+.page.dark .post-imgs {
+  background: #333355;
 }
 .post-img { flex: 1; height: 400rpx; min-width: 0; }
 .post-img.single { height: 480rpx; }
@@ -65,11 +135,16 @@
   display: inline-block; padding: 4rpx 16rpx; border-radius: 12rpx;
   background: #FFF0E0; color: #FF9A6A; font-size: 22rpx; margin-bottom: 8rpx;
 }
+.page.dark .post-category-tag {
+  background: #3a3a5c;
+  color: #a29bfe;
+}
 .post-text {
   font-size: 28rpx; color: #333; line-height: 1.7;
   display: -webkit-box; -webkit-box-orient: vertical;
   -webkit-line-clamp: 4; overflow: hidden;
 }
+.page.dark .post-text { color: #e0e0e0; }
 
 /* 底部 */
 .post-footer {
@@ -77,21 +152,65 @@
   padding: 0 24rpx 20rpx;
 }
 .post-time { font-size: 22rpx; color: #bbb; }
+.page.dark .post-time { color: #909090; }
+.post-actions {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+.comment-entry {
+  font-size: 26rpx;
+  color: #999;
+  padding: 8rpx 16rpx;
+}
 .like-btn { font-size: 26rpx; color: #999; padding: 8rpx 16rpx; }
 .like-btn.liked { color: #FF7043; }
+.page.dark .like-btn,
+.page.dark .comment-entry { color: #909090; }
+.page.dark .like-btn.liked { color: #ff8fab; }
 
 /* 空状态 */
 .empty {
   display: flex; flex-direction: column; align-items: center;
   padding: 120rpx 40rpx;
 }
+.page.dark .empty-text { color: #b0b0b0; }
 .empty-icon { font-size: 80rpx; margin-bottom: 20rpx; }
 .empty-text { font-size: 28rpx; color: #999; margin-bottom: 32rpx; text-align: center; }
 .empty-btn {
   background: #FF9A6A; color: #fff; padding: 20rpx 48rpx;
   border-radius: 40rpx; font-size: 28rpx;
 }
+.page.dark .empty-btn {
+  background: #6C5CE7;
+}
 
 .load-more, .no-more {
   text-align: center; padding: 30rpx; font-size: 24rpx; color: #bbb;
+}
+.page.dark .load-more, .page.dark .no-more {
+  color: #707070;
+}
+
+.ad-section {
+  margin: 24rpx;
+  padding: 20rpx 20rpx 12rpx;
+  background: #ffffff;
+  border-radius: 24rpx;
+  box-shadow: 0 6rpx 18rpx rgba(255, 154, 106, 0.12);
+}
+
+.page.dark .ad-section {
+  background: #252540;
+  box-shadow: none;
+}
+
+.ad-label {
+  font-size: 22rpx;
+  color: #b08a6a;
+  margin-bottom: 12rpx;
+}
+
+.page.dark .ad-label {
+  color: #9f9fb4;
 }

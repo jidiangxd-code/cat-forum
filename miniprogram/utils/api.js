@@ -18,12 +18,24 @@ function getOpenId() {
 // ==================== 云函数调用封装 ====================
 
 function callCloud(name, params = {}) {
-  return wx.cloud.callFunction({ name, data: params })
+  return wx.cloud.callFunction({ name, data: params, timeout: 30000 })
     .then(res => {
       if (res.result && res.result.success === false) {
         return Promise.reject(res.result);
       }
       return res.result;
+    })
+    .catch(err => {
+      const errMsg = err && (err.errMsg || err.message || '');
+      const errCode = err && (err.errCode || err.code);
+      if (errCode === -501000 || /FUNCTION_NOT_FOUND|FunctionName parameter could not be found/i.test(errMsg)) {
+        return Promise.reject({
+          ...err,
+          code: 'FUNCTION_NOT_FOUND',
+          message: `云函数 ${name} 未部署或当前云环境不可用，请先在微信开发者工具中上传并部署 ${name}`
+        });
+      }
+      return Promise.reject(err);
     });
 }
 
@@ -66,8 +78,7 @@ function getCatProfileList(params = {}) {
 }
 
 /**
- * 搜索猫咪（按名字/代号）
- * 前端分别查 fullName 和 codeName 再合并去重
+ * 搜索猫咪（模糊匹配名字、代号、外貌、地点、性格，以及相关帖子的描述/位置）
  */
 async function searchCatProfiles(keyword) {
   const db = getDB();
@@ -76,14 +87,69 @@ async function searchCatProfiles(keyword) {
   const reg = db.RegExp({ regexp: kw, options: 'i' });
   const baseQuery = { isMerged: _.neq(true) };
 
-  const [nameRes, codeRes] = await Promise.all([
+  const catQueries = [
     db.collection('cats_profile').where({ ...baseQuery, fullName: reg }).limit(20).get(),
-    db.collection('cats_profile').where({ ...baseQuery, codeName: reg }).limit(20).get()
+    db.collection('cats_profile').where({ ...baseQuery, codeName: reg }).limit(20).get(),
+    db.collection('cats_profile').where({ ...baseQuery, appearance: reg }).limit(20).get(),
+    db.collection('cats_profile').where({ ...baseQuery, location: reg }).limit(20).get(),
+    db.collection('cats_profile').where({ ...baseQuery, personality: reg }).limit(20).get()
+  ];
+
+  const postQueries = [
+    db.collection('posts').where({ status: _.or([_.eq('active'), _.exists(false)]), location: reg }).limit(30).get(),
+    db.collection('posts').where({ status: _.or([_.eq('active'), _.exists(false)]), content: reg }).limit(30).get()
+  ];
+
+  const [catResults, postResults] = await Promise.all([
+    Promise.allSettled(catQueries),
+    Promise.allSettled(postQueries)
   ]);
 
   const map = {};
-  [...(nameRes.data || []), ...(codeRes.data || [])].forEach(c => { map[c._id] = c; });
+  catResults.forEach(r => {
+    if (r.status === 'fulfilled') {
+      (r.value.data || []).forEach(c => { map[c._id] = c; });
+    }
+  });
+
+  const relatedCatIds = [];
+  postResults.forEach(r => {
+    if (r.status === 'fulfilled') {
+      (r.value.data || []).forEach(p => {
+        if (p.catId && !map[p.catId] && !relatedCatIds.includes(p.catId)) {
+          relatedCatIds.push(p.catId);
+        }
+      });
+    }
+  });
+
+  if (relatedCatIds.length > 0) {
+    const relatedRes = await db.collection('cats_profile')
+      .where({ ...baseQuery, _id: _.in(relatedCatIds.slice(0, 20)) })
+      .limit(20)
+      .get();
+    (relatedRes.data || []).forEach(c => { map[c._id] = c; });
+  }
+
   return Object.values(map);
+}
+
+/**
+ * 获取带 GPS 坐标的猫咪动态，用于猫广场轨迹/活动范围估计
+ */
+async function getCatLocationPosts(limit = 80) {
+  const db = getDB();
+  const _ = db.command;
+  return db.collection('posts')
+    .where({
+      status: _.or([_.eq('active'), _.exists(false)]),
+      latitude: _.gt(0),
+      longitude: _.gt(0)
+    })
+    .orderBy('createTime', 'desc')
+    .limit(limit)
+    .get()
+    .then(res => ({ success: true, data: res.data || [] }));
 }
 
 /**
@@ -163,10 +229,19 @@ function getPostDetail(postId) {
 function getPostList(params = {}) {
   const db = getDB();
   const _ = db.command;
-  const { page = 1, pageSize = 15 } = params;
-  return db.collection('posts')
-    .where({ status: _.or([_.eq('active'), _.exists(false)]) })
-    .orderBy('createTime', 'desc')
+  const { page = 1, pageSize = 15, sort = 'latest' } = params;
+
+  let query = db.collection('posts').where({ status: _.or([_.eq('active'), _.exists(false)]) });
+
+  if (sort === 'hot') {
+    // 热门：按 likeCount 降序，再按评论数降序
+    query = query.orderBy('likeCount', 'desc').orderBy('createTime', 'desc');
+  } else {
+    // 最新：按时间降序
+    query = query.orderBy('createTime', 'desc');
+  }
+
+  return query
     .skip((page - 1) * pageSize)
     .limit(pageSize)
     .get()
@@ -177,30 +252,41 @@ function getPostList(params = {}) {
 
 function getComments(postId) {
   const db = getDB();
+  const _ = db.command;
   return db.collection('comments')
-    .where({ postId })
+    .where({
+      postId,
+      status: _.or([_.eq('active'), _.exists(false)])
+    })
     .orderBy('createTime', 'asc')
     .get();
 }
 
+/**
+ * 添加评论（调用云函数，触发通知 + 评论数更新）
+ * @param {object} params - postId, catId, content, authorId, authorName, authorAvatar,
+ *                           parentId, replyToUserId, replyToUserName
+ */
 function addComment(params) {
-  const db = getDB();
-  return db.collection('comments').add({
-    data: {
-      postId: params.postId,
-      catId: params.catId,
-      content: params.content,
-      authorId: params.authorId,
-      authorName: params.authorName || '匿名用户',
-      authorAvatar: params.authorAvatar || '',
-      createTime: db.serverDate()
-    }
+  return callCloud('addComment', {
+    postId: params.postId || '',
+    catId: params.catId || '',
+    content: params.content,
+    authorId: params.authorId,
+    authorName: params.authorName || '匿名用户',
+    authorAvatar: params.authorAvatar || '',
+    parentId: params.parentId || '',
+    replyToUserId: params.replyToUserId || '',
+    replyToUserName: params.replyToUserName || ''
   });
 }
 
 function deleteComment(id) {
-  const db = getDB();
-  return db.collection('comments').doc(id).remove();
+  return callCloud('deleteComment', { commentId: id });
+}
+
+function deletePost(postId) {
+  return callCloud('deletePost', { postId });
 }
 
 // ==================== 点赞帖子 ====================
@@ -217,6 +303,10 @@ function togglePostLike(postId, userId, liked) {
       data: { likeCount: _.inc(-1), likedBy: _.pull(userId) }
     });
   }
+}
+
+function toggleCommentLike(commentId, liked) {
+  return callCloud('toggleCommentLike', { commentId, liked });
 }
 
 // ==================== 收藏 ====================
@@ -324,7 +414,7 @@ async function uploadImages(filePaths, folder = 'cats') {
     const timestamp = Date.now();
     const randomStr = Math.random().toString(36).substring(2, 8);
     const cloudPath = `${folder}/${timestamp}-${randomStr}.${ext}`;
-    const result = await wx.cloud.uploadFile({ cloudPath, filePath: path });
+    const result = await wx.cloud.uploadFile({ cloudPath, filePath: path, timeout: 30000 });
     return result.fileID;
   });
   return Promise.all(uploadPromises);
@@ -369,6 +459,99 @@ async function searchCats(keyword) {
   }));
 }
 
+// ==================== 举报 ====================
+
+/**
+ * 举报帖子/评论
+ * @param {object} params - postId, commentId(可选), reason(abuse/ad/fake/other), description(可选)
+ */
+function reportPost(params) {
+  const openid = getOpenId();
+  if (!openid) return Promise.reject(new Error('未登录'));
+
+  const userInfo = wx.getStorageSync('userInfo') || {};
+  return callCloud('reportPost', {
+    postId: params.postId,
+    commentId: params.commentId || '',
+    reporterId: openid,
+    reporterName: userInfo.nickName || '匿名用户',
+    reason: params.reason,
+    description: params.description || ''
+  });
+}
+
+// ==================== 通知相关 ====================
+
+/**
+ * 获取通知列表
+ * @param {number} page
+ * @param {number} pageSize
+ * @param {string} type - ''|'like_post'|'like_cat'|'comment'|'reply'|'follow'
+ */
+function getNotifications(page = 1, pageSize = 20, type = '') {
+  return callCloud('getNotifications', { page, pageSize, type });
+}
+
+/**
+ * 标记通知已读
+ * @param {string} notificationId - 通知ID（空则全部已读）
+ * @param {boolean} markAll - 是否全部标记
+ */
+function markNotificationRead(notificationId = '', markAll = false) {
+  return callCloud('markNotificationRead', { notificationId, markAll });
+}
+
+// ==================== 关注用户 ====================
+
+/**
+ * 关注/取消关注用户
+ * @param {string} toUserId - 被关注者 ID
+ * @param {boolean} follow - true=关注, false=取消
+ */
+function followUser(toUserId, follow) {
+  const openid = getOpenId();
+  if (!openid) return Promise.reject(new Error('未登录'));
+  const userInfo = wx.getStorageSync('userInfo') || {};
+  return callCloud('followUser', {
+    action: follow ? 'follow' : 'unfollow',
+    fromUserId: openid,
+    toUserId,
+    fromUserName: userInfo.nickName || '',
+    fromUserAvatar: userInfo.avatarUrl || ''
+  });
+}
+
+/**
+ * 检查当前用户是否已关注某用户
+ * @param {string} toUserId - 被检查的用户 ID
+ * @returns {boolean}
+ */
+async function isFollowing(toUserId) {
+  const openid = getOpenId();
+  if (!openid) return false;
+  const db = getDB();
+  try {
+    const res = await db.collection('follows')
+      .where({ fromUserId: openid, toUserId })
+      .count();
+    return res.total > 0;
+  } catch (e) {
+    return false;
+  }
+}
+
+/**
+ * 获取关注/粉丝列表
+ * @param {string} type - 'following'|'followers'
+ * @param {number} page
+ * @param {number} pageSize
+ */
+function getFollowList(type, page = 1, pageSize = 20) {
+  const openid = getOpenId();
+  if (!openid) return Promise.reject(new Error('未登录'));
+  return callCloud('getFollowList', { userId: openid, type, page, pageSize });
+}
+
 // ==================== 外貌选项 ====================
 
 const APPEARANCE_OPTIONS = [
@@ -396,6 +579,7 @@ module.exports = {
   getCatProfile,
   getCatProfileList,
   searchCatProfiles,
+  getCatLocationPosts,
   mergeCat,
   voteCat,
   getTodayVote,
@@ -406,12 +590,20 @@ module.exports = {
   getComments,
   addComment,
   deleteComment,
+  deletePost,
   togglePostLike,
+  toggleCommentLike,
   toggleFavorite,
   getFavoritePosts,
   uploadImages,
   searchPosts,
   searchCats,
+  reportPost,
+  getNotifications,
+  markNotificationRead,
+  followUser,
+  isFollowing,
+  getFollowList,
   APPEARANCE_OPTIONS,
   GENDER_OPTIONS,
   STATUS_OPTIONS

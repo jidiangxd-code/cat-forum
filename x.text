@@ -1,0 +1,11 @@
+### Error
+SyntaxError: Invalid left-hand side in assignment
+    at eval (eval at evaluate (:302:30), <anonymous>:2:38)
+    at UtilityScript.evaluate (<anonymous>:304:16)
+    at UtilityScript.<anonymous> (<anonymous>:1:44)
+### Page
+- Page URL: https://chatgpt.com/
+- Page Title: ChatGPT
+- Console: 7 errors, 1 warnings
+### Events
+- New console entries: .playwright-cli\console-2026-05-02T03-11-12-544Z.log#L63

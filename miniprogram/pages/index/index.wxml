@@ -1,5 +1,5 @@
 <!-- pages/index/index.wxml - 首页（帖子流）-->
-<view class="page">
+<view class="page {{isDarkMode ? 'dark' : ''}}">
 
   <!-- 顶部横幅 -->
   <view class="banner">
@@ -10,7 +10,22 @@
     <view class="banner-right">
       <view class="cat-rank-btn" bindtap="goCatList">猫咪榜 🏆</view>
       <view class="search-btn" bindtap="goSearch">🔍</view>
+      <view class="search-btn" bindtap="toggleDarkMode" style="font-size:26rpx;">{{isDarkMode ? '☀️' : '🌙'}}</view>
     </view>
+  </view>
+
+  <!-- 排序切换 Tab -->
+  <view class="sort-tabs">
+    <view
+      class="sort-tab {{sortBy === 'latest' ? 'active' : ''}}"
+      bindtap="switchSort"
+      data-sort="latest"
+    >🕐 最新</view>
+    <view
+      class="sort-tab {{sortBy === 'hot' ? 'active' : ''}}"
+      bindtap="switchSort"
+      data-sort="hot"
+    >🔥 热门</view>
   </view>
 
   <!-- 帖子流 -->
@@ -73,13 +88,18 @@
       <!-- 底部：时间 + 点赞 -->
       <view class="post-footer">
         <text class="post-time">{{item.createTimeStr}}</text>
-        <view
-          class="like-btn {{item.liked ? 'liked' : ''}}"
-          catchtap="onLike"
-          data-id="{{item._id}}"
-          data-liked="{{item.liked}}"
-        >
-          <text>{{item.liked ? '❤️' : '🤍'}} {{item.likeCount || 0}}</text>
+        <view class="post-actions">
+          <view class="comment-entry" bindtap="onPostTap" data-id="{{item._id}}">
+            <text>💬 {{item.commentCount || 0}}</text>
+          </view>
+          <view
+            class="like-btn {{item.liked ? 'liked' : ''}}"
+            catchtap="onLike"
+            data-id="{{item._id}}"
+            data-liked="{{item.liked}}"
+          >
+            <text>{{item.liked ? '❤️' : '🤍'}} {{item.likeCount || 0}}</text>
+          </view>
         </view>
       </view>
 
@@ -95,5 +115,10 @@
 
   <view class="load-more" wx:if="{{loading && postList.length > 0}}">加载中...</view>
   <view class="no-more" wx:elif="{{!hasMore && postList.length > 0}}">— 到底了 🐱 —</view>
+
+  <view class="ad-section" wx:if="{{adUnitId}}">
+    <view class="ad-label">校园公益合作推荐</view>
+    <ad unit-id="{{adUnitId}}" ad-type="banner" ad-theme="{{isDarkMode ? 'black' : 'white'}}"></ad>
+  </view>
 
 </view>

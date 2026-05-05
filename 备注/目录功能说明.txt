@@ -6,7 +6,7 @@
 
 ## 主要目录说明
 
-### 1. cloudfunctions 目录
+### 1. cloud functions 目录
 `c:\Users\郭旭东\Desktop\xiao_mao\cloudfunctions` 目录用于存放微信云开发的云函数，包含各个云函数的实现代码。
 
 云函数是在云端运行的代码，用于处理后端逻辑，如数据库操作、用户认证等。该目录下包含以下云函数：

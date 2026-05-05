@@ -1,6 +1,6 @@
 .page-container {
   min-height: 100vh;
-  background: #FFF5EB;
+  background: #fff5eb;
   padding: 40rpx 30rpx;
 }
 
@@ -33,7 +33,7 @@
   height: 160rpx;
   border-radius: 50%;
   margin-bottom: 20rpx;
-  border: 4rpx solid #FFE0CC;
+  border: 4rpx solid #ffe0cc;
 }
 
 .avatar-tip {
@@ -64,7 +64,7 @@
 .input-field {
   width: 100%;
   height: 88rpx;
-  background: #F8F9FA;
+  background: #f8f9fa;
   border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 30rpx;
@@ -78,6 +78,29 @@
   margin-top: 12rpx;
 }
 
+.gender-row {
+  display: flex;
+  gap: 16rpx;
+}
+
+.gender-chip {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx 0;
+  border-radius: 18rpx;
+  background: #f8f9fa;
+  color: #666;
+  font-size: 28rpx;
+  border: 2rpx solid #eee;
+}
+
+.gender-chip.active {
+  background: #fff0e8;
+  color: #ff7043;
+  border-color: #ff9a6a;
+  font-weight: bold;
+}
+
 /* 保存按钮 */
 .save-section {
   margin: 40rpx 0;
@@ -86,7 +109,7 @@
 .save-btn {
   width: 100%;
   height: 96rpx;
-  background: linear-gradient(135deg, #FF9500, #FFB74D);
+  background: linear-gradient(135deg, #ff9500, #ffb74d);
   color: #fff;
   font-size: 32rpx;
   font-weight: bold;

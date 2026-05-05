@@ -1,6 +1,9 @@
 .page-container {
   min-height: 100vh;
-  background-color: #FFF5EB;
+  background-color: #fff5eb;
+}
+.page-container.dark {
+  background-color: #1a1a2e;
 }
 
 /* 用户信息头部 */
@@ -11,11 +14,14 @@
 
 .header-bg {
   height: 240rpx;
-  background: linear-gradient(135deg, #FFE0CC 0%, #FFD4B8 50%, #FFC9A8 100%);
+  background: linear-gradient(135deg, #ffe0cc 0%, #ffd4b8 50%, #ffc9a8 100%);
+}
+.page-container.dark .header-bg {
+  background: linear-gradient(135deg, #332d5d 0%, #2a284b 50%, #21213b 100%);
 }
 
 .header-bg::before {
-  content: '🐾';
+  content: "🐾";
   position: absolute;
   right: 40rpx;
   top: 30rpx;
@@ -24,7 +30,7 @@
 }
 
 .header-bg::after {
-  content: '🐱';
+  content: "🐱";
   position: absolute;
   left: 30rpx;
   top: 20rpx;
@@ -43,13 +49,22 @@
   align-items: center;
   box-shadow: 0 8rpx 24rpx rgba(255, 154, 106, 0.2);
 }
+.page-container.dark .user-card,
+.page-container.dark .stats-card,
+.page-container.dark .menu-card {
+  background-color: #252540;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.25);
+}
 
 .user-avatar {
   width: 140rpx;
   height: 140rpx;
   border-radius: 50%;
-  border: 6rpx solid #FFE0CC;
+  border: 6rpx solid #ffe0cc;
   margin-bottom: 16rpx;
+}
+.page-container.dark .user-avatar {
+  border-color: #3a3a5c;
 }
 
 /* 登录相关 */
@@ -79,13 +94,23 @@
 .user-name {
   font-size: 36rpx;
   font-weight: bold;
-  color: #4A4A4A;
+  color: #4a4a4a;
   margin-bottom: 8rpx;
+}
+.page-container.dark .user-name,
+.page-container.dark .menu-text {
+  color: #e0e0e0;
 }
 
 .user-desc {
   font-size: 24rpx;
   color: #999999;
+}
+.page-container.dark .user-desc,
+.page-container.dark .stat-label,
+.page-container.dark .menu-title,
+.page-container.dark .version-info text {
+  color: #b0b0b0;
 }
 
 /* 统计数据 */
@@ -96,6 +121,9 @@
   border-radius: 20rpx;
   padding: 30rpx 0;
   box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
+}
+.page-container.dark .stats-card {
+  border: 1rpx solid #333355;
 }
 
 .stat-item {
@@ -108,7 +136,10 @@
 .stat-num {
   font-size: 40rpx;
   font-weight: bold;
-  color: #FF8C42;
+  color: #ff8c42;
+}
+.page-container.dark .stat-num {
+  color: #a29bfe;
 }
 
 .stat-label {
@@ -119,8 +150,16 @@
 
 .stat-divider {
   width: 2rpx;
-  background-color: #F0F0F0;
+  background-color: #f0f0f0;
   margin: 10rpx 0;
+}
+.page-container.dark .stat-divider {
+  background-color: #333355;
+}
+.page-container.dark .stat-divider,
+.page-container.dark .menu-item {
+  border-top-color: #333355;
+  background-color: transparent;
 }
 
 /* 菜单卡片 */
@@ -131,12 +170,18 @@
   overflow: hidden;
   box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
 }
+.page-container.dark .menu-card {
+  border: 1rpx solid #333355;
+}
 
 .menu-title {
   padding: 24rpx 30rpx 16rpx;
   font-size: 28rpx;
   font-weight: bold;
-  color: #6B4226;
+  color: #6b4226;
+}
+.page-container.dark .menu-title {
+  color: #a29bfe;
 }
 
 .menu-item {
@@ -144,11 +189,17 @@
   justify-content: space-between;
   align-items: center;
   padding: 28rpx 30rpx;
-  border-top: 1rpx solid #F5F5F5;
+  border-top: 1rpx solid #f5f5f5;
+}
+.page-container.dark .menu-item {
+  border-top-color: #333355;
 }
 
 .menu-item:active {
-  background-color: #FFF5EB;
+  background-color: #fff5eb;
+}
+.page-container.dark .menu-item:active {
+  background-color: #2a2a45;
 }
 
 .menu-left {
@@ -163,12 +214,34 @@
 
 .menu-text {
   font-size: 28rpx;
-  color: #4A4A4A;
+  color: #4a4a4a;
 }
 
 .menu-arrow {
   font-size: 36rpx;
-  color: #CCCCCC;
+  color: #cccccc;
+}
+.page-container.dark .menu-arrow {
+  color: #707070;
+}
+
+.menu-right {
+  display: flex;
+  align-items: center;
+}
+
+.menu-right .badge {
+  background: #FF4D4F;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 20rpx;
+  margin-right: 12rpx;
+  max-width: 80rpx;
+  overflow: hidden;
+}
+.page-container.dark .menu-right .badge {
+  background: #ff7675;
 }
 
 /* 版本信息 */
@@ -180,10 +253,16 @@
 .version-info text {
   display: block;
   font-size: 22rpx;
-  color: #CCCCCC;
+  color: #cccccc;
   margin-bottom: 8rpx;
+}
+.page-container.dark .version-info {
+  color: #b0b0b0;
 }
 
 .version-sub {
-  color: #FFD4B8 !important;
+  color: #ffd4b8 !important;
+}
+.page-container.dark .version-sub {
+  color: #a29bfe !important;
 }

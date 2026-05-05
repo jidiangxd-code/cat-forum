@@ -12,3 +12,11 @@ $RECYCLE.BIN/
 
 # Node.js
 node_modules/
+
+# Generated artifacts
+.playwright-cli/
+temp/playwright-chatgpt-profile/
+*.log
+*.pma
+*.db
+*.db-journal

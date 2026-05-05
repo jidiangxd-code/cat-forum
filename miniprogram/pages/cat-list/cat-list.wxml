@@ -1,5 +1,5 @@
 <!-- pages/cat-list/cat-list.wxml -->
-<view class="page">
+<view class="page {{isDarkMode ? 'dark' : ''}}">
   <!-- 头部 -->
   <view class="header">
     <view class="header-top">
@@ -34,6 +34,126 @@
   <!-- 搜索结果提示 -->
   <view class="search-tip" wx:if="{{searchMode}}">
     搜索"{{keyword}}"，找到 {{catList.length}} 只猫
+  </view>
+
+  <!-- 猫广场：基于发布帖子的 GPS 记录展示轨迹和活动范围估计 -->
+  <view class="cat-square" wx:if="{{currentTab === 'square' && !searchMode}}">
+    <view class="square-intro">
+      <view>
+        <text class="square-title">📍 猫广场</text>
+        <text class="square-desc">猫猫位置看轨迹，撸猫圈看大家的动态和评论入口。</text>
+      </view>
+      <view class="square-refresh" bindtap="loadCatSquare">刷新</view>
+    </view>
+
+    <view class="square-switch">
+      <view
+        class="square-switch-item {{squareView === 'location' ? 'active' : ''}}"
+        bindtap="onSquareViewChange"
+        data-view="location"
+      >猫猫位置</view>
+      <view
+        class="square-switch-item {{squareView === 'circle' ? 'active' : ''}}"
+        bindtap="onSquareViewChange"
+        data-view="circle"
+      >撸猫圈</view>
+    </view>
+
+    <view class="square-empty" wx:if="{{squareView === 'location' && !squareLoading && squareCats.length === 0}}">
+      <text class="empty-icon">🐾</text>
+      <text class="empty-text">还没有带 GPS 的猫咪动态</text>
+      <text class="square-desc">发布帖子时点击“获取 GPS 定位”后，这里会自动汇总。</text>
+    </view>
+
+    <view wx:if="{{squareView === 'location' && selectedSquareCat}}">
+      <map
+        class="square-map"
+        latitude="{{mapLatitude}}"
+        longitude="{{mapLongitude}}"
+        scale="18"
+        markers="{{mapMarkers}}"
+        polyline="{{mapPolyline}}"
+        circles="{{mapCircles}}"
+        show-location
+      />
+
+      <view class="prediction-card">
+        <view class="prediction-main">
+          <image
+            wx:if="{{selectedSquareCat.coverImage}}"
+            class="prediction-avatar"
+            src="{{selectedSquareCat.coverImage}}"
+            mode="aspectFill"
+          />
+          <view class="prediction-avatar prediction-avatar-empty" wx:else>🐱</view>
+          <view class="prediction-info">
+            <text class="prediction-name">{{selectedSquareCat.name}}</text>
+            <text class="prediction-meta">{{selectedSquareCat.appearance}} · {{selectedSquareCat.points.length}} 条定位记录</text>
+          </view>
+        </view>
+        <view class="prediction-range">
+          <text>活动范围估计：约 {{selectedSquareCat.prediction.radius}} 米</text>
+          <text>可信度：{{selectedSquareCat.prediction.confidenceText}}</text>
+        </view>
+      </view>
+
+      <view class="square-cat-row">
+        <scroll-view scroll-x class="square-cat-scroll">
+          <view
+            wx:for="{{squareCats}}"
+            wx:key="catId"
+            class="square-cat-chip {{selectedSquareCat.catId === item.catId ? 'active' : ''}}"
+            bindtap="onSquareCatTap"
+            data-catid="{{item.catId}}"
+          >
+            {{item.name}}
+          </view>
+        </scroll-view>
+      </view>
+
+      <view class="trace-list">
+        <view class="trace-title">最近定位记录</view>
+        <view wx:for="{{selectedSquareCat.points}}" wx:key="id" class="trace-item">
+          <view class="trace-dot"></view>
+          <view class="trace-body">
+            <text class="trace-location">{{item.location}}</text>
+            <text class="trace-time">{{item.timeText}}</text>
+            <text class="trace-content" wx:if="{{item.content}}">{{item.content}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="square-feed" wx:if="{{squareView === 'circle'}}">
+      <view class="square-feed-empty" wx:if="{{!squareLoading && squareFeed.length === 0}}">
+        <text class="empty-icon">💬</text>
+        <text class="empty-text">还没有撸猫动态</text>
+      </view>
+      <view
+        class="square-feed-card"
+        wx:for="{{squareFeed}}"
+        wx:key="_id"
+        bindtap="onSquarePostTap"
+        data-id="{{item._id}}"
+      >
+        <image
+          class="square-feed-img"
+          wx:if="{{item.images && item.images.length > 0}}"
+          src="{{item.images[0]}}"
+          mode="aspectFill"
+        />
+        <view class="square-feed-body">
+          <text class="square-feed-content">{{item.content}}</text>
+          <view class="square-feed-meta">
+            <text>{{item.location || '地点未知'}}</text>
+            <text>💬 {{item.commentCount || 0}}</text>
+            <text>❤️ {{item.likeCount || 0}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="load-more" wx:if="{{squareLoading}}">加载猫广场...</view>
   </view>
 
   <!-- 人气榜特殊样式 -->
@@ -72,7 +192,7 @@
   </view>
 
   <!-- 普通列表 -->
-  <view class="cat-grid" wx:if="{{currentTab !== 'rank_total' || searchMode}}">
+  <view class="cat-grid" wx:if="{{(currentTab !== 'rank_total' && currentTab !== 'square') || searchMode}}">
     <view
       wx:for="{{catList}}"
       wx:key="_id"
@@ -104,7 +224,7 @@
   </view>
 
   <!-- 空状态 -->
-  <view class="empty" wx:if="{{!loading && catList.length === 0}}">
+  <view class="empty" wx:if="{{!loading && currentTab !== 'square' && catList.length === 0}}">
     <text class="empty-icon">🐾</text>
     <text class="empty-text">还没有猫咪档案</text>
     <view class="empty-btn" bindtap="goCreateFormal">创建第一份正式档案</view>
