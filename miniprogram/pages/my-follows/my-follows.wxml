@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <view class="page-container">
   <!-- 页面头部 -->
   <view class="page-header">
@@ -48,3 +49,7 @@
     <text class="no-more-text">— 没有更多了 —</text>
   </view>
 </view>
+=======
+<!--pages/my-follows/my-follows.wxml-->
+<text>pages/my-follows/my-follows.wxml</text>
+>>>>>>> Stashed changes

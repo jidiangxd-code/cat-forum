@@ -9,6 +9,7 @@ const db = cloud.database()
  * 运行成功后可删除此云函数
  */
 exports.main = async (event, context) => {
+<<<<<<< Updated upstream
   const collections = [
     'cats_profile',   // 猫咪档案
     'posts',          // 帖子
@@ -20,6 +21,9 @@ exports.main = async (event, context) => {
     'follows',        // 关注关系
     'debug_logs'      // 全局错误日志（自动上报）
   ]
+=======
+  const collections = ['cats_profile', 'posts', 'comments', 'votes', 'favorites', 'follows', 'notifications', 'users', 'cats']
+>>>>>>> Stashed changes
   const results = []
 
   for (const name of collections) {

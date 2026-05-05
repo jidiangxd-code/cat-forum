@@ -48,14 +48,30 @@ exports.main = async (event, context) => {
     // ---- 兼容两种调用方式 ----
     // ① 新版：传 postId，校验 posts 集合
     if (postId) {
-      const postRes = await db.collection('posts').doc(postId).get();
+      let postRes;
+      try {
+        postRes = await db.collection('posts').doc(postId).get();
+      } catch (e) {
+        if (e.errCode === -502005) {
+          return { success: false, code: 500, message: 'posts 集合不存在，请先初始化数据库' };
+        }
+        throw e;
+      }
       if (!postRes.data || postRes.data.status !== 'active') {
         return { success: false, code: 404, message: '帖子不存在或已删除' };
       }
     }
     // ② 旧版：传 catId，校验 cats_profile 集合（向后兼容）
     else if (catId) {
-      const catRes = await db.collection('cats_profile').doc(catId).get();
+      let catRes;
+      try {
+        catRes = await db.collection('cats_profile').doc(catId).get();
+      } catch (e) {
+        if (e.errCode === -502005) {
+          return { success: false, code: 500, message: 'cats_profile 集合不存在，请先初始化数据库' };
+        }
+        throw e;
+      }
       if (!catRes.data || catRes.data.isMerged) {
         return { success: false, code: 404, message: '猫咪档案不存在或已合并' };
       }
@@ -65,7 +81,15 @@ exports.main = async (event, context) => {
 
     // 子评论校验：parentId 存在时校验父评论
     if (parentId) {
-      const parentRes = await db.collection('comments').doc(parentId).get();
+      let parentRes;
+      try {
+        parentRes = await db.collection('comments').doc(parentId).get();
+      } catch (e) {
+        if (e.errCode === -502005) {
+          return { success: false, code: 500, message: 'comments 集合不存在，请先初始化数据库' };
+        }
+        throw e;
+      }
       if (!parentRes.data) {
         return { success: false, code: 404, message: '回复的评论不存在' };
       }

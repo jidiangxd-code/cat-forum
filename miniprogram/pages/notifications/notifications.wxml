@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <view class="container">
   <!-- 顶部 Tab 筛选 -->
   <view class="tab-bar">
@@ -100,3 +101,7 @@
     <text>全部已读</text>
   </view>
 </view>
+=======
+<!--pages/notifications/notifications.wxml-->
+<text>pages/notifications/notifications.wxml</text>
+>>>>>>> Stashed changes

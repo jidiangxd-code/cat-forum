@@ -32,6 +32,16 @@ App({
 
     // 获取用户 openid
     this._initOpenId();
+<<<<<<< Updated upstream
+=======
+    // this._watchTheme(); // 暂未实现，已注释
+
+    // 检查本地存储的用户信息
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo) {
+      this.globalData.userInfo = userInfo;
+    }
+>>>>>>> Stashed changes
   },
 
   async _initOpenId() {
