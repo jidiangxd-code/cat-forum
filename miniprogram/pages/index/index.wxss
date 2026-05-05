@@ -24,27 +24,23 @@
   background: #fff; margin: 0 0 16rpx;
 }
 
-/* 猫咪头部 */
-.post-cat-header {
-  display: flex; align-items: center; padding: 16rpx 24rpx;
-  border-bottom: 1rpx solid #f5f5f5;
+/* 发布者信息 */
+.post-author {
+  display: flex; align-items: center; padding: 20rpx 24rpx 12rpx;
 }
-.cat-avatar {
-  width: 72rpx; height: 72rpx; border-radius: 50%; margin-right: 16rpx;
-  overflow: hidden; flex-shrink: 0;
+.author-avatar {
+  width: 64rpx; height: 64rpx; border-radius: 50%; margin-right: 16rpx;
+  overflow: hidden; flex-shrink: 0; background: #f0f0f0;
 }
-.avatar-empty {
-  background: #FFE0C0; display: flex; align-items: center;
-  justify-content: center; font-size: 36rpx; border-radius: 50%;
+.author-info { flex: 1; }
+.author-name { display: block; font-size: 28rpx; font-weight: 500; color: #333; }
+.post-time { font-size: 22rpx; color: #bbb; margin-top: 4rpx; }
+
+/* 分类标签 */
+.post-category-tag {
+  padding: 6rpx 16rpx; border-radius: 12rpx;
+  background: #FFF0E0; color: #FF9A6A; font-size: 22rpx;
 }
-.cat-header-info { flex: 1; }
-.cat-header-name { display: block; font-size: 26rpx; font-weight: bold; color: #333; }
-.cat-header-meta { display: block; font-size: 20rpx; color: #999; margin-top: 2rpx; }
-.cat-type-badge {
-  padding: 4rpx 12rpx; border-radius: 12rpx; font-size: 20rpx; font-weight: bold;
-}
-.cat-type-badge.formal { background: #FF9A6A; color: #fff; }
-.cat-type-badge.unknown { background: #88BBFF; color: #fff; }
 
 /* 帖子图片 */
 .post-imgs {
@@ -61,10 +57,6 @@
 
 /* 文字内容 */
 .post-content { padding: 16rpx 24rpx 12rpx; }
-.post-category-tag {
-  display: inline-block; padding: 4rpx 16rpx; border-radius: 12rpx;
-  background: #FFF0E0; color: #FF9A6A; font-size: 22rpx; margin-bottom: 8rpx;
-}
 .post-text {
   font-size: 28rpx; color: #333; line-height: 1.7;
   display: -webkit-box; -webkit-box-orient: vertical;
@@ -76,7 +68,21 @@
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 24rpx 20rpx;
 }
-.post-time { font-size: 22rpx; color: #bbb; }
+
+/* 关联猫咪标签 */
+.cat-tag {
+  display: flex; align-items: center;
+  padding: 8rpx 16rpx; border-radius: 20rpx;
+  background: #FFF5EB; border: 1rpx solid #FFE0C0;
+}
+.cat-tag.cat-empty {
+  background: #f5f5f5; border-color: #e0e0e0;
+}
+.cat-icon { font-size: 24rpx; margin-right: 8rpx; }
+.cat-name { font-size: 24rpx; color: #FF9A6A; font-weight: 500; }
+.cat-tag.cat-empty .cat-name { color: #999; }
+.cat-arrow { font-size: 24rpx; color: #FF9A6A; margin-left: 4rpx; }
+
 .like-btn { font-size: 26rpx; color: #999; padding: 8rpx 16rpx; }
 .like-btn.liked { color: #FF7043; }
 

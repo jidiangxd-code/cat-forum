@@ -37,7 +37,8 @@ Page({
   },
 
   async loadPosts(reset = false) {
-    if (this.data.loading) return;
+    if (this._loading) return;
+    this._loading = true;
     this.setData({ loading: true });
 
     try {
@@ -73,9 +74,11 @@ Page({
         page: this.data.page + 1,
         loading: false
       });
+      this._loading = false;
     } catch (e) {
       console.error('加载帖子失败', e);
       this.setData({ loading: false });
+      this._loading = false;
     }
   },
 

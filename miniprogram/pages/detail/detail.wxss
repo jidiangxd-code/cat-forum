@@ -72,130 +72,138 @@
   height: 600rpx;
 }
 
-/* 信息卡片 */
-.info-card {
+/* 发布者信息 */
+.author-section {
   margin: -40rpx 24rpx 20rpx;
-  background-color: #ffffff;
+  background: #fff;
   border-radius: 24rpx;
-  padding: 30rpx;
+  padding: 24rpx;
   box-shadow: 0 8rpx 24rpx rgba(255, 154, 106, 0.2);
   position: relative;
   z-index: 10;
 }
-
-.info-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.avatar-row {
+.author-info-row {
   display: flex;
   align-items: center;
 }
-
-.avatar {
+.author-avatar {
   width: 72rpx;
   height: 72rpx;
   border-radius: 50%;
   margin-right: 16rpx;
-  border: 3rpx solid #FFE0CC;
+  border: 3rpx solid #FFE4C4;
+  background: #f0f0f0;
 }
-
-.user-name {
+.author-details {
+  flex: 1;
+}
+.author-name {
   font-size: 30rpx;
-  font-weight: bold;
-  color: #4A4A4A;
+  font-weight: 600;
+  color: #333;
   display: block;
 }
-
-.publish-time {
+.post-time {
   font-size: 22rpx;
-  color: #999999;
-  margin-top: 6rpx;
+  color: #bbb;
+  margin-top: 4rpx;
   display: block;
 }
-
 .location-tag {
   background-color: #FFF0E0;
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
   font-size: 22rpx;
   color: #E67E22;
+  display: inline-block;
+  margin-top: 12rpx;
 }
 
-/* 猫咪名字区域 */
-.cat-name-section {
+/* 分类标签 */
+.category-section {
+  margin: 0 24rpx 20rpx;
+}
+.category-tag {
+  display: inline-block;
+  background: #FFF0E0;
+  color: #FF9A6A;
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+/* 关联猫咪卡片 */
+.cat-card {
+  margin: 0 24rpx 20rpx;
+  background: linear-gradient(135deg, #FFF5EB, #FFE8D6);
+  border-radius: 24rpx;
+  padding: 20rpx;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.15);
 }
-
+.cat-cover {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 16rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+  background: #fff;
+}
+.cat-info {
+  flex: 1;
+}
+.cat-name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 6rpx;
+}
 .cat-name {
-  font-size: 36rpx;
+  font-size: 30rpx;
   font-weight: bold;
   color: #6B4226;
 }
-
-.category-tag {
-  padding: 8rpx 24rpx;
-  border-radius: 20rpx;
-  font-size: 24rpx;
-}
-
-.category-tag.stray {
-  background-color: #E8F5E9;
-  color: #4CAF50;
-}
-
-.category-tag.pet {
-  background-color: #E3F2FD;
-  color: #2196F3;
-}
-
-.category-tag.lost {
-  background-color: #FFF3E0;
-  color: #FF9800;
-}
-
-/* 描述 */
-.description {
-  font-size: 28rpx;
-  color: #666666;
-  line-height: 1.8;
-  word-break: break-all;
-}
-
-/* 猫咪头部 */
-.cat-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16rpx;
-}
-.cat-avatar {
-  width: 72rpx; height: 72rpx; border-radius: 50%; margin-right: 16rpx;
-  overflow: hidden; flex-shrink: 0; border: 3rpx solid #FFE0CC;
-}
-.cat-header-info { flex: 1; }
-.cat-header-name { display: block; font-size: 28rpx; font-weight: bold; color: #333; }
-.cat-header-meta { display: block; font-size: 22rpx; color: #999; margin-top: 4rpx; }
 .cat-type-badge {
-  padding: 4rpx 16rpx; border-radius: 12rpx; font-size: 20rpx; font-weight: bold; margin-right: 12rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+  font-size: 20rpx;
+  font-weight: bold;
 }
 .cat-type-badge.formal { background: #FF9A6A; color: #fff; }
 .cat-type-badge.unknown { background: #88BBFF; color: #fff; }
-.cat-arrow { font-size: 32rpx; color: #ccc; }
+.cat-meta {
+  font-size: 22rpx;
+  color: #999;
+  display: block;
+  margin-top: 4rpx;
+}
+.cat-stats {
+  font-size: 22rpx;
+  color: #FF7043;
+  margin-top: 6rpx;
+}
+.cat-arrow {
+  font-size: 40rpx;
+  color: #FF9A6A;
+  margin-left: 12rpx;
+}
 
 /* 帖子内容 */
-.post-content-section { margin: 16rpx 0; }
-.post-text { font-size: 30rpx; color: #333; line-height: 1.8; word-break: break-all; }
-
-/* 帖子元信息 */
-.post-meta {
-  display: flex; align-items: center; gap: 16rpx; margin-top: 16rpx;
+.post-content-section {
+  margin: 0 24rpx 20rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
 }
-.post-time { font-size: 22rpx; color: #bbb; }
+.post-text {
+  font-size: 30rpx;
+  color: #333;
+  line-height: 1.8;
+  word-break: break-all;
+}
 
 /* 分享按钮重置 */
 .share-btn {

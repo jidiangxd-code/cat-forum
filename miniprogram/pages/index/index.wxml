@@ -17,26 +17,19 @@
   <view class="post-list">
     <view class="post-card" wx:for="{{postList}}" wx:key="_id">
 
-      <!-- 猫咪头部信息 -->
-      <view
-        class="post-cat-header"
-        bindtap="onCatTap"
-        data-catid="{{item.catId}}"
-        wx:if="{{item.cat}}"
-      >
+      <!-- 发布者信息 -->
+      <view class="post-author" bindtap="onPostTap" data-id="{{item._id}}">
         <image
-          wx:if="{{item.cat.coverImage}}"
-          class="cat-avatar"
-          src="{{item.cat.coverImage}}"
+          class="author-avatar"
+          src="{{item.authorAvatar || '/assets/images/default-avatar.png'}}"
           mode="aspectFill"
         />
-        <view class="cat-avatar avatar-empty" wx:else>🐱</view>
-        <view class="cat-header-info">
-          <text class="cat-header-name">{{item.cat.fullName || item.cat.codeName}}</text>
-          <text class="cat-header-meta">{{item.cat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{item.cat.appearance}}</text>
+        <view class="author-info">
+          <text class="author-name">{{item.authorName || '匿名用户'}}</text>
+          <text class="post-time">{{item.createTimeStr}}</text>
         </view>
-        <view class="cat-type-badge {{item.cat.catType}}">
-          {{item.cat.catType === 'formal' ? '正式' : '未知'}}
+        <view class="post-category-tag" wx:if="{{item.category}}">
+          {{categoryMap[item.category] || item.category}}
         </view>
       </view>
 
@@ -64,15 +57,28 @@
 
       <!-- 文字内容 -->
       <view class="post-content" bindtap="onPostTap" data-id="{{item._id}}">
-        <view class="post-category-tag" wx:if="{{item.category}}">
-          {{categoryMap[item.category] || item.category}}
-        </view>
         <text class="post-text">{{item.content}}</text>
       </view>
 
-      <!-- 底部：时间 + 点赞 -->
+      <!-- 底部：关联猫咪 + 点赞 -->
       <view class="post-footer">
-        <text class="post-time">{{item.createTimeStr}}</text>
+        <!-- 关联猫咪（可点击跳转） -->
+        <view
+          class="cat-tag"
+          wx:if="{{item.cat}}"
+          catchtap="onCatTap"
+          data-catid="{{item.catId}}"
+        >
+          <text class="cat-icon">🐱</text>
+          <text class="cat-name">{{item.cat.fullName || item.cat.codeName}}</text>
+          <text class="cat-arrow">›</text>
+        </view>
+        <view class="cat-tag cat-empty" wx:else>
+          <text class="cat-icon">🐱</text>
+          <text class="cat-name">未知猫咪</text>
+        </view>
+
+        <!-- 点赞 -->
         <view
           class="like-btn {{item.liked ? 'liked' : ''}}"
           catchtap="onLike"

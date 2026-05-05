@@ -53,6 +53,10 @@ Page({
     try {
       const res = await api.getPostDetail(this.data.postId);
       const post = res.data;
+      
+      // 格式化时间
+      post.createTimeStr = this._formatTime(post.createTime);
+      
       // 检查是否已收藏
       const openid = api.getOpenId();
       let favorited = false;
@@ -84,6 +88,18 @@ Page({
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
+  },
+
+  _formatTime(t) {
+    if (!t) return '';
+    const d = t instanceof Date ? t : new Date(t);
+    if (isNaN(d)) return '';
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60000) return '刚刚';
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
+    return `${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   },
 
   /**
