@@ -20,28 +20,7 @@ Page({
       adopt: '领养',
       lost: '寻猫',
       other: '其他'
-    },
-    // 子评论（回复）
-    isReply: false,
-    replyToCommentId: '',
-    replyToUserId: '',
-    replyToUserName: '',
-    replyPlaceholder: '说点什么吧...',
-    // 关注相关
-    isFollowing: false,
-    currentUserId: '',
-    authorAvatarError: false,
-    // 举报相关
-    showReport: false,
-    selectedReason: '',
-    reportDescription: '',
-    reportSuccess: false,
-    reportReasons: [
-      { value: 'abuse', label: '色情暴力', icon: '🚫' },
-      { value: 'ad', label: '广告骚扰', icon: '📢' },
-      { value: 'fake', label: '虚假信息', icon: '⚠️' },
-      { value: 'other', label: '其他', icon: '💬' }
-    ]
+    }
   },
 
   onLoad(options) {
@@ -86,22 +65,12 @@ Page({
         } catch (e) {}
       }
 
-      // 检查关注状态
-      let isFollowing = false;
-      if (openid && openid !== 'guest' && post.authorId && post.authorId !== 'guest' && post.authorId !== openid) {
-        try {
-          isFollowing = await api.isFollowing(post.authorId);
-        } catch (e) {}
-      }
-
       this.setData({
         post,
         liked: post.likedBy && post.likedBy.includes(openid),
         favorited,
         loading: false,
-        catId: post.catId || '',
-        isFollowing,
-        currentUserId: openid
+        catId: post.catId || ''
       });
 
       // 加载关联猫咪信息
@@ -132,34 +101,16 @@ Page({
   },
 
   /**
-   * 加载评论（支持子评论分组）
+   * 加载评论
    */
   async loadComments() {
     try {
       const res = await api.getComments(this.data.postId);
-      const all = (res.data || []).map(c => ({
+      const comments = (res.data || []).map(c => ({
         ...c,
-        timeStr: this._formatTime(c.createTime),
-        replies: []
+        timeStr: this._formatTime(c.createTime)
       }));
-      // 分组：把子评论挂到对应 parentId 的主评论下
-      const parents = [];
-      const replies = [];
-      all.forEach(c => {
-        if (c.parentId) {
-          replies.push(c);
-        } else {
-          parents.push(c);
-        }
-      });
-      const parentMap = {};
-      parents.forEach(p => { parentMap[p._id] = p; });
-      replies.forEach(r => {
-        if (parentMap[r.parentId]) {
-          parentMap[r.parentId].replies.push(r);
-        }
-      });
-      this.setData({ comments: parents });
+      this.setData({ comments });
     } catch (err) {
       console.error('加载评论失败', err);
     }
@@ -245,49 +196,7 @@ Page({
   },
 
   /**
-   * 子评论（回复）
-   * 弹出回复输入框，锁定被回复用户
-   */
-  onReplyComment(e) {
-    const comment = e.currentTarget.dataset.comment;
-    if (!comment) return;
-    const openid = api.getOpenId();
-    if (!openid || openid === 'guest') {
-      wx.showToast({ title: '请先登录后再回复', icon: 'none' });
-      return;
-    }
-    // 不能回复自己
-    if (comment.authorId === openid) {
-      wx.showToast({ title: '不能回复自己', icon: 'none' });
-      return;
-    }
-    this.setData({
-      isReply: true,
-      replyToCommentId: comment._id,
-      replyToUserId: comment.authorId,
-      replyToUserName: comment.authorName,
-      replyPlaceholder: `回复 @${comment.authorName}：`,
-      inputContent: ''
-    });
-  },
-
-  /**
-   * 取消回复模式
-   */
-  onCancelReply() {
-    this.setData({
-      isReply: false,
-      replyToCommentId: '',
-      replyToUserId: '',
-      replyToUserName: '',
-      replyPlaceholder: '说点什么吧...',
-      inputContent: ''
-    });
-  },
-
-  /**
    * 提交评论
-   * 支持子评论（回复功能）
    */
   async submitComment() {
     const content = this.data.inputContent.trim();
@@ -297,7 +206,6 @@ Page({
     }
 
     const userInfo = wx.getStorageSync('userInfo') || {};
-    const openid = api.getOpenId();
 
     try {
       // 内容安全审核
@@ -307,26 +215,23 @@ Page({
         return;
       }
 
-      // 调用云函数写评论（含通知 + 评论数自动+1）
       await api.addComment({
         postId: this.data.postId,
         catId: this.data.catId,
         content,
-        authorId: openid,
+        authorId: api.getOpenId(),
         authorName: userInfo.nickName || '匿名用户',
-        authorAvatar: userInfo.avatarUrl || '',
-        parentId: this.data.isReply ? this.data.replyToCommentId : '',
-        replyToUserId: this.data.isReply ? this.data.replyToUserId : '',
-        replyToUserName: this.data.isReply ? this.data.replyToUserName : ''
+        authorAvatar: userInfo.avatarUrl || ''
       });
 
-      // 云函数已自动更新 commentCount，只需重置表单 + 乐观更新UI
+      // 更新帖子的评论计数
       if (this.data.post) {
         this.setData({
           post: { ...this.data.post, commentCount: (this.data.post.commentCount || 0) + 1 }
         });
       }
-      this.setData({ inputContent: '', isReply: false, replyToCommentId: '', replyToUserId: '', replyToUserName: '', replyPlaceholder: '说点什么吧...' });
+
+      this.setData({ inputContent: '' });
       this.loadComments();
       wx.showToast({ title: '评论成功 🎉', icon: 'success' });
     } catch (err) {
@@ -372,108 +277,11 @@ Page({
   },
 
   /**
-   * 子评论头像加载失败处理
-   */
-  onReplyAvatarError(e) {
-    const index = e.currentTarget.dataset.index;
-    const parentIndex = e.currentTarget.dataset.parent;
-    const comments = [...this.data.comments];
-    if (comments[parentIndex] && comments[parentIndex].replies && comments[parentIndex].replies[index]) {
-      comments[parentIndex].replies[index].avatarError = true;
-      this.setData({ comments });
-    }
-  },
-
-  /**
    * 点击猫咪头像跳转猫咪主页
    */
   onCatTap() {
     if (this.data.catId) {
       wx.navigateTo({ url: `/pages/cat-home/cat-home?id=${this.data.catId}` });
-    }
-  },
-
-  // ==================== 关注功能 ====================
-
-  onAuthorAvatarError() {
-    this.setData({ authorAvatarError: true });
-  },
-
-  onAuthorTap() {
-    // TODO: 后续可跳转用户主页
-  },
-
-  async toggleFollow() {
-    const openid = api.getOpenId();
-    if (!openid || openid === 'guest') {
-      wx.showToast({ title: '请先登录', icon: 'none' });
-      return;
-    }
-    const authorId = this.data.post.authorId;
-    if (!authorId || authorId === openid) return;
-
-    const wasFollowing = this.data.isFollowing;
-    this.setData({ isFollowing: !wasFollowing });
-
-    try {
-      await api.followUser(authorId, !wasFollowing);
-      wx.showToast({ title: wasFollowing ? '已取消关注' : '关注成功 ✅', icon: 'none', duration: 1200 });
-    } catch (err) {
-      this.setData({ isFollowing: wasFollowing });
-      wx.showToast({ title: err.message?.includes('已关注') ? '已经关注了' : '操作失败', icon: 'none' });
-    }
-  },
-
-  // ==================== 举报功能 ====================
-
-  showMoreMenu() {
-    const openid = api.getOpenId();
-    if (!openid || openid === 'guest') {
-      wx.showToast({ title: '请先登录', icon: 'none' });
-      return;
-    }
-    this.setData({
-      showReport: true,
-      selectedReason: '',
-      reportDescription: ''
-    });
-  },
-
-  hideReport() {
-    this.setData({ showReport: false });
-  },
-
-  selectReason(e) {
-    this.setData({ selectedReason: e.currentTarget.dataset.value });
-  },
-
-  onReportDescInput(e) {
-    this.setData({ reportDescription: e.detail.value });
-  },
-
-  async submitReport() {
-    const { selectedReason, reportDescription } = this.data;
-    if (!selectedReason) {
-      wx.showToast({ title: '请选择举报原因', icon: 'none' });
-      return;
-    }
-
-    try {
-      const res = await api.reportPost({
-        postId: this.data.postId,
-        reason: selectedReason,
-        description: reportDescription
-      });
-
-      if (res.success) {
-        this.setData({ showReport: false, reportSuccess: true });
-        setTimeout(() => this.setData({ reportSuccess: false }), 3000);
-      } else {
-        wx.showToast({ title: res.error || '举报失败', icon: 'none', duration: 2500 });
-      }
-    } catch (err) {
-      console.error('举报失败', err);
-      wx.showToast({ title: '举报提交失败，请重试', icon: 'none' });
     }
   }
 });

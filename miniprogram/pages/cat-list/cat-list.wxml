@@ -4,10 +4,7 @@
   <view class="header">
     <view class="header-top">
       <text class="page-title">🔍 发现</text>
-      <view style="display:flex;align-items:center;gap:12rpx;">
-        <view class="create-btn" bindtap="goCreateFormal">+ 建正式档案</view>
-        <view class="create-btn" bindtap="toggleDarkMode" style="font-size:26rpx;">{{isDarkMode ? '☀️' : '🌙'}}</view>
-      </view>
+      <view class="create-btn" bindtap="goCreateFormal">+ 建正式档案</view>
     </view>
     <!-- 搜索栏 -->
     <view class="search-bar">

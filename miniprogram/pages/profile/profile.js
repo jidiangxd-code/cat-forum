@@ -10,24 +10,18 @@ Page({
       likeCount: 0,
       collectCount: 0,
       favCount: 0
-    },
-    unreadCount: 0,
-    // 深色模式
-    isDarkMode: wx.getStorageSync('darkMode') || false
+    }
   },
 
   onLoad() {
-    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     this.loadUserInfo();
     this.loadStats();
   },
 
   onShow() {
-    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     // 每次显示时刷新数据
     this.loadUserInfo();
     this.loadStats();
-    this.loadUnreadCount();
   },
 
   // 加载用户信息
@@ -149,42 +143,9 @@ Page({
     wx.navigateTo({ url: '/pages/my-favorites/my-favorites' });
   },
 
-  // 我的关注
-  goToMyFollows() {
-    wx.navigateTo({ url: '/pages/my-follows/my-follows?type=following' });
-  },
-
-  // 我的粉丝
-  goToMyFollowers() {
-    wx.navigateTo({ url: '/pages/my-follows/my-follows?type=followers' });
-  },
-
-  // 消息通知
-  goToNotifications() {
-    wx.navigateTo({ url: '/pages/notifications/notifications' });
-  },
-
-  // 加载未读通知数
+  // 编辑资料
   editProfile() {
     wx.navigateTo({ url: '/pages/edit-profile/edit-profile' });
-  },
-
-  // 加载未读通知数
-  async loadUnreadCount() {
-    if (!this.data.isLoggedIn) {
-      this.setData({ unreadCount: 0 });
-      return;
-    }
-    try {
-      const res = await wx.cloud.callFunction({
-        name: 'getNotifications',
-        data: { page: 1, pageSize: 1 }
-      });
-      if (res.result && res.result.success) {
-        const count = res.result.data.unreadCount || 0;
-        this.setData({ unreadCount: count });
-      }
-    } catch (e) {}
   },
 
   // 清除缓存
@@ -212,20 +173,5 @@ Page({
       content: '🐱 校园小猫论坛 v1.0.0\n\n用爱守护每一只校园小猫\n\n这是一个温暖的社区，让我们一起关爱校园里的流浪小猫，分享每一只可爱小猫的故事~',
       showCancel: false
     });
-  },
-
-  // 深色模式切换
-  toggleDarkMode() {
-    const newDark = !this.data.isDarkMode;
-    this.setData({ isDarkMode: newDark });
-    try {
-      if (newDark) wx.setStorageSync('darkMode', true);
-      else wx.removeStorageSync('darkMode');
-    } catch(e) {}
-    try {
-      const pages = getCurrentPages();
-      pages.forEach(p => { try { p.setData({ isDarkMode: newDark }); } catch(e) {} });
-    } catch(e) {}
-    try { getApp()._applyDarkMode(newDark); } catch(e) {}
   }
 });
