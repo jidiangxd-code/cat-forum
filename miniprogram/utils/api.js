@@ -297,7 +297,31 @@ async function searchCatProfiles(keyword) {
     (relatedRes.data || []).forEach(c => { map[c._id] = c; });
   }
 
-  return Object.values(map);
+  const candidates = Object.values(map).filter(cat => cat.discoveryVisible !== false);
+  if (candidates.length === 0) {
+    return [];
+  }
+
+  const visibleCatIds = new Set();
+  const candidateIds = candidates.map(cat => cat._id).filter(Boolean);
+  for (let i = 0; i < candidateIds.length; i += 20) {
+    const chunk = candidateIds.slice(i, i + 20);
+    const postRes = await db.collection('posts')
+      .where({
+        catId: _.in(chunk),
+        status: _.or([_.eq('active'), _.exists(false)])
+      })
+      .field({ catId: true })
+      .get();
+
+    (postRes.data || []).forEach(post => {
+      if (post && post.catId) {
+        visibleCatIds.add(post.catId);
+      }
+    });
+  }
+
+  return candidates.filter(cat => visibleCatIds.has(cat._id));
 }
 
 /**
@@ -503,16 +527,35 @@ async function deletePost(postId) {
         .limit(100)
         .get();
 
-      await Promise.all((commentRes.data || []).map(comment =>
-        db.collection('comments').doc(comment._id).update({
-          data: {
-            status: 'deleted',
-            updateTime
-          }
-        }).catch(() => null)
-      ));
+        await Promise.all((commentRes.data || []).map(comment =>
+          db.collection('comments').doc(comment._id).update({
+            data: {
+              status: 'deleted',
+              updateTime
+            }
+          }).catch(() => null)
+        ));
 
-      return { success: true, code: 200, message: '删除成功', source: 'local-fallback' };
+        if (post.catId) {
+          const activePostRes = await db.collection('posts')
+            .where({
+              catId: post.catId,
+              status: _.or([_.eq('active'), _.exists(false)])
+            })
+            .limit(1)
+            .get();
+
+          if (!Array.isArray(activePostRes.data) || activePostRes.data.length === 0) {
+            await db.collection('cats_profile').doc(post.catId).update({
+              data: {
+                discoveryVisible: false,
+                updateTime
+              }
+            }).catch(() => null);
+          }
+        }
+
+        return { success: true, code: 200, message: '删除成功', source: 'local-fallback' };
     } catch (fallbackErr) {
       if (isPermissionDeniedError(fallbackErr)) {
         throw new Error('当前删除链路需要重新部署 deletePost 云函数，或放开数据库权限后才能完成兜底删除');

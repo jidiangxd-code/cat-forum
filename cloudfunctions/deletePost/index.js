@@ -64,6 +64,25 @@ exports.main = async (event) => {
       })
     ));
 
+    if (post.catId) {
+      const activePostRes = await db.collection('posts')
+        .where({
+          catId: post.catId,
+          status: _.or([_.eq('active'), _.exists(false)])
+        })
+        .limit(1)
+        .get();
+
+      if (!Array.isArray(activePostRes.data) || activePostRes.data.length === 0) {
+        await db.collection('cats_profile').doc(post.catId).update({
+          data: {
+            discoveryVisible: false,
+            updateTime: new Date()
+          }
+        }).catch(() => null);
+      }
+    }
+
     return { success: true, code: 200, message: '删除成功' };
   } catch (err) {
     if (err.errCode === -502001) {

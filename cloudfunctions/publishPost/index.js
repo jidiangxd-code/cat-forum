@@ -64,16 +64,18 @@ exports.main = async (event, context) => {
       }
     });
 
-    // 如果该猫没有封面图，自动设置第一张图为封面
-    if (!cat.coverImage && images[0]) {
+      // 如果该猫没有封面图，自动设置第一张图为封面
+      const catUpdateData = { updateTime: now, discoveryVisible: true };
+      if (!cat.coverImage && images[0]) {
+        catUpdateData.coverImage = images[0];
+      }
       await db.collection('cats_profile').doc(catId).update({
-        data: { coverImage: images[0], updateTime: now }
+        data: catUpdateData
       });
-    }
 
-    return {
-      success: true,
-      code: 200,
+      return {
+        success: true,
+        code: 200,
       data: { _id: result._id },
       message: '发布成功 🎉'
     };
