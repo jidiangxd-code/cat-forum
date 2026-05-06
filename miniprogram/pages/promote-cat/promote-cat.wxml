@@ -128,6 +128,7 @@
 
 </view>
 
+<!-- 状态区域：反馈当前数据加载进度。 -->
 <view class="loading-page" wx:if="{{loading}}">
   <text>加载中...</text>
 </view>

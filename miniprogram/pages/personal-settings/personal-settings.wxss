@@ -1,0 +1,130 @@
+/* miniprogram/pages/personal-settings/personal-settings.wxss - 个人设置页样式 */
+.page {
+  min-height: 100vh;
+  background: #fff5eb;
+  padding-bottom: 40rpx;
+}
+
+.page.dark {
+  background: #1a1a2e;
+}
+
+.header {
+  padding: 40rpx 32rpx 24rpx;
+}
+
+.title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #333;
+}
+
+.page.dark .title {
+  color: #f1f1ff;
+}
+
+.subtitle {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.page.dark .subtitle {
+  color: #9a9abc;
+}
+
+.setting-card {
+  margin: 0 30rpx;
+  padding: 24rpx;
+  border-radius: 24rpx;
+  background: #fff;
+  box-shadow: 0 4rpx 16rpx rgba(255, 154, 106, 0.1);
+}
+
+.page.dark .setting-card {
+  background: #252540;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.25);
+}
+
+.setting-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #6b4226;
+  margin-bottom: 18rpx;
+}
+
+.page.dark .setting-title {
+  color: #a29bfe;
+}
+
+.setting-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 0 8rpx;
+}
+
+.setting-left {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.setting-icon {
+  font-size: 40rpx;
+  margin-right: 18rpx;
+}
+
+.setting-texts {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.setting-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.page.dark .setting-name {
+  color: #f1f1ff;
+}
+
+.setting-desc {
+  margin-top: 6rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.page.dark .setting-desc {
+  color: #9a9abc;
+}
+
+.theme-switch {
+  width: 86rpx;
+  height: 48rpx;
+  border-radius: 999rpx;
+  background: #d9d9d9;
+  padding: 4rpx;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.theme-switch.on {
+  background: linear-gradient(135deg, #5f5cff, #a29bfe);
+  justify-content: flex-end;
+}
+
+.theme-thumb {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.18);
+}

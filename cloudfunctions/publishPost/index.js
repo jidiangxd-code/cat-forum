@@ -3,6 +3,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 校验发帖内容并写入新的帖子记录。
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
@@ -13,6 +14,8 @@ exports.main = async (event, context) => {
     images = [],    // 图片 fileID 数组
     content = '',   // 帖子描述
     category = 'daily', // 帖子分类：daily/rescue/neuter/adopt/lost/other
+    authorName = '匿名用户',
+    authorAvatar = ''
   } = event;
 
   // 强制绑猫校验
@@ -50,6 +53,8 @@ exports.main = async (event, context) => {
         content: content.trim(),
         category,
         authorId: openid,
+        authorName: String(authorName || '匿名用户').trim() || '匿名用户',
+        authorAvatar: String(authorAvatar || '').trim(),
         likeCount: 0,
         likedBy: [],
         commentCount: 0,

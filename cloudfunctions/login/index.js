@@ -3,6 +3,7 @@ const cloud = require("wx-server-sdk");
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 
+// 返回当前用户的 openid、appid 和 unionid。
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;

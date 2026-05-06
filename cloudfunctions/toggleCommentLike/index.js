@@ -1,9 +1,11 @@
+// 云函数：toggleCommentLike - 切换评论点赞状态并返回最新结果。
 const cloud = require('wx-server-sdk');
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+// 切换评论点赞状态并返回最新结果。
 exports.main = async (event) => {
   const { commentId, liked } = event;
   if (typeof commentId !== 'string' || !commentId.trim()) {
@@ -21,6 +23,9 @@ exports.main = async (event) => {
     const comment = commentRes.data;
     if (!comment || comment.status === 'deleted') {
       return { success: false, code: 404, message: '评论不存在' };
+    }
+    if (comment.authorId && comment.authorId === openid) {
+      return { success: false, code: 400, message: '不能给自己的评论点赞' };
     }
 
     const likedBy = comment.likedBy || [];

@@ -1,3 +1,4 @@
+/* miniprogram/pages/edit-profile/edit-profile.wxss - 个人资料编辑页面样式 */
 .page-container {
   min-height: 100vh;
   background: #fff5eb;
@@ -13,6 +14,7 @@
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
+/* 通用内容卡片与分区样式。 */
 .section-label {
   font-size: 28rpx;
   color: #666;
@@ -20,6 +22,7 @@
   font-weight: 500;
 }
 
+/* 头像容器与兜底展示样式。 */
 .avatar-editor {
   display: flex;
   align-items: center;
@@ -61,6 +64,7 @@
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
 }
 
+/* 输入控件与编辑态样式。 */
 .input-field {
   width: 100%;
   height: 88rpx;

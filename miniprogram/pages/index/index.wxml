@@ -1,20 +1,21 @@
-<!-- pages/index/index.wxml - 首页（帖子流）-->
+<!-- pages/index/index.wxml - 首页（帖子流） -->
 <view class="page {{isDarkMode ? 'dark' : ''}}">
-
-  <!-- 顶部横幅 -->
+  <!-- 顶部横幅区：展示品牌标题、榜单入口、搜索入口和主题开关。 -->
   <view class="banner">
+    <!-- 横幅区域：承载品牌信息和快捷入口。 -->
     <view class="banner-left">
       <text class="banner-title">🐾 校园小猫</text>
       <text class="banner-sub">发现每一只可爱的猫咪</text>
     </view>
+    <!-- 横幅区域：承载品牌信息和快捷入口。 -->
     <view class="banner-right">
-      <view class="cat-rank-btn" bindtap="goCatList">猫咪榜 🏆</view>
+      <view class="cat-rank-btn" bindtap="goCatList">猫咪榜</view>
       <view class="search-btn" bindtap="goSearch">🔍</view>
       <view class="search-btn" bindtap="toggleDarkMode" style="font-size:26rpx;">{{isDarkMode ? '☀️' : '🌙'}}</view>
     </view>
   </view>
 
-  <!-- 排序切换 Tab -->
+  <!-- 排序切换区：允许用户在最新和热门两个信息流维度间切换。 -->
   <view class="sort-tabs">
     <view
       class="sort-tab {{sortBy === 'latest' ? 'active' : ''}}"
@@ -28,34 +29,49 @@
     >🔥 热门</view>
   </view>
 
-  <!-- 帖子流 -->
+  <!-- 帖子列表区：每张卡片都包含作者、猫咪档案、正文和互动入口。 -->
   <view class="post-list">
+    <!-- 帖子区域：展示帖子内容、图片与互动入口。 -->
     <view class="post-card" wx:for="{{postList}}" wx:key="_id">
+      <view class="post-author" bindtap="onPostTap" data-id="{{item._id}}">
+        <image
+          class="author-avatar"
+          src="{{item.authorAvatar || '/assets/images/default-avatar.png'}}"
+          mode="aspectFill"
+        />
+        <view class="author-main">
+          <text class="author-name">{{item.authorName || '匿名用户'}}</text>
+          <text class="author-meta">{{item.createTimeStr}}{{item.location ? ' · ' + item.location : ''}}</text>
+        </view>
+        <view class="post-category-tag" wx:if="{{item.category}}">
+          {{categoryMap[item.category] || item.category}}
+        </view>
+      </view>
 
-      <!-- 猫咪头部信息 -->
       <view
-        class="post-cat-header"
-        bindtap="onCatTap"
+        class="post-cat-header {{item.cat ? '' : 'cat-missing'}}"
+        catchtap="onCatTap"
         data-catid="{{item.catId}}"
-        wx:if="{{item.cat}}"
       >
         <image
-          wx:if="{{item.cat.coverImage}}"
+          wx:if="{{item.cat && item.cat.coverImage}}"
           class="cat-avatar"
           src="{{item.cat.coverImage}}"
           mode="aspectFill"
         />
         <view class="cat-avatar avatar-empty" wx:else>🐱</view>
         <view class="cat-header-info">
-          <text class="cat-header-name">{{item.cat.fullName || item.cat.codeName}}</text>
-          <text class="cat-header-meta">{{item.cat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{item.cat.appearance}}</text>
+          <text class="cat-header-name">{{item.cat ? (item.cat.fullName || item.cat.codeName) : '未知猫咪'}}</text>
+          <text class="cat-header-meta" wx:if="{{item.cat}}">
+            {{item.cat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{item.cat.appearance || '外貌未知'}}
+          </text>
+          <text class="cat-header-meta" wx:else>猫咪档案待补充</text>
         </view>
-        <view class="cat-type-badge {{item.cat.catType}}">
-          {{item.cat.catType === 'formal' ? '正式' : '未知'}}
+        <view class="cat-type-badge {{item.cat && item.cat.catType ? item.cat.catType : 'unknown'}}">
+          {{item.cat ? (item.cat.catType === 'formal' ? '正式' : '未知') : '待补'}}
         </view>
       </view>
 
-      <!-- 图片组 -->
       <view
         class="post-imgs"
         wx:if="{{item.images && item.images.length > 0}}"
@@ -77,15 +93,10 @@
         <view class="img-more-badge" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
       </view>
 
-      <!-- 文字内容 -->
       <view class="post-content" bindtap="onPostTap" data-id="{{item._id}}">
-        <view class="post-category-tag" wx:if="{{item.category}}">
-          {{categoryMap[item.category] || item.category}}
-        </view>
         <text class="post-text">{{item.content}}</text>
       </view>
 
-      <!-- 底部：时间 + 点赞 -->
       <view class="post-footer">
         <text class="post-time">{{item.createTimeStr}}</text>
         <view class="post-actions">
@@ -102,23 +113,24 @@
           </view>
         </view>
       </view>
-
     </view>
   </view>
 
-  <!-- 空状态 -->
+  <!-- 空状态区：没有内容时引导用户去发布第一条帖子。 -->
   <view class="empty" wx:if="{{!loading && postList.length === 0}}">
     <text class="empty-icon">🐾</text>
     <text class="empty-text">还没有帖子，快去发布第一只猫咪吧！</text>
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-btn" bindtap="goPublish">去发布</view>
   </view>
 
+  <!-- 列表底部状态：根据分页进度显示加载中或到底提示。 -->
   <view class="load-more" wx:if="{{loading && postList.length > 0}}">加载中...</view>
-  <view class="no-more" wx:elif="{{!hasMore && postList.length > 0}}">— 到底了 🐱 —</view>
+  <view class="no-more" wx:elif="{{!hasMore && postList.length > 0}}">到底了</view>
 
+  <!-- 广告位区：仅在拿到广告单元 ID 后渲染 banner。 -->
   <view class="ad-section" wx:if="{{adUnitId}}">
     <view class="ad-label">校园公益合作推荐</view>
     <ad unit-id="{{adUnitId}}" ad-type="banner" ad-theme="{{isDarkMode ? 'black' : 'white'}}"></ad>
   </view>
-
 </view>

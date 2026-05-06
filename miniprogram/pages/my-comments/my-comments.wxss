@@ -1,7 +1,11 @@
+/* miniprogram/pages/my-comments/my-comments.wxss - 我的评论页面样式 */
 .page-container {
   min-height: 100vh;
   background: #fff5eb;
   padding-bottom: 40rpx;
+}
+.page-container.dark {
+  background: #1a1a2e;
 }
 
 /* 加载状态 */
@@ -13,6 +17,7 @@
   padding: 200rpx 0;
 }
 
+/* 加载提示与状态反馈样式。 */
 .loading-icon {
   font-size: 80rpx;
   animation: bounce 1s infinite;
@@ -24,6 +29,7 @@
   font-size: 28rpx;
 }
 
+/* 动效关键帧定义。 */
 @keyframes bounce {
   0%,
   100% {
@@ -42,6 +48,7 @@
   padding: 120rpx 60rpx;
 }
 
+/* 空状态提示与占位样式。 */
 .empty-icon {
   font-size: 120rpx;
   margin-bottom: 30rpx;
@@ -53,11 +60,22 @@
   color: #333;
   margin-bottom: 16rpx;
 }
+.page-container.dark .empty-title,
+.page-container.dark .cat-name {
+  color: #f1f1ff;
+}
 
 .empty-desc {
   font-size: 28rpx;
   color: #999;
   margin-bottom: 50rpx;
+}
+.page-container.dark .empty-desc,
+.page-container.dark .loading-text,
+.page-container.dark .cat-hint,
+.page-container.dark .comment-time,
+.page-container.dark .delete-text {
+  color: #9a9abc;
 }
 
 .empty-btn {
@@ -73,12 +91,17 @@
   padding: 0 30rpx;
 }
 
+/* 评论区与回复区样式。 */
 .comment-card {
   background: #fff;
   border-radius: 24rpx;
   margin-bottom: 24rpx;
   overflow: hidden;
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+.page-container.dark .comment-card {
+  background: #252540;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.25);
 }
 
 /* 猫咪信息区域 */
@@ -89,7 +112,12 @@
   background: #fff8f0;
   border-bottom: 1rpx solid #f0e6d8;
 }
+.page-container.dark .cat-info {
+  background: #2c2c4a;
+  border-bottom-color: #333355;
+}
 
+/* 猫咪资料、头像和标签样式。 */
 .cat-cover {
   width: 80rpx;
   height: 80rpx;
@@ -121,11 +149,91 @@
   color: #ccc;
 }
 
+/* 关联帖子摘要区：帮助用户看清自己评论的是哪条帖子。 */
+.post-ref {
+  margin: 20rpx 24rpx 0;
+  padding: 20rpx;
+  border-radius: 18rpx;
+  background: #fff7ef;
+}
+
+.page-container.dark .post-ref {
+  background: #303052;
+}
+
+.post-ref-head,
+.post-ref-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.post-ref-title {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #5a463b;
+}
+
+.post-ref-arrow,
+.post-ref-location {
+  font-size: 22rpx;
+  color: #9b8b84;
+}
+
+.post-ref-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 14rpx;
+  border-radius: 999rpx;
+  background: #ffe9d6;
+  color: #ff8c42;
+  font-size: 20rpx;
+}
+
+.post-ref-meta {
+  justify-content: flex-start;
+  margin-top: 10rpx;
+  flex-wrap: wrap;
+}
+
+.post-ref-content {
+  margin-top: 14rpx;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #5f4c40;
+}
+
+.page-container.dark .post-ref-title {
+  color: #f1f1ff;
+}
+
+.page-container.dark .post-ref-arrow,
+.page-container.dark .post-ref-location,
+.page-container.dark .cat-arrow {
+  color: #9a9abc;
+}
+
+.page-container.dark .post-ref-tag {
+  background: #3a3d60;
+  color: #ffd27a;
+}
+
+.page-container.dark .post-ref-content,
+.page-container.dark .comment-text {
+  color: #f1f1ff;
+}
+
 /* 评论内容区域 */
 .comment-content {
   padding: 24rpx;
 }
 
+.page-container.dark .comment-content {
+  background: transparent;
+}
+
+/* 评论区与回复区样式。 */
 .comment-text {
   font-size: 28rpx;
   color: #333;
@@ -149,6 +257,9 @@
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
   background: #fff0f0;
+}
+.page-container.dark .comment-delete {
+  background: #3a2c3c;
 }
 
 .delete-text {

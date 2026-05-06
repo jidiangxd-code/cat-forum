@@ -1,0 +1,23 @@
+<!-- 个人设置页：只放与个人相关的基础偏好项 -->
+<view class="page {{isDarkMode ? 'dark' : ''}}">
+  <view class="header">
+    <text class="title">个人设置</text>
+    <text class="subtitle">调整你自己的使用偏好</text>
+  </view>
+
+  <view class="setting-card">
+    <view class="setting-title">我的主题</view>
+    <view class="setting-item" bindtap="toggleTheme">
+      <view class="setting-left">
+        <text class="setting-icon">{{isDarkMode ? '🌙' : '☀️'}}</text>
+        <view class="setting-texts">
+          <text class="setting-name">白天 / 夜晚</text>
+          <text class="setting-desc">{{isDarkMode ? '当前是夜晚模式' : '当前是白天模式'}}</text>
+        </view>
+      </view>
+      <view class="theme-switch {{isDarkMode ? 'on' : ''}}">
+        <view class="theme-thumb"></view>
+      </view>
+    </view>
+  </view>
+</view>

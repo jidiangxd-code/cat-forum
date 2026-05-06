@@ -13,6 +13,7 @@
   padding: 16rpx 24rpx 24rpx;
 }
 
+/* 搜索控件与输入区域样式。 */
 .search-input-wrap {
   display: flex;
   align-items: center;
@@ -49,6 +50,7 @@
   border-bottom: 1rpx solid #f0f0f0;
 }
 
+/* 标签项与激活态样式。 */
 .tab-item {
   flex: 1;
   text-align: center;
@@ -133,6 +135,7 @@
   box-shadow: 0 2rpx 8rpx rgba(255, 154, 106, 0.08);
 }
 
+/* 猫咪资料、头像和标签样式。 */
 .cat-avatar {
   width: 100rpx;
   height: 100rpx;
@@ -143,11 +146,13 @@
   background: #FFE0C0;
 }
 
+/* 图片展示、占位和裁切样式。 */
 .cat-avatar image {
   width: 100%;
   height: 100%;
 }
 
+/* 猫咪资料、头像和标签样式。 */
 .cat-info {
   flex: 1;
   min-width: 0;
@@ -188,6 +193,7 @@
   box-shadow: 0 2rpx 8rpx rgba(255, 154, 106, 0.08);
 }
 
+/* 帖子内容、图片和互动区样式。 */
 .post-header {
   display: flex;
   align-items: center;
@@ -235,6 +241,7 @@
   padding: 120rpx 40rpx;
 }
 
+/* 空状态提示与占位样式。 */
 .empty-icon {
   font-size: 80rpx;
   margin-bottom: 20rpx;

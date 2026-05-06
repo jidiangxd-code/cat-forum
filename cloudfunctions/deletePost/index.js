@@ -1,9 +1,29 @@
+// 云函数：deletePost - 删除帖子并回收关联统计状态。
 const cloud = require('wx-server-sdk');
 
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+function resolveOwnerId(post = {}) {
+  return post.authorId || post.createdBy || post.openid || post.openId || post.userOpenid || '';
+}
+
+function getOwnerCandidateIds(post = {}) {
+  return [...new Set(
+    [
+      post.authorId,
+      post.createdBy,
+      post.openid,
+      post.openId,
+      post.userOpenid
+    ]
+      .map(value => (typeof value === 'string' ? value.trim() : ''))
+      .filter(Boolean)
+  )];
+}
+
+// 删除帖子并回收关联统计状态。
 exports.main = async (event) => {
   const { postId } = event;
   if (typeof postId !== 'string' || !postId.trim()) {
@@ -22,7 +42,7 @@ exports.main = async (event) => {
     if (!post) {
       return { success: false, code: 404, message: '帖子不存在' };
     }
-    if (post.authorId !== openid) {
+    if (!getOwnerCandidateIds(post).includes(String(openid).trim())) {
       return { success: false, code: 403, message: '无权删除他人帖子' };
     }
 

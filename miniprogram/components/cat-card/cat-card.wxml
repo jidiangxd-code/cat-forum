@@ -1,6 +1,6 @@
-<!--猫咪卡片组件-->
+<!-- 猫咪卡片组件：展示封面、摘要和基础互动数据 -->
 <view class="cat-card" bind:tap="onCardTap">
-  <!-- 图片区域 -->
+  <!-- 图片区：展示封面图、遮罩和地点标签 -->
   <view class="card-image-wrapper">
     <image
       class="card-image"
@@ -15,7 +15,7 @@
     </view>
   </view>
 
-  <!-- 信息区域 -->
+  <!-- 信息区：展示标题、摘要和互动统计 -->
   <view class="card-info">
     <!-- 标题行 -->
     <view class="card-header">
@@ -28,7 +28,7 @@
     <!-- 描述 -->
     <text class="card-desc">{{catItem.description}}</text>
 
-    <!-- 底部操作栏 -->
+    <!-- 底部互动栏：点赞、评论数和发布时间都放在这里 -->
     <view class="card-footer">
       <view class="footer-left">
         <view class="action-btn" bind:tap="onLikeTap">

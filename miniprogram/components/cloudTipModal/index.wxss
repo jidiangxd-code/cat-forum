@@ -1,3 +1,5 @@
+/* miniprogram/components/cloudTipModal/index.wxss - 云开发提示组件样式 */
+/* 全屏遮罩层。 */
 .install_tip_back {
   position: fixed;
   top: 0;
@@ -7,6 +9,7 @@
   background-color: rgba(0, 0, 0, 0.4);
   z-index: 1;
 }
+/* 右上角关闭按钮。 */
 .install_tip_close {
   position: absolute;
   right: 10rpx;
@@ -15,6 +18,7 @@
   height: 32px;
   /* background-color: red; */
 }
+/* 底部弹层主体。 */
 .install_tip_detail {
   position: fixed;
   background-color: white;
@@ -26,22 +30,26 @@
   z-index: 9;
 }
 
+/* 弹层标题。 */
 .install_tip_detail_title {
   font-weight: 400;
   font-size: 40rpx;
   text-align: center;
 }
 
+/* 弹层正文。 */
 .install_tip_detail_tip {
   font-size: 25rpx;
   color: rgba(0, 0, 0, 0.4);
   margin-top: 20rpx;
   text-align: left;
 }
+/* 底部按钮组，当前预留给扩展操作。 */
 .install_tip_detail_buttons {
   padding-top: 50rpx;
   display: flex;
 }
+/* 按钮基础样式。 */
 .install_tip_detail_button {
   color: #07c160;
   font-weight: 500;
@@ -54,6 +62,7 @@
   margin: 0 auto;
 }
 
+/* 主按钮高亮样式。 */
 .install_tip_detail_button_primary {
   background-color: #07c160;
   color: #fff;

@@ -13,6 +13,7 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// 兼容旧 cats 集合的列表查询逻辑。
 exports.main = async (event, context) => {
   const { page = 1, pageSize = 10, tag, location } = event;
 

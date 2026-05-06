@@ -37,53 +37,75 @@
     </swiper-item>
   </swiper>
 
-  <!-- 猫咪信息卡片 -->
-  <view class="info-card">
-    <!-- 猫咪头部（可点击跳转猫咪主页） -->
-    <view class="cat-header" bindtap="onCatTap" wx:if="{{cat}}">
+  <!-- 发布者信息 -->
+  <view class="author-section">
+    <view class="author-info-row">
       <image
-        class="cat-avatar"
-        src="{{cat.coverImage || '/assets/images/default-cat.png'}}"
+        class="author-avatar"
+        src="{{post.authorAvatar || '/assets/images/default-avatar.png'}}"
         mode="aspectFill"
         binderror="onAvatarError"
       />
-      <view class="cat-header-info">
-        <text class="cat-header-name">{{cat.fullName || cat.codeName}}</text>
-        <text class="cat-header-meta">{{cat.appearance}} · {{cat.gender === 'male' ? '♂公' : cat.gender === 'female' ? '♀母' : ''}} · {{cat.location || '地点未知'}}</text>
-      </view>
-      <view class="cat-type-badge {{cat.catType}}">
-        {{cat.catType === 'formal' ? '正式' : '未知'}}
-      </view>
-      <text class="cat-arrow">›</text>
-    </view>
-
-    <view class="divider" wx:if="{{cat}}"></view>
-
-    <!-- 帖子内容 -->
-    <view class="post-content-section">
-      <text class="post-text">{{post.content}}</text>
-    </view>
-
-    <!-- 发布时间 -->
-    <view class="post-meta">
-      <text class="post-time">{{post.createTimeStr || ''}}</text>
-      <view class="location-tag" wx:if="{{post.location}}">
-        <text>📍 {{post.location}}</text>
+      <view class="author-details">
+        <text class="author-name">{{post.authorName || '匿名用户'}}</text>
+        <text class="post-time">{{post.createTimeStr || ''}}</text>
       </view>
     </view>
+    <!-- 位置区域：展示地点、定位或地图信息。 -->
+    <view class="location-tag" wx:if="{{post.location}}">
+      <text>📍 {{post.location}}</text>
+    </view>
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="category-section" wx:if="{{post.category}}">
+    <view class="category-tag">
+      {{categoryMap[post.category] || post.category}}
+    </view>
+  </view>
+
+  <!-- 关联猫咪信息卡片（可点击跳转） -->
+  <view class="cat-card" wx:if="{{cat}}" bindtap="onCatTap">
+    <image
+      class="cat-cover"
+      src="{{cat.coverImage || '/assets/images/default-cat.png'}}"
+      mode="aspectFill"
+    />
+    <!-- 猫咪区域：展示猫咪资料、档案或绑定信息。 -->
+    <view class="cat-info">
+      <view class="cat-name-row">
+        <text class="cat-name">{{cat.fullName || cat.codeName}}</text>
+        <view class="cat-type-badge {{cat.catType}}">
+          {{cat.catType === 'formal' ? '正式猫' : '未知猫'}}
+        </view>
+      </view>
+      <text class="cat-meta">{{cat.appearance}} · {{cat.gender === 'male' ? '♂公' : cat.gender === 'female' ? '♀母' : '性别未知'}} · {{cat.location || '地点未知'}}</text>
+      <view class="cat-stats" wx:if="{{cat.totalVote}}">
+        <text>🔥 {{cat.totalVote}} 人投票</text>
+      </view>
+    </view>
+    <text class="cat-arrow">›</text>
+  </view>
+
+  <!-- 帖子内容 -->
+  <view class="post-content-section">
+    <text class="post-text">{{post.content}}</text>
   </view>
 
   <!-- 互动区域 -->
   <view class="action-bar">
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-item" bindtap="toggleLike">
       <text class="action-icon {{liked ? 'liked' : ''}}">{{liked ? '❤️' : '🤍'}}</text>
       <text class="action-text">{{liked ? '已喜欢' : '喜欢'}}</text>
       <text class="action-count">{{post.likeCount || 0}}</text>
     </view>
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-item" bindtap="toggleFavorite">
       <text class="action-icon">{{favorited ? '⭐' : '☆'}}</text>
       <text class="action-text">{{favorited ? '已收藏' : '收藏'}}</text>
     </view>
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-item">
       <text class="action-icon">💬</text>
       <text class="action-text">评论</text>
@@ -93,6 +115,7 @@
       <text class="action-icon">📤</text>
       <text class="action-text">分享</text>
     </button>
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-item" bindtap="showMoreMenu">
         <text class="action-icon">⋯</text>
         <text class="action-text">更多</text>
@@ -106,6 +129,7 @@
 
   <!-- 举报弹窗 -->
   <view class="report-overlay" wx:if="{{showReport}}" bindtap="hideReport">
+    <!-- 举报区域：收集举报原因与补充说明。 -->
     <view class="report-modal" catchtap="">
       <text class="report-title">举报内容</text>
       <text class="report-subtitle">请选择举报原因</text>
@@ -132,6 +156,7 @@
 
   <!-- 评论区 -->
   <view class="comment-section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-title">
       <text>💬 评论 ({{post.commentCount || comments.length}})</text>
     </view>
@@ -153,6 +178,19 @@
             <text class="comment-time">{{item.timeStr || item.createTime}}</text>
           </view>
           <text class="comment-text">{{item.content}}</text>
+          <view class="comment-attachments" wx:if="{{item.attachments && item.attachments.length > 0}}">
+            <image
+              class="comment-attachment-item"
+              wx:for="{{item.attachments}}"
+              wx:for-item="attachment"
+              wx:key="url"
+              src="{{attachment.url}}"
+              mode="aspectFill"
+              bindtap="previewCommentAttachment"
+              data-current="{{attachment.url}}"
+              data-urls="{{item.attachmentUrls}}"
+            />
+          </view>
           <!-- 回复按钮 -->
           <view class="comment-actions">
             <text class="reply-btn" bindtap="onReplyComment" data-comment="{{item}}">回复</text>
@@ -165,14 +203,14 @@
 
           <!-- 子评论列表 -->
           <view class="reply-list" wx:if="{{item.replies && item.replies.length > 0}}">
-            <view class="reply-item" wx:for="{{item.replies}}" wx:key="_id" wx:for-item="reply">
+            <view class="reply-item" wx:for="{{item.replies}}" wx:key="_id" wx:for-item="reply" wx:for-index="replyIndex">
               <view class="reply-header">
                 <image
                   class="reply-avatar"
                   src="{{reply.avatarError ? '/assets/images/default-avatar.png' : (reply.authorAvatar || '/assets/images/default-avatar.png')}}"
                   mode="aspectFill"
                   binderror="onReplyAvatarError"
-                  data-index="{{index}}"
+                  data-index="{{replyIndex}}"
                   data-parent="{{index}}"
                 />
                 <text class="reply-author">{{reply.authorName}}</text>
@@ -181,7 +219,21 @@
                 <text class="comment-time">{{reply.timeStr || reply.createTime}}</text>
               </view>
               <text class="reply-text">{{reply.content}}</text>
+              <view class="comment-attachments reply-attachments" wx:if="{{reply.attachments && reply.attachments.length > 0}}">
+                <image
+                  class="comment-attachment-item small"
+                  wx:for="{{reply.attachments}}"
+                  wx:for-item="attachment"
+                  wx:key="url"
+                  src="{{attachment.url}}"
+                  mode="aspectFill"
+                  bindtap="previewCommentAttachment"
+                  data-current="{{attachment.url}}"
+                  data-urls="{{reply.attachmentUrls}}"
+                />
+              </view>
               <view class="reply-actions">
+                <text class="reply-btn" bindtap="onReplyComment" data-comment="{{reply}}" data-rootparentid="{{item._id}}">回复</text>
                 <text
                   class="comment-like {{reply.liked ? 'liked' : ''}}"
                   bindtap="onCommentLike"
@@ -196,6 +248,7 @@
       </view>
     </view>
 
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-comment" wx:else>
       <text class="empty-icon">💭</text>
       <text class="empty-text">还没有评论，快来抢沙发！</text>
@@ -203,23 +256,89 @@
   </view>
 
   <!-- 底部评论输入 -->
-  <view class="comment-input-bar" style="padding-bottom: {{isReply ? '160rpx' : '16rpx'}}">
+  <view class="comment-input-bar">
     <!-- 回复提示条 -->
     <view class="reply-hint-bar" wx:if="{{isReply}}">
       <text class="reply-hint-text">回复 @{{replyToUserName}}</text>
       <text class="reply-cancel" bindtap="onCancelReply">取消</text>
     </view>
+    <view class="selected-attachment-list" wx:if="{{selectedAttachments.length > 0}}">
+      <view class="selected-attachment-item" wx:for="{{selectedAttachments}}" wx:key="id">
+        <image
+          class="selected-attachment-image"
+          src="{{item.localPath}}"
+          mode="aspectFill"
+          bindtap="previewSelectedAttachment"
+          data-index="{{index}}"
+        />
+        <view class="selected-attachment-badge">{{item.type === 'gif' ? 'GIF' : (item.type === 'sticker' ? '表情包' : '图片')}}</view>
+        <view class="selected-attachment-remove" bindtap="removeSelectedAttachment" data-index="{{index}}">×</view>
+      </view>
+    </view>
     <view class="input-row">
+      <view class="composer-tool-btn" bindtap="toggleEmojiPanel">
+        <text>😊</text>
+      </view>
+      <view class="composer-tool-btn" bindtap="toggleStickerPanel">
+        <text>🖼️</text>
+      </view>
+      <view class="composer-tool-btn" bindtap="chooseCommentMedia">
+        <text>➕</text>
+      </view>
       <input
         class="comment-input"
         placeholder="{{replyPlaceholder}}"
         value="{{inputContent}}"
         bindinput="onInputComment"
         bindconfirm="submitComment"
+        bindfocus="onInputFocus"
         focus="{{isReply}}"
       />
-      <view class="send-btn" bindtap="submitComment">
-        <text>发送</text>
+      <view class="send-btn {{isSubmittingComment ? 'disabled' : ''}}" bindtap="submitComment">
+        <text>{{isSubmittingComment ? '发送中...' : '发送'}}</text>
+      </view>
+    </view>
+    <view class="composer-panel" wx:if="{{showEmojiPanel}}">
+      <view class="composer-panel-title">常用表情</view>
+      <view class="emoji-grid">
+        <text class="emoji-item" wx:for="{{quickEmojiList}}" wx:key="*this" data-emoji="{{item}}" bindtap="onPickEmoji">{{item}}</text>
+      </view>
+    </view>
+    <view class="composer-panel" wx:if="{{showStickerPanel}}">
+      <view class="composer-panel-header">
+        <text class="composer-panel-title">表情包</text>
+        <view class="panel-add-btn" bindtap="addStickerToPack">添加图片到表情包</view>
+      </view>
+      <view class="sticker-block" wx:if="{{recentStickers.length > 0}}">
+        <text class="sticker-block-title">常用表情包</text>
+        <view class="sticker-grid">
+          <image
+            class="sticker-item"
+            wx:for="{{recentStickers}}"
+            wx:key="filePath"
+            src="{{item.filePath}}"
+            mode="aspectFill"
+            bindtap="useStickerFromPack"
+            data-source="recent"
+            data-index="{{index}}"
+          />
+        </view>
+      </view>
+      <view class="sticker-block">
+        <text class="sticker-block-title">我的表情包</text>
+        <view class="sticker-grid" wx:if="{{stickerPack.length > 0}}">
+          <image
+            class="sticker-item"
+            wx:for="{{stickerPack}}"
+            wx:key="filePath"
+            src="{{item.filePath}}"
+            mode="aspectFill"
+            bindtap="useStickerFromPack"
+            data-source="pack"
+            data-index="{{index}}"
+          />
+        </view>
+        <view class="sticker-empty" wx:else>还没有自定义表情包，先加一张吧</view>
       </view>
     </view>
   </view>

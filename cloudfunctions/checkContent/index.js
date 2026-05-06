@@ -95,6 +95,7 @@ async function checkImage(fileID, openid) {
   }
 }
 
+// 统一审核文字和图片内容的安全性。
 exports.main = async (event) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;

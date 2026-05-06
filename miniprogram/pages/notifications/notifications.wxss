@@ -1,0 +1,290 @@
+/* pages/notifications/notifications.wxss - 消息通知页样式 */
+
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tab 栏 */
+.tab-bar {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #eee;
+  padding: 0 20rpx;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* 标签项与激活态样式。 */
+.tab-item {
+  flex: 1;
+  text-align: center;
+  font-size: 28rpx;
+  color: #666;
+  padding: 24rpx 0;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tab-item.active {
+  color: #FF8C00;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: #FF8C00;
+  border-radius: 2rpx;
+}
+
+.tab-count {
+  display: inline-block;
+  background: #FF4D4F;
+  color: #fff;
+  font-size: 20rpx;
+  padding: 2rpx 10rpx;
+  border-radius: 20rpx;
+  margin-left: 8rpx;
+  vertical-align: middle;
+  max-width: 60rpx;
+  overflow: hidden;
+}
+
+/* 通知列表 */
+.notification-list {
+  flex: 1;
+  height: calc(100vh - 100rpx);
+}
+
+/* 加载中 */
+.loading-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 120rpx 0;
+}
+
+/* 加载提示与状态反馈样式。 */
+.loading-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 160rpx 0 80rpx;
+}
+
+/* 空状态提示与占位样式。 */
+.empty-icon {
+  width: 160rpx;
+  height: 160rpx;
+  opacity: 0.5;
+  margin-bottom: 32rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+}
+
+/* 单条通知 */
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 28rpx 32rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+  position: relative;
+}
+
+/* 通知列表与已读未读状态样式。 */
+.notification-item.unread {
+  background: #fff8f0;
+}
+
+.notification-item.unread::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6rpx;
+  background: #FF8C00;
+}
+
+/* 头像区 */
+.notif-avatar {
+  position: relative;
+  flex-shrink: 0;
+  margin-right: 20rpx;
+}
+
+.avatar-img,
+/* 头像容器与兜底展示样式。 */
+.avatar-placeholder {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+}
+
+.avatar-placeholder {
+  background: #FFD59E;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-placeholder text {
+  font-size: 32rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 类型图标（小标签） */
+.notif-type-icon {
+  position: absolute;
+  right: -8rpx;
+  bottom: -4rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: #fff;
+  border: 2rpx solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
+}
+
+/* 内容区 */
+.notif-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-header {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  margin-bottom: 8rpx;
+}
+
+.notif-user {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-right: 8rpx;
+}
+
+.notif-action {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.notif-text {
+  display: block;
+  font-size: 26rpx;
+  color: #555;
+  line-height: 1.5;
+  margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notif-target {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.notif-time {
+  display: block;
+  font-size: 22rpx;
+  color: #bbb;
+  margin-top: 4rpx;
+}
+
+/* 封面图 */
+.notif-cover {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  object-fit: cover;
+}
+
+/* 文字预览（无图片时） */
+.notif-preview {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 8rpx;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx;
+}
+
+.notif-preview text {
+  font-size: 22rpx;
+  color: #999;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* 加载更多 */
+.load-more {
+  padding: 32rpx;
+  text-align: center;
+}
+
+.load-more text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 结束态和无更多数据提示样式。 */
+.no-more {
+  color: #ccc;
+}
+
+/* 全部已读按钮 */
+.mark-all-bar {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom) + 20rpx);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #FF8C00;
+  color: #fff;
+  font-size: 28rpx;
+  padding: 20rpx 48rpx;
+  border-radius: 48rpx;
+  box-shadow: 0 4rpx 20rpx rgba(255,140,0,0.35);
+  z-index: 100;
+}

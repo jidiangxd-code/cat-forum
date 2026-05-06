@@ -13,6 +13,7 @@
     />
     <view class="cover-placeholder" wx:else>🐱</view>
 
+    <!-- 主视觉区域：展示页面的核心信息和主入口。 -->
     <view class="hero-info">
       <!-- 类型标签 -->
       <view class="type-badge {{cat.catType === 'formal' ? 'formal' : 'unknown'}}">
@@ -40,11 +41,20 @@
         <text class="status-text">{{statusMap[cat.status]}}</text>
         <text class="personality" wx:if="{{cat.personality}}"> · {{cat.personality}}</text>
       </view>
+
+      <!-- 健康标签 -->
+      <view class="health-tags-row" wx:if="{{cat.healthTags && cat.healthTags.length > 0}}">
+        <view class="health-tag {{tag === '生病/受伤' ? 'warning' : (tag === '需要关注' ? 'warn' : 'normal')}}"
+              wx:for="{{cat.healthTags}}" wx:key="index">
+          {{item}}
+        </view>
+      </view>
     </view>
   </view>
 
   <!-- 票数 + 投票按钮 -->
   <view class="vote-section">
+    <!-- 投票区域：展示票数并提供投票入口。 -->
     <view class="vote-count-area">
       <text class="vote-big">{{cat.totalVote || 0}}</text>
       <text class="vote-unit">总人气票</text>
@@ -59,54 +69,68 @@
 
   <!-- 功能按钮区 -->
   <view class="action-bar">
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-btn promote-btn" bindtap="goPromote" wx:if="{{cat.catType === 'unknown'}}">
       <text>⬆️</text><text class="action-label">完善为正式猫</text>
     </view>
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-btn edit-btn" bindtap="goEdit">
       <text>✏️</text><text class="action-label">编辑资料</text>
     </view>
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-btn merge-btn" bindtap="goMerge">
       <text>🔗</text><text class="action-label">标记重复</text>
     </view>
   </view>
 
-  <!-- 历史帖子 -->
-  <view class="posts-section">
-    <view class="posts-header">
-      <text class="posts-title">📷 ta 的所有帖子</text>
+  <!-- 历史帖子时间线 -->
+  <view class="timeline-section">
+    <!-- 时间线区域：按时间顺序展示历史动态。 -->
+    <view class="timeline-header">
+      <view class="timeline-line"/>
+      <text class="timeline-title">📋 猫咪动态时间线</text>
+      <text class="timeline-count" wx:if="{{posts.length > 0}}">{{posts.length}} 条动态</text>
     </view>
 
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-posts" wx:if="{{!postsLoading && posts.length === 0}}">
       <text>还没有帖子，快去发布吧～</text>
     </view>
 
-    <view class="post-card" wx:for="{{posts}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
-      <!-- 图片组 -->
-      <view class="post-imgs" wx:if="{{item.images && item.images.length > 0}}">
-        <image
-          wx:for="{{item.images}}"
-          wx:for-item="img"
-          wx:key="index"
-          wx:if="{{index < 3}}"
-          class="post-img {{item.images.length === 1 ? 'single' : ''}}"
-          src="{{img}}"
-          mode="aspectFill"
-          catchtap="previewPostImage"
-          data-images="{{item.images}}"
-          data-index="{{index}}"
-        />
-        <view class="img-more" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
-      </view>
-      <!-- 内容 -->
-      <view class="post-content">
-        <text class="post-text">{{item.content}}</text>
-      </view>
-      <view class="post-footer">
-        <text class="post-time">{{item.createTime}}</text>
-        <text class="post-like">❤️ {{item.likeCount || 0}}</text>
+    <!-- 时间线区域：按时间顺序展示历史动态。 -->
+    <view class="timeline-list">
+      <view class="timeline-item" wx:for="{{posts}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
+        <view class="timeline-dot"/>
+        <view class="timeline-card">
+          <!-- 图片组 -->
+          <view class="post-imgs" wx:if="{{item.images && item.images.length > 0}}">
+            <image
+              wx:for="{{item.images}}"
+              wx:for-item="img"
+              wx:key="index"
+              wx:if="{{index < 3}}"
+              class="post-img {{item.images.length === 1 ? 'single' : ''}}"
+              src="{{img}}"
+              mode="aspectFill"
+              catchtap="previewPostImage"
+              data-images="{{item.images}}"
+              data-index="{{index}}"
+            />
+            <view class="img-more" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
+          </view>
+          <!-- 内容 -->
+          <view class="post-content">
+            <text class="post-text">{{item.content}}</text>
+          </view>
+          <view class="post-footer">
+            <text class="post-time">📅 {{item.createTime}}</text>
+            <text class="post-stats">❤️ {{item.likeCount || 0}}  💬 {{item.commentCount || 0}}</text>
+          </view>
+        </view>
       </view>
     </view>
 
+    <!-- 状态区域：反馈当前数据加载进度。 -->
     <view class="loading-more" wx:if="{{postsLoading}}">加载中...</view>
     <view class="no-more" wx:elif="{{!hasMorePosts && posts.length > 0}}">没有更多了</view>
   </view>

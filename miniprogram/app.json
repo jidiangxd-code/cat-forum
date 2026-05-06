@@ -11,6 +11,7 @@
     "pages/detail/detail",
     "pages/notifications/notifications",
     "pages/profile/profile",
+    "pages/personal-settings/personal-settings",
     "pages/search/search",
     "pages/my-posts/my-posts",
     "pages/my-likes/my-likes",

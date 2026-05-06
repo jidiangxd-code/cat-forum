@@ -2,6 +2,7 @@
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     catId: '',
     cat: null,
@@ -20,6 +21,7 @@ Page({
     statusColorMap: { active: '#4CAF50', lost: '#FF9800', adopted: '#2196F3' }
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad(options) {
     if (options.id) {
       this.setData({ catId: options.id });
@@ -27,17 +29,20 @@ Page({
     }
   },
 
+  // 响应下拉刷新并重置列表或详情数据。
   onPullDownRefresh() {
     this.setData({ postsPage: 1, hasMorePosts: true, posts: [] });
     this.loadAll().then(() => wx.stopPullDownRefresh());
   },
 
+  // 在可继续加载时触发下一页数据请求。
   onReachBottom() {
     if (this.data.hasMorePosts && !this.data.postsLoading) {
       this.loadMorePosts();
     }
   },
 
+  // 并发加载页面依赖的档案、投票和列表数据。
   async loadAll() {
     this.setData({ loading: true });
     await Promise.all([
@@ -48,6 +53,7 @@ Page({
     this.setData({ loading: false });
   },
 
+  // 加载猫咪档案详情并刷新页面标题或状态。
   async loadCatProfile() {
     try {
       const res = await api.getCatProfile(this.data.catId);
@@ -60,6 +66,7 @@ Page({
     }
   },
 
+  // 读取今天的投票状态并同步页面按钮。
   async loadTodayVote() {
     try {
       const voteRecord = await api.getTodayVote();
@@ -70,6 +77,7 @@ Page({
     } catch (e) {}
   },
 
+  // 加载帖子列表并维护分页、缓存和展示状态。
   async loadPosts(reset = false) {
     if (reset) {
       this.setData({ postsPage: 1, posts: [], hasMorePosts: true });
@@ -89,6 +97,7 @@ Page({
     }
   },
 
+  // 继续加载猫咪主页中的历史帖子。
   async loadMorePosts() {
     await this.loadPosts(false);
   },
@@ -125,9 +134,11 @@ Page({
   goPromote() {
     wx.navigateTo({ url: `/pages/promote-cat/promote-cat?id=${this.data.catId}` });
   },
+  // 跳转到当前猫咪资料编辑页。
   goEdit() {
     wx.navigateTo({ url: `/pages/create-cat/create-cat?id=${this.data.catId}&mode=edit` });
   },
+  // 跳转到猫咪合并处理页面。
   goMerge() {
     wx.navigateTo({ url: `/pages/merge-cat/merge-cat?id=${this.data.catId}` });
   },

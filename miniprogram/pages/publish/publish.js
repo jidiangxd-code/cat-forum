@@ -9,6 +9,7 @@ const CAMPUS_LOCATIONS = [
 ];
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     // 图片
     images: [],
@@ -54,16 +55,31 @@ Page({
     submitting: false,
     // 预览模式
     previewMode: false,
+    // 当前用户资料预览
+    currentUserInfo: wx.getStorageSync('userInfo') || {},
     // 深色模式
     isDarkMode: wx.getStorageSync('darkMode') || false
   },
 
+  // 在页面重新显示时同步最新状态或刷新数据。
   onShow() {
     this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
+    this._syncCurrentUserInfo();
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad() {
     this.setData({ appearanceOptions: api.APPEARANCE_OPTIONS, locationList: CAMPUS_LOCATIONS, isDarkMode: wx.getStorageSync('darkMode') || false });
+    this._syncCurrentUserInfo();
+  },
+
+  async _syncCurrentUserInfo() {
+    try {
+      const userInfo = await api.syncCurrentUserProfile();
+      this.setData({ currentUserInfo: userInfo || {} });
+    } catch (e) {
+      this.setData({ currentUserInfo: wx.getStorageSync('userInfo') || {} });
+    }
   },
 
   onReachBottom() {},
@@ -104,6 +120,7 @@ Page({
     });
   },
 
+  // 真正发起定位请求并回填页面坐标与标签。
   _doGetLocation() {
     this.setData({ locationLoading: true });
     wx.getLocation({
@@ -159,6 +176,7 @@ Page({
     });
   },
 
+  // 删除指定索引的待发布图片及上传状态。
   deleteImage(e) {
     const idx = e.currentTarget.dataset.index;
     const images = [...this.data.images];
@@ -168,6 +186,7 @@ Page({
     this.setData({ images, uploadedUrls: urls });
   },
 
+  // 同步正文输入框中的内容。
   onContentInput(e) {
     this.setData({ content: e.detail.value });
   },
@@ -185,6 +204,7 @@ Page({
     }
   },
 
+  // 打开猫咪选择器并按模式加载候选档案。
   async _openCatPicker(mode) {
     this.setData({ showCatPicker: true, catPickMode: mode, catPickLoading: true, catPickList: [] });
     try {
@@ -201,6 +221,7 @@ Page({
     }
   },
 
+  // 按关键词筛选选择器中的候选猫咪。
   async onPickSearch(e) {
     const kw = e.detail.value;
     this.setData({ catPickKeyword: kw });
@@ -221,11 +242,13 @@ Page({
     }
   },
 
+  // 确认当前选中的猫咪并回填发帖表单。
   onPickCat(e) {
     const cat = e.currentTarget.dataset.cat;
     this.setData({ selectedCat: cat, showCatPicker: false });
   },
 
+  // 关闭猫咪选择弹层并保留当前输入状态。
   closeCatPicker() {
     this.setData({ showCatPicker: false });
     if (!this.data.selectedCat) {
@@ -233,19 +256,23 @@ Page({
     }
   },
 
+  // 重置绑猫方式和已选猫咪状态。
   resetBind() {
     this.setData({ bindMode: null, selectedCat: null });
   },
 
+  // 同步未知猫代号输入内容。
   onCodeNameInput(e) {
     this.setData({ 'newUnknownForm.codeName': e.detail.value });
   },
 
+  // 选择猫咪外貌标签并更新表单。
   onAppearanceTap(e) {
     const val = e.currentTarget.dataset.val;
     this.setData({ 'newUnknownForm.appearance': val });
   },
 
+  // 选择帖子分类并更新表单值。
   onCategoryTap(e) {
     this.setData({ category: e.currentTarget.dataset.val });
   },
@@ -279,14 +306,17 @@ Page({
     this.setData({ previewMode: true });
   },
 
+  // 关闭预览模式并恢复普通编辑界面。
   closePreview() {
     this.setData({ previewMode: false });
   },
 
+  // 退出预览模式并返回编辑状态。
   goBackToEdit() {
     this.setData({ previewMode: false });
   },
 
+  // 预览当前选中的图片或轮播大图。
   onPreviewImage(e) {
     const index = e.currentTarget.dataset.index;
     wx.previewImage({ current: this.data.images[index], urls: this.data.images });
@@ -295,6 +325,16 @@ Page({
   // ===== 发布流程 =====
 
   async confirmPublish() {
+    const openid = api.getOpenId();
+    if (!openid || openid === 'guest') {
+      wx.showModal({
+        title: '请先登录',
+        content: '发布前请先到“我的”页面完成登录，否则后续无法稳定管理自己的发布内容。',
+        showCancel: false
+      });
+      return;
+    }
+
     this.setData({ submitting: true });
     wx.showLoading({ title: '发布中...', mask: true });
     let publishStep = '准备发布';
@@ -349,11 +389,14 @@ Page({
 
       // 5. 发布帖子（携带位置信息）
       publishStep = '写入帖子';
+      const userInfo = await api.syncCurrentUserProfile();
       const postData = {
         catId,
         images: imageUrls,
         content: this.data.content.trim(),
-        category: this.data.category
+        category: this.data.category,
+        authorName: userInfo.nickName || '匿名用户',
+        authorAvatar: userInfo.avatarUrl || ''
       };
       // 注入位置
       if (this.data.selectedLocation) {
@@ -387,6 +430,7 @@ Page({
     }
   },
 
+  // 统一提炼接口或运行时错误信息，便于提示展示。
   _getErrorMessage(err) {
     if (!err) return '发布失败，请重试';
     if (typeof err === 'string') return err;

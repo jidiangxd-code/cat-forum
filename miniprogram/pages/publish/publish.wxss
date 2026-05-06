@@ -4,9 +4,11 @@
   min-height: 100vh;
   padding-bottom: 120rpx;
 }
+/* 页面基础容器与整体背景样式。 */
 .page.dark {
   background: #1a1a2e;
 }
+/* 页面头部与标题区域样式。 */
 .header {
   background: linear-gradient(135deg, #FF9A6A, #FF7043);
   padding: 40rpx 32rpx 32rpx;
@@ -18,6 +20,7 @@
 .title { font-size: 40rpx; font-weight: bold; display: block; }
 .subtitle { font-size: 24rpx; opacity: 0.85; margin-top: 8rpx; display: block; }
 
+/* 通用内容卡片与分区样式。 */
 .section {
   background: #fff;
   margin: 20rpx 24rpx 0;
@@ -28,10 +31,12 @@
 .page.dark .section,
 .page.dark .submit-wrap,
 .page.dark .cat-picker,
+/* 预览模式与模拟展示样式。 */
 .preview-page.dark .preview-footer {
   background: #252540;
   box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.25);
 }
+/* 通用内容卡片与分区样式。 */
 .section-label {
   font-size: 28rpx;
   font-weight: bold;
@@ -43,6 +48,7 @@
 .page.dark .picker-title,
 .page.dark .cat-info .cat-name,
 .page.dark .preview-cat-name,
+/* 选择器弹层与候选项样式。 */
 .page.dark .picker-cat-name {
   color: #e0e0e0;
 }
@@ -54,6 +60,7 @@
 .page.dark .preview-tip text,
 .page.dark .preview-location-text,
 .page.dark .location-label-text,
+/* 定位标签与地点信息样式。 */
 .page.dark .location-clear {
   color: #b0b0b0;
 }
@@ -70,6 +77,7 @@
   background: rgba(0,0,0,0.55); color: #fff;
   font-size: 22rpx; display: flex; align-items: center; justify-content: center;
 }
+/* 图片展示、占位和裁切样式。 */
 .img-add {
   width: 200rpx; height: 200rpx; border-radius: 12rpx;
   border: 2rpx dashed #FFBF9A;
@@ -116,6 +124,7 @@
 
 /* 已选猫咪 */
 .selected-cat {}
+/* 猫咪资料、头像和标签样式。 */
 .cat-preview-card {
   display: flex; align-items: center; padding: 20rpx;
   background: #FFF5EB; border-radius: 16rpx; border: 2rpx solid #FFD4A8;
@@ -142,6 +151,7 @@
 }
 .form-row { margin-bottom: 20rpx; }
 .form-label { display: block; font-size: 26rpx; color: #555; margin-bottom: 10rpx; }
+/* 表单输入与字段布局样式。 */
 .form-input {
   width: 100%; background: #fff; border: 1rpx solid #ddd;
   border-radius: 10rpx; padding: 16rpx; font-size: 28rpx;
@@ -168,6 +178,7 @@
   background: #fff;
   box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.06);
 }
+/* 提交按钮与底部提交区样式。 */
 .submit-btn {
   width: 100%; height: 88rpx; border-radius: 44rpx;
   background: linear-gradient(135deg, #FF9A6A, #FF7043);
@@ -180,12 +191,14 @@
 .picker-mask {
   position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-picker {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: #fff; border-radius: 32rpx 32rpx 0 0;
   z-index: 101; max-height: 80vh;
   display: flex; flex-direction: column;
 }
+/* 选择器弹层与候选项样式。 */
 .picker-header {
   display: flex; align-items: center; justify-content: space-between;
   padding: 28rpx 32rpx 20rpx;
@@ -194,17 +207,20 @@
 .picker-title { font-size: 32rpx; font-weight: bold; color: #333; }
 .picker-close { font-size: 36rpx; color: #999; padding: 0 8rpx; }
 .picker-search { padding: 16rpx 24rpx; }
+/* 搜索控件与输入区域样式。 */
 .search-input {
   width: 100%; background: #F5F5F5; border-radius: 40rpx;
   padding: 16rpx 24rpx; font-size: 26rpx; box-sizing: border-box;
 }
 .page.dark .search-input,
 .page.dark .desc-input,
+/* 表单输入与字段布局样式。 */
 .page.dark .form-input {
   background: #2a2a45;
   color: #e0e0e0;
   border-color: #333355;
 }
+/* 预览模式与模拟展示样式。 */
 .preview-page.dark {
   background: #1a1a2e;
 }
@@ -223,6 +239,7 @@
 .preview-page.dark .preview-location-edit text,
 .preview-page.dark .re-select,
 .preview-page.dark .empty-tip,
+/* 加载提示与状态反馈样式。 */
 .preview-page.dark .loading-tip {
   color: #a29bfe;
 }
@@ -240,6 +257,7 @@
 .page.dark .appearance-tag,
 .page.dark .bind-title,
 .page.dark .form-label,
+/* 选择器弹层与候选项样式。 */
 .page.dark .picker-cat-vote {
   color: #e0e0e0;
 }
@@ -251,6 +269,7 @@
   color: #fff;
 }
 .page.dark .submit-wrap,
+/* 预览模式与模拟展示样式。 */
 .preview-page.dark .preview-footer {
   border-top: 1rpx solid #333355;
 }
@@ -270,17 +289,21 @@
   border-color: #335d49;
 }
 .page.dark .picker-header,
+/* 选择器弹层与候选项样式。 */
 .page.dark .picker-item {
   border-color: #333355;
 }
 .page.dark .picker-close,
+/* 菜单卡片与功能项样式。 */
 .page.dark .menu-arrow {
   color: #707070;
 }
 .picker-list { flex: 1; overflow: hidden; }
+/* 加载提示与状态反馈样式。 */
 .loading-tip, .empty-tip {
   text-align: center; padding: 60rpx; color: #999; font-size: 26rpx;
 }
+/* 选择器弹层与候选项样式。 */
 .picker-item {
   display: flex; align-items: center; padding: 20rpx 28rpx;
   border-bottom: 1rpx solid #f8f8f8;
@@ -297,3 +320,45 @@
 .picker-cat-name { display: block; font-size: 28rpx; font-weight: bold; color: #333; }
 .picker-cat-meta { display: block; font-size: 22rpx; color: #999; margin-top: 4rpx; }
 .picker-cat-vote { font-size: 24rpx; color: #FF9A6A; flex-shrink: 0; }
+
+/* 发布预览作者卡：确认当前将以谁的身份发出这条内容。 */
+.preview-author-card {
+  display: flex;
+  align-items: center;
+  gap: 18rpx;
+  margin: 24rpx 0 18rpx;
+  padding: 20rpx 22rpx;
+  background: #fff;
+  border-radius: 22rpx;
+  box-shadow: 0 8rpx 22rpx rgba(255, 133, 74, 0.08);
+}
+.preview-author-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.preview-author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+.preview-author-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+.preview-author-meta {
+  font-size: 22rpx;
+  color: #999;
+}
+.preview-page.dark .preview-author-card {
+  background: #252540;
+  box-shadow: none;
+}
+.preview-page.dark .preview-author-name {
+  color: #f1f1ff;
+}
+.preview-page.dark .preview-author-meta {
+  color: #9a9abc;
+}

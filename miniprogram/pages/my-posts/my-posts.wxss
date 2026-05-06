@@ -1,10 +1,15 @@
+/* miniprogram/pages/my-posts/my-posts.wxss - 我的发布页面样式 */
+/* 页面底色和整体留白，延续个人中心这一组页面的暖色背景。 */
 .page-container {
   min-height: 100vh;
   background: #fff5eb;
   padding-bottom: 40rpx;
 }
+.page-container.dark {
+  background: #1a1a2e;
+}
 
-/* 加载状态 */
+/* 加载态：列表数据尚未返回时，用图标和文案撑住空白。 */
 .loading-state {
   display: flex;
   flex-direction: column;
@@ -13,17 +18,20 @@
   padding: 200rpx 0;
 }
 
+/* 加载图标：用轻微上下浮动制造等待反馈。 */
 .loading-icon {
   font-size: 80rpx;
   animation: bounce 1s infinite;
 }
 
+/* 加载文案：弱化处理，避免喧宾夺主。 */
 .loading-text {
   margin-top: 20rpx;
   color: #999;
   font-size: 28rpx;
 }
 
+/* 浮动动画：让加载图标有一点呼吸感。 */
 @keyframes bounce {
   0%,
   100% {
@@ -34,7 +42,7 @@
   }
 }
 
-/* 空状态 */
+/* 空状态：列表为空时，把焦点落在“去发帖”这个动作上。 */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -42,24 +50,38 @@
   padding: 120rpx 60rpx;
 }
 
+/* 空状态主图标。 */
 .empty-icon {
   font-size: 120rpx;
   margin-bottom: 30rpx;
 }
 
+/* 空状态标题。 */
 .empty-title {
   font-size: 36rpx;
   font-weight: bold;
   color: #333;
   margin-bottom: 16rpx;
 }
+.page-container.dark .empty-title {
+  color: #f1f1ff;
+}
 
+/* 空状态补充说明。 */
 .empty-desc {
   font-size: 28rpx;
   color: #999;
   margin-bottom: 50rpx;
 }
+.page-container.dark .empty-desc,
+.page-container.dark .loading-text,
+.page-container.dark .post-desc,
+.page-container.dark .post-location,
+.page-container.dark .stat-item {
+  color: #9a9abc;
+}
 
+/* 空状态按钮：引导用户回到发帖入口。 */
 .empty-btn {
   background: linear-gradient(135deg, #ff9500, #ffb74d);
   color: #fff;
@@ -68,11 +90,12 @@
   font-size: 30rpx;
 }
 
-/* 帖子列表 */
+/* 列表容器：控制卡片间距和左右留白。 */
 .posts-list {
   padding: 0 30rpx;
 }
 
+/* 帖子卡片：承载封面、摘要和互动数据。 */
 .post-item {
   background: #fff;
   border-radius: 24rpx;
@@ -81,7 +104,12 @@
   box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
   position: relative;
 }
+.page-container.dark .post-item {
+  background: #252540;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.25);
+}
 
+/* 卡片封面图。 */
 .post-cover {
   width: 100%;
   height: 300rpx;
@@ -89,6 +117,7 @@
   margin-bottom: 20rpx;
 }
 
+/* 标题行：左侧标题，右侧分类标签。 */
 .post-header {
   display: flex;
   align-items: center;
@@ -96,12 +125,17 @@
   margin-bottom: 12rpx;
 }
 
+/* 帖子标题。 */
 .post-title {
   font-size: 32rpx;
   font-weight: bold;
   color: #333;
 }
+.page-container.dark .post-title {
+  color: #f1f1ff;
+}
 
+/* 分类标签：沿用不同类别的颜色区分。 */
 .post-tag {
   padding: 6rpx 16rpx;
   border-radius: 20rpx;
@@ -123,6 +157,7 @@
   color: #f44336;
 }
 
+/* 帖子摘要：只展示两行，避免卡片高度失控。 */
 .post-desc {
   font-size: 26rpx;
   color: #666;
@@ -134,37 +169,73 @@
   overflow: hidden;
 }
 
+/* 关联猫咪摘要：把帖子和猫档案关系讲清楚，避免列表像旧版猫信息卡。 */
+.post-cat-brief {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+  margin-bottom: 14rpx;
+  padding: 14rpx 18rpx;
+  background: #fff7f0;
+  border-radius: 16rpx;
+}
+.page-container.dark .post-cat-brief {
+  background: rgba(255, 154, 106, 0.08);
+}
+.post-cat-name {
+  font-size: 24rpx;
+  color: #ff8b55;
+  font-weight: 600;
+}
+.post-cat-meta {
+  font-size: 22rpx;
+  color: #b18a78;
+}
+.page-container.dark .post-cat-meta {
+  color: #b8b8d6;
+}
+
+/* 卡片底部：地点信息和互动统计。 */
 .post-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
+/* 地点文案。 */
 .post-location {
   font-size: 24rpx;
   color: #999;
 }
 
+/* 点赞和评论统计。 */
 .post-stats {
   display: flex;
   gap: 24rpx;
 }
 
+/* 单个统计项。 */
 .stat-item {
   font-size: 24rpx;
   color: #999;
 }
 
+/* 删除提示：弱提示放在右上角，不抢正文焦点。 */
 .delete-hint {
   position: absolute;
   top: 24rpx;
   right: 24rpx;
 }
 
+/* 删除按钮：保留轻量感，但明确可点。 */
 .delete-text {
   font-size: 20rpx;
-  color: #ccc;
-  background: rgba(0, 0, 0, 0.05);
-  padding: 4rpx 12rpx;
-  border-radius: 8rpx;
+  color: #ff7a59;
+  background: rgba(255, 122, 89, 0.12);
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+}
+.page-container.dark .delete-text {
+  color: #ffb29b;
+  background: rgba(255, 122, 89, 0.16);
 }

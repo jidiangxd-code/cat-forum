@@ -1,9 +1,18 @@
 <!-- pages/my-favorites/my-favorites.wxml - 我的收藏 -->
-<view class="page-container">
+<view class="page-container {{isDarkMode ? 'dark' : ''}}">
 
   <!-- 收藏列表 -->
   <view class="post-list" wx:if="{{posts.length > 0}}">
+    <!-- 帖子区域：展示帖子内容、图片与互动入口。 -->
     <view class="post-card" wx:for="{{posts}}" wx:key="_id">
+      <view class="favorite-cat-brief" wx:if="{{item.catId}}" bindtap="onCatTap" data-catid="{{item.catId}}">
+        <image class="favorite-cat-cover" src="{{item.catCover || '/assets/images/default-cat.png'}}" mode="aspectFill" />
+        <view class="favorite-cat-text">
+          <text class="favorite-cat-name">🐱 {{item.catName}}</text>
+          <text class="favorite-cat-sub">查看猫咪档案</text>
+        </view>
+        <text class="favorite-cat-arrow">›</text>
+      </view>
 
       <!-- 图片组 -->
       <view
@@ -32,7 +41,7 @@
         <view class="post-category-tag" wx:if="{{item.category}}">
           {{categoryMap[item.category] || item.category}}
         </view>
-        <text class="post-text">{{item.content}}</text>
+        <text class="post-text">{{item.displayContent}}</text>
       </view>
 
       <!-- 底部：时间 + 取消收藏 -->
@@ -50,6 +59,7 @@
   <view class="empty" wx:if="{{!loading && empty}}">
     <text class="empty-icon">⭐</text>
     <text class="empty-text">还没有收藏，快去发现喜欢的帖子吧！</text>
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-btn" bindtap="goPublish">去逛逛</view>
   </view>
 

@@ -20,6 +20,7 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// 处理历史 cats 集合的发帖写入与参数校验。
 exports.main = async (event, context) => {
   const { name, location, description = "", images = [], tags = [] } = event;
 

@@ -4,6 +4,7 @@
   min-height: 100vh;
   padding-bottom: 120rpx;
 }
+/* 加载提示与状态反馈样式。 */
 .loading-page {
   height: 100vh;
   display: flex;
@@ -39,6 +40,7 @@
   overflow: hidden;
   flex-shrink: 0;
 }
+/* 头像容器与兜底展示样式。 */
 .avatar-empty {
   background: rgba(255, 255, 255, 0.3);
   display: flex;
@@ -78,6 +80,7 @@
   color: rgba(255, 255, 255, 0.85);
 }
 
+/* 表单输入与字段布局样式。 */
 .form {
   padding: 0 24rpx;
 }
@@ -103,6 +106,7 @@
   font-weight: normal;
   font-size: 24rpx;
 }
+/* 表单输入与字段布局样式。 */
 .form-input {
   width: 100%;
   background: #f8f8f8;
@@ -120,6 +124,7 @@
   margin-top: 8rpx;
 }
 
+/* 封面图与占位背景样式。 */
 .cover-pick {
 }
 .cover-preview {
@@ -181,6 +186,7 @@
   line-height: 1.6;
 }
 
+/* 提交按钮与底部提交区样式。 */
 .submit-wrap {
   position: fixed;
   bottom: 0;

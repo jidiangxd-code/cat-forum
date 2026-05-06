@@ -2,6 +2,7 @@
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     mode: 'create',   // 'create' | 'edit'
     catId: '',
@@ -13,16 +14,25 @@ Page({
       personality: '',
       location: '',
       status: 'active',
-      coverImage: null
+      coverImage: null,
+      healthTags: []
     },
     coverLocalPath: null,
     // 选项
     appearanceOptions: [],
     genderOptions: [],
     statusOptions: [],
+    healthTagOptions: [
+      { label: '🦄 已绝育', value: '已绝育' },
+      { label: '💉 已驱虫', value: '已驱虫' },
+      { label: '🤰 怀孕中', value: '怀孕中' },
+      { label: '🏥 生病/受伤', value: '生病/受伤' },
+      { label: '⚠️ 需要关注', value: '需要关注' }
+    ],
     submitting: false
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad(options) {
     this.setData({
       appearanceOptions: api.APPEARANCE_OPTIONS,
@@ -39,6 +49,7 @@ Page({
     }
   },
 
+  // 读取已有猫咪档案并回填编辑表单。
   async loadExisting(catId) {
     wx.showLoading({ title: '加载中...' });
     try {
@@ -53,7 +64,8 @@ Page({
           personality: cat.personality || '',
           location: cat.location || '',
           status: cat.status || 'active',
-          coverImage: cat.coverImage || null
+          coverImage: cat.coverImage || null,
+          healthTags: Array.isArray(cat.healthTags) ? cat.healthTags : []
         }
       });
       wx.hideLoading();
@@ -85,6 +97,20 @@ Page({
 
   onStatusTap(e) { this.setData({ 'form.status': e.currentTarget.dataset.val }); },
 
+  // 切换健康标签的选中状态。
+  onHealthTagTap(e) {
+    const val = e.currentTarget.dataset.val;
+    const tags = [...(this.data.form.healthTags || [])];
+    const idx = tags.indexOf(val);
+    if (idx >= 0) {
+      tags.splice(idx, 1);
+    } else {
+      tags.push(val);
+    }
+    this.setData({ 'form.healthTags': tags });
+  },
+
+  // 提交创建或编辑猫咪档案的表单。
   async submit() {
     const { form, mode, catId, coverLocalPath } = this.data;
 
@@ -119,7 +145,8 @@ Page({
           personality: form.personality.trim(),
           location: form.location.trim(),
           status: form.status,
-          coverImage
+          coverImage,
+          healthTags: form.healthTags
         });
 
         wx.hideLoading();
@@ -137,7 +164,8 @@ Page({
           personality: form.personality.trim(),
           location: form.location.trim(),
           status: form.status,
-          coverImage
+          coverImage,
+          healthTags: form.healthTags
         });
 
         wx.hideLoading();

@@ -3,6 +3,7 @@
 
   <!-- 搜索框 -->
   <view class="search-bar">
+    <!-- 搜索区域：输入关键词并触发筛选或查询。 -->
     <view class="search-input-wrap">
       <text class="search-icon">🔍</text>
       <input

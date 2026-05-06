@@ -9,7 +9,9 @@
 
   <!-- 图片上传区域 -->
   <view class="section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">照片 <text class="required">*</text></view>
+    <!-- 图片区块：展示图片、轮播或上传入口。 -->
     <view class="image-grid">
       <view class="img-item" wx:for="{{images}}" wx:key="index">
         <image class="preview-img" src="{{item}}" mode="aspectFill" />
@@ -24,6 +26,7 @@
 
   <!-- 帖子描述 -->
   <view class="section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">描述 <text class="required">*</text></view>
     <textarea
       class="desc-input"
@@ -38,6 +41,7 @@
 
   <!-- 帖子分类 -->
   <view class="section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">分类 <text class="required">*</text></view>
     <view class="category-grid">
       <view
@@ -52,6 +56,7 @@
 
   <!-- 位置标记 -->
   <view class="section location-section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">
       位置 <text class="optional">(可选)</text>
     </view>
@@ -83,6 +88,7 @@
 
   <!-- 绑猫区域 -->
   <view class="section bind-section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">绑定猫咪 <text class="required">*</text> <text class="tip">（必须选择）</text></view>
 
     <!-- 未选择时：显示三种方式 -->
@@ -172,15 +178,18 @@
 <view class="preview-page {{isDarkMode ? 'dark' : ''}}" wx:if="{{previewMode}}">
   <!-- 预览头部 -->
   <view class="preview-header">
+    <!-- 预览区域：模拟最终展示效果供用户确认。 -->
     <view class="preview-back" bindtap="goBackToEdit">
       <text>← 返回编辑</text>
     </view>
     <text class="preview-title">预览效果</text>
+    <!-- 预览区域：模拟最终展示效果供用户确认。 -->
     <view class="preview-placeholder"></view>
   </view>
 
   <!-- 预览内容（模拟帖子详情页样式） -->
   <scroll-view class="preview-scroll" scroll-y>
+    <!-- 预览区域：模拟最终展示效果供用户确认。 -->
     <view class="preview-content">
       <!-- 图片轮播 -->
       <swiper
@@ -201,6 +210,19 @@
           />
         </swiper-item>
       </swiper>
+
+      <!-- 作者预览：提前确认发布后的昵称和头像展示效果 -->
+      <view class="preview-author-card">
+        <image
+          class="preview-author-avatar"
+          src="{{currentUserInfo.avatarUrl || '/assets/images/default-avatar.png'}}"
+          mode="aspectFill"
+        />
+        <view class="preview-author-info">
+          <text class="preview-author-name">{{currentUserInfo.nickName || '匿名用户'}}</text>
+          <text class="preview-author-meta">发布后首页和详情会显示这组资料</text>
+        </view>
+      </view>
 
       <!-- 猫咪信息卡片 -->
       <view class="preview-cat-card">
@@ -265,11 +287,14 @@
 
 <!-- 猫咪选择弹窗 -->
 <view class="picker-mask" wx:if="{{showCatPicker}}" bindtap="closeCatPicker" />
+<!-- 猫咪区域：展示猫咪资料、档案或绑定信息。 -->
 <view class="cat-picker" wx:if="{{showCatPicker}}">
+  <!-- 选择器区域：展示待选项并支持筛选。 -->
   <view class="picker-header">
     <text class="picker-title">{{catPickMode === 'formal' ? '选择正式猫咪' : '选择未知代号猫'}}</text>
     <text class="picker-close" bindtap="closeCatPicker">✕</text>
   </view>
+  <!-- 选择器区域：展示待选项并支持筛选。 -->
   <view class="picker-search">
     <input
       class="search-input"
@@ -278,8 +303,11 @@
       value="{{catPickKeyword}}"
     />
   </view>
+  <!-- 选择器区域：展示待选项并支持筛选。 -->
   <scroll-view class="picker-list" scroll-y>
+    <!-- 状态区域：反馈当前数据加载进度。 -->
     <view class="loading-tip" wx:if="{{catPickLoading}}">加载中...</view>
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-tip" wx:elif="{{catPickList.length === 0}}">暂无猫咪，快去创建吧</view>
     <view
       wx:for="{{catPickList}}"

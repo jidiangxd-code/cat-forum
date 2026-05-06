@@ -2,6 +2,7 @@
 <view class="page {{isDarkMode ? 'dark' : ''}}">
   <!-- 头部 -->
   <view class="header">
+    <!-- 头部区域：承载标题、入口和当前状态信息。 -->
     <view class="header-top">
       <text class="page-title">🔍 发现</text>
       <view class="create-btn" bindtap="goCreateFormal">+ 建正式档案</view>
@@ -38,6 +39,7 @@
 
   <!-- 猫广场：基于发布帖子的 GPS 记录展示轨迹和活动范围估计 -->
   <view class="cat-square" wx:if="{{currentTab === 'square' && !searchMode}}">
+    <!-- 猫广场区域：展示定位聚合和动态流内容。 -->
     <view class="square-intro">
       <view>
         <text class="square-title">📍 猫广场</text>
@@ -46,6 +48,7 @@
       <view class="square-refresh" bindtap="loadCatSquare">刷新</view>
     </view>
 
+    <!-- 猫广场区域：展示定位聚合和动态流内容。 -->
     <view class="square-switch">
       <view
         class="square-switch-item {{squareView === 'location' ? 'active' : ''}}"
@@ -59,6 +62,7 @@
       >撸猫圈</view>
     </view>
 
+    <!-- 猫广场区域：展示定位聚合和动态流内容。 -->
     <view class="square-empty" wx:if="{{squareView === 'location' && !squareLoading && squareCats.length === 0}}">
       <text class="empty-icon">🐾</text>
       <text class="empty-text">还没有带 GPS 的猫咪动态</text>
@@ -124,6 +128,7 @@
       </view>
     </view>
 
+    <!-- 猫广场区域：展示定位聚合和动态流内容。 -->
     <view class="square-feed" wx:if="{{squareView === 'circle'}}">
       <view class="square-feed-empty" wx:if="{{!squareLoading && squareFeed.length === 0}}">
         <text class="empty-icon">💬</text>
@@ -227,6 +232,7 @@
   <view class="empty" wx:if="{{!loading && currentTab !== 'square' && catList.length === 0}}">
     <text class="empty-icon">🐾</text>
     <text class="empty-text">还没有猫咪档案</text>
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-btn" bindtap="goCreateFormal">创建第一份正式档案</view>
   </view>
 

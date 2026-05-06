@@ -1,7 +1,11 @@
+/* miniprogram/pages/my-likes/my-likes.wxss - 我的喜欢页面样式 */
 .page-container {
   min-height: 100vh;
   background: #fff5eb;
   padding-bottom: 40rpx;
+}
+.page-container.dark {
+  background: #1a1a2e;
 }
 
 /* 加载状态 */
@@ -13,6 +17,7 @@
   padding: 200rpx 0;
 }
 
+/* 加载提示与状态反馈样式。 */
 .loading-icon {
   font-size: 80rpx;
   animation: bounce 1s infinite;
@@ -24,6 +29,7 @@
   font-size: 28rpx;
 }
 
+/* 动效关键帧定义。 */
 @keyframes bounce {
   0%,
   100% {
@@ -42,6 +48,7 @@
   padding: 120rpx 60rpx;
 }
 
+/* 空状态提示与占位样式。 */
 .empty-icon {
   font-size: 120rpx;
   margin-bottom: 30rpx;
@@ -53,11 +60,21 @@
   color: #333;
   margin-bottom: 16rpx;
 }
+.page-container.dark .empty-title,
+.page-container.dark .like-name {
+  color: #f1f1ff;
+}
 
 .empty-desc {
   font-size: 28rpx;
   color: #999;
   margin-bottom: 50rpx;
+}
+.page-container.dark .empty-desc,
+.page-container.dark .loading-text,
+.page-container.dark .like-location,
+.page-container.dark .like-stat {
+  color: #9a9abc;
 }
 
 .empty-btn {
@@ -84,6 +101,9 @@
   position: relative;
   margin-bottom: 20rpx;
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+.page-container.dark .like-item {
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.28);
 }
 
 .like-item:nth-child(odd) {

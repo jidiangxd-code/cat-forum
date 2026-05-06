@@ -1,207 +1,483 @@
 /* pages/index/index.wxss */
-.page { background: #FFF5EB; min-height: 100vh; }
+/* 页面底色：浅色和深色模式都用渐变背景承接首页氛围。 */
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fff5eb 0%, #fff9f3 36%, #fff3e7 100%);
+}
+
+/* 页面基础容器与整体背景样式。 */
 .page.dark {
-  background: #1a1a2e;
+  background: linear-gradient(180deg, #171829 0%, #1f2138 42%, #181a2d 100%);
 }
 
-/* 顶部横幅 */
+/* 顶部横幅：承载品牌标题、快捷入口和主题切换按钮。 */
 .banner {
-  background: linear-gradient(135deg, #FF9A6A, #FF7043);
-  padding: 24rpx 28rpx;
-  display: flex; align-items: center; justify-content: space-between;
-}
-.page.dark .banner {
-  background: linear-gradient(135deg, #332d5d, #2a284b);
-}
-.banner-left { display: flex; flex-direction: column; }
-.banner-title { display: block; font-size: 36rpx; font-weight: bold; color: #fff; }
-.banner-sub { display: block; font-size: 22rpx; color: rgba(255,255,255,0.8); margin-top: 4rpx; }
-.banner-right { display: flex; align-items: center; gap: 16rpx; }
-.cat-rank-btn {
-  background: rgba(255,255,255,0.2); color: #fff;
-  padding: 12rpx 24rpx; border-radius: 30rpx; font-size: 24rpx;
-}
-.page.dark .cat-rank-btn {
-  background: rgba(255,255,255,0.08);
-}
-.search-btn {
-  font-size: 32rpx;
-  padding: 12rpx 16rpx;
-}
-.page.dark .search-btn {
-  color: #e0e0e0;
+  background: linear-gradient(135deg, #ff9a6a 0%, #ff7b54 58%, #ff6a3d 100%);
+  padding: 24rpx 28rpx 28rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 10rpx 28rpx rgba(255, 123, 84, 0.18);
 }
 
-/* 排序切换 Tab */
+/* 顶部横幅与品牌入口样式。 */
+.page.dark .banner {
+  background: linear-gradient(135deg, #31416f 0%, #232748 58%, #1e223d 100%);
+  box-shadow: none;
+}
+
+.banner-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.banner-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.banner-sub {
+  display: block;
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.82);
+  margin-top: 4rpx;
+}
+
+.banner-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+/* 猫咪资料、头像和标签样式。 */
+.cat-rank-btn {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  padding: 12rpx 24rpx;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+.page.dark .cat-rank-btn {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 搜索控件与输入区域样式。 */
+.search-btn {
+  min-width: 68rpx;
+  height: 68rpx;
+  border-radius: 34rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30rpx;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.page.dark .search-btn {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* 排序标签：负责切换最新和热门两种信息流排序。 */
 .sort-tabs {
   display: flex;
-  background: #fff;
-  border-bottom: 1rpx solid #f0f0f0;
+  gap: 12rpx;
+  padding: 20rpx 24rpx 4rpx;
 }
-.page.dark .sort-tabs {
-  background: #252540;
-  border-bottom-color: #333355;
-}
+
+/* 排序切换与筛选区域样式。 */
 .sort-tab {
   flex: 1;
   text-align: center;
-  padding: 20rpx 0;
-  font-size: 28rpx;
-  color: #999;
-  position: relative;
+  padding: 18rpx 0;
+  border-radius: 999rpx;
+  font-size: 26rpx;
+  color: #9a877b;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6rpx 18rpx rgba(255, 154, 106, 0.08);
 }
+
 .page.dark .sort-tab {
-  color: #707070;
+  color: #8f92b0;
+  background: rgba(37, 39, 64, 0.95);
+  box-shadow: none;
 }
+
 .sort-tab.active {
-  color: #FF9A6A;
+  color: #ff6f42;
   font-weight: bold;
+  background: #fff;
 }
+
 .page.dark .sort-tab.active {
-  color: #a29bfe;
-}
-.sort-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60rpx;
-  height: 4rpx;
-  background: #FF9A6A;
-  border-radius: 2rpx;
+  color: #ffd37a;
+  background: linear-gradient(135deg, #2b3154, #252744);
 }
 
-/* 帖子流 */
-.post-list { padding: 16rpx 0; }
+/* 帖子卡片主体：统一作者信息、猫咪档案、正文和互动区样式。 */
+.post-list {
+  padding: 12rpx 20rpx 8rpx;
+}
+
+/* 帖子内容、图片和互动区样式。 */
 .post-card {
-  background: #fff; margin: 0 0 16rpx;
+  margin-bottom: 20rpx;
+  border-radius: 28rpx;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 10rpx 28rpx rgba(255, 154, 106, 0.12);
 }
+
 .page.dark .post-card {
-  background: #252540;
+  background: rgba(37, 39, 64, 0.96);
+  box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.2);
 }
 
-/* 猫咪头部 */
-.post-cat-header {
-  display: flex; align-items: center; padding: 16rpx 24rpx;
-  border-bottom: 1rpx solid #f5f5f5;
-}
-.page.dark .post-cat-header {
-  border-bottom-color: #333355;
-}
-.cat-avatar {
-  width: 72rpx; height: 72rpx; border-radius: 50%; margin-right: 16rpx;
-  overflow: hidden; flex-shrink: 0;
-}
-.avatar-empty {
-  background: #FFE0C0; display: flex; align-items: center;
-  justify-content: center; font-size: 36rpx; border-radius: 50%;
-}
-.page.dark .avatar-empty {
-  background: #3a3a5c;
-}
-.cat-header-info { flex: 1; }
-.cat-header-name { display: block; font-size: 26rpx; font-weight: bold; color: #333; }
-.cat-header-meta { display: block; font-size: 20rpx; color: #999; margin-top: 2rpx; }
-.page.dark .cat-header-name { color: #e0e0e0; }
-.page.dark .cat-header-meta { color: #b0b0b0; }
-.cat-type-badge {
-  padding: 4rpx 12rpx; border-radius: 12rpx; font-size: 20rpx; font-weight: bold;
-}
-.cat-type-badge.formal { background: #FF9A6A; color: #fff; }
-.cat-type-badge.unknown { background: #88BBFF; color: #fff; }
-.page.dark .cat-type-badge.formal { background: #ff9a6a; }
-.page.dark .cat-type-badge.unknown { background: #6d9cff; }
-
-/* 帖子图片 */
-.post-imgs {
-  display: flex; gap: 4rpx; position: relative;
-  background: #f0f0f0; max-height: 500rpx; overflow: hidden;
-}
-.page.dark .post-imgs {
-  background: #333355;
-}
-.post-img { flex: 1; height: 400rpx; min-width: 0; }
-.post-img.single { height: 480rpx; }
-.img-more-badge {
-  position: absolute; right: 8rpx; bottom: 8rpx;
-  background: rgba(0,0,0,0.5); color: #fff;
-  padding: 8rpx 16rpx; border-radius: 20rpx; font-size: 24rpx;
+.post-author {
+  display: flex;
+  align-items: center;
+  padding: 22rpx 24rpx 14rpx;
 }
 
-/* 文字内容 */
-.post-content { padding: 16rpx 24rpx 12rpx; }
+.author-avatar {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f0f0f0;
+  border: 3rpx solid #ffe8dc;
+}
+
+.page.dark .author-avatar {
+  border-color: #3a3d60;
+  background: #313453;
+}
+
+.author-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.author-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #3d3028;
+}
+
+.page.dark .author-name {
+  color: #eef0ff;
+}
+
+.author-meta {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 22rpx;
+  color: #a89384;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page.dark .author-meta {
+  color: #9fa5c2;
+}
+
+/* 帖子内容、图片和互动区样式。 */
 .post-category-tag {
-  display: inline-block; padding: 4rpx 16rpx; border-radius: 12rpx;
-  background: #FFF0E0; color: #FF9A6A; font-size: 22rpx; margin-bottom: 8rpx;
+  max-width: 180rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #fff0e3;
+  color: #ff7a49;
+  font-size: 22rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.page.dark .post-category-tag {
-  background: #3a3a5c;
-  color: #a29bfe;
-}
-.post-text {
-  font-size: 28rpx; color: #333; line-height: 1.7;
-  display: -webkit-box; -webkit-box-orient: vertical;
-  -webkit-line-clamp: 4; overflow: hidden;
-}
-.page.dark .post-text { color: #e0e0e0; }
 
-/* 底部 */
-.post-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24rpx 20rpx;
+.page.dark .post-category-tag {
+  background: #383d61;
+  color: #ffd37a;
 }
-.post-time { font-size: 22rpx; color: #bbb; }
-.page.dark .post-time { color: #909090; }
+
+.post-cat-header {
+  margin: 0 20rpx 14rpx;
+  padding: 16rpx 18rpx;
+  display: flex;
+  align-items: center;
+  border-radius: 22rpx;
+  background: linear-gradient(135deg, #fff7ef, #fff1e4);
+  border: 1rpx solid #ffe2cc;
+}
+
+.page.dark .post-cat-header {
+  background: linear-gradient(135deg, #2c3153, #252744);
+  border-color: #353a5d;
+}
+
+.post-cat-header.cat-missing {
+  background: #faf7f3;
+  border-color: #efe1d3;
+}
+
+.page.dark .post-cat-header.cat-missing {
+  background: #252744;
+  border-color: #313557;
+}
+
+/* 猫咪资料、头像和标签样式。 */
+.cat-avatar {
+  width: 74rpx;
+  height: 74rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* 头像容器与兜底展示样式。 */
+.avatar-empty {
+  background: #ffe0c0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+}
+
+.page.dark .avatar-empty {
+  background: #43476f;
+}
+
+/* 猫咪资料、头像和标签样式。 */
+.cat-header-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cat-header-name {
+  display: block;
+  font-size: 26rpx;
+  font-weight: bold;
+  color: #473328;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page.dark .cat-header-name {
+  color: #f2f4ff;
+}
+
+.cat-header-meta {
+  display: block;
+  margin-top: 4rpx;
+  font-size: 21rpx;
+  color: #9c8878;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.page.dark .cat-header-meta {
+  color: #a5abc7;
+}
+
+.cat-type-badge {
+  padding: 6rpx 14rpx;
+  border-radius: 999rpx;
+  font-size: 20rpx;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.cat-type-badge.formal {
+  background: #ff8d5e;
+  color: #fff;
+}
+
+.cat-type-badge.unknown {
+  background: #8ab5ff;
+  color: #fff;
+}
+
+/* 图片区：支持单图放大和多图并排的统一视觉处理。 */
+.post-imgs {
+  display: flex;
+  gap: 4rpx;
+  position: relative;
+  background: #f3ebe4;
+  max-height: 520rpx;
+  overflow: hidden;
+}
+
+/* 帖子内容、图片和互动区样式。 */
+.page.dark .post-imgs {
+  background: #303455;
+}
+
+.post-img {
+  flex: 1;
+  height: 400rpx;
+  min-width: 0;
+}
+
+.post-img.single {
+  height: 500rpx;
+}
+
+/* 图片展示、占位和裁切样式。 */
+.img-more-badge {
+  position: absolute;
+  right: 12rpx;
+  bottom: 12rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 24rpx;
+}
+
+/* 帖子内容、图片和互动区样式。 */
+.post-content {
+  padding: 18rpx 24rpx 12rpx;
+}
+
+.post-text {
+  font-size: 28rpx;
+  line-height: 1.72;
+  color: #41332b;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+  overflow: hidden;
+}
+
+.page.dark .post-text {
+  color: #edf0ff;
+}
+
+/* 卡片底部操作区：展示时间、评论入口和点赞入口。 */
+.post-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24rpx 22rpx;
+}
+
+.post-time {
+  font-size: 22rpx;
+  color: #b49f91;
+}
+
+.page.dark .post-time {
+  color: #9ca2be;
+}
+
 .post-actions {
   display: flex;
   align-items: center;
   gap: 12rpx;
 }
-.comment-entry {
-  font-size: 26rpx;
-  color: #999;
-  padding: 8rpx 16rpx;
-}
-.like-btn { font-size: 26rpx; color: #999; padding: 8rpx 16rpx; }
-.like-btn.liked { color: #FF7043; }
-.page.dark .like-btn,
-.page.dark .comment-entry { color: #909090; }
-.page.dark .like-btn.liked { color: #ff8fab; }
 
-/* 空状态 */
+.comment-entry,
+.like-btn {
+  min-width: 104rpx;
+  height: 56rpx;
+  padding: 0 18rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  font-size: 24rpx;
+  color: #8e7b6d;
+  background: #fff4ea;
+}
+
+.page.dark .comment-entry,
+.page.dark .like-btn {
+  color: #b6bbd3;
+  background: #313557;
+}
+
+.like-btn.liked {
+  color: #ff6b6b;
+}
+
+.page.dark .like-btn.liked {
+  color: #ff9aa2;
+}
+
+/* 空状态与分页提示：覆盖无数据和列表尾部两种状态。 */
 .empty {
-  display: flex; flex-direction: column; align-items: center;
-  padding: 120rpx 40rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 140rpx 40rpx;
 }
-.page.dark .empty-text { color: #b0b0b0; }
-.empty-icon { font-size: 80rpx; margin-bottom: 20rpx; }
-.empty-text { font-size: 28rpx; color: #999; margin-bottom: 32rpx; text-align: center; }
+
+/* 空状态提示与占位样式。 */
+.empty-icon {
+  font-size: 84rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #9f8d81;
+  margin-bottom: 32rpx;
+  text-align: center;
+}
+
+.page.dark .empty-text {
+  color: #a5abc7;
+}
+
 .empty-btn {
-  background: #FF9A6A; color: #fff; padding: 20rpx 48rpx;
-  border-radius: 40rpx; font-size: 28rpx;
+  padding: 20rpx 48rpx;
+  border-radius: 999rpx;
+  background: linear-gradient(135deg, #ff9a6a, #ff7043);
+  color: #fff;
+  font-size: 28rpx;
+  box-shadow: 0 10rpx 24rpx rgba(255, 112, 67, 0.2);
 }
+
 .page.dark .empty-btn {
-  background: #6C5CE7;
+  background: linear-gradient(135deg, #46548a, #2e3459);
+  box-shadow: none;
 }
 
-.load-more, .no-more {
-  text-align: center; padding: 30rpx; font-size: 24rpx; color: #bbb;
-}
-.page.dark .load-more, .page.dark .no-more {
-  color: #707070;
+.load-more,
+/* 结束态和无更多数据提示样式。 */
+.no-more {
+  text-align: center;
+  padding: 30rpx;
+  font-size: 24rpx;
+  color: #b49f91;
 }
 
+.page.dark .load-more,
+.page.dark .no-more {
+  color: #8f95b4;
+}
+
+/* 广告区：单独包裹 banner 广告，避免与帖子卡片视觉混在一起。 */
 .ad-section {
   margin: 24rpx;
   padding: 20rpx 20rpx 12rpx;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.96);
   border-radius: 24rpx;
-  box-shadow: 0 6rpx 18rpx rgba(255, 154, 106, 0.12);
+  box-shadow: 0 10rpx 24rpx rgba(255, 154, 106, 0.08);
 }
 
 .page.dark .ad-section {
-  background: #252540;
+  background: rgba(37, 39, 64, 0.96);
   box-shadow: none;
 }
 
@@ -212,5 +488,5 @@
 }
 
 .page.dark .ad-label {
-  color: #9f9fb4;
+  color: #9fa5c2;
 }
