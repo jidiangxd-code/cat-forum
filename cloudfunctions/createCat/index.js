@@ -33,18 +33,19 @@ exports.main = async (event, context) => {
   }
 
   const now = new Date();
-  const data = {
-    catType,                                   // 'formal' | 'unknown'
-    fullName: (fullName || '').trim() || null,
-    codeName: (codeName || '').trim() || null,
-    appearance: appearance.trim(),
+    const data = {
+      catType,                                   // 'formal' | 'unknown'
+      fullName: (fullName || '').trim() || null,
+      codeName: (codeName || '').trim() || null,
+      appearance: appearance.trim(),
     gender: gender || 'unknown',
     personality: (personality || '').trim(),
     location: (location || '').trim(),
     status: status || 'active',
-    coverImage: coverImage || null,
-    totalVote: 0,
-    isMerged: false,
+      coverImage: coverImage || null,
+      discoveryVisible: false,
+      totalVote: 0,
+      isMerged: false,
     mergedTo: null,
     createdBy: openid,
     editLog: [],                               // 编辑日志
