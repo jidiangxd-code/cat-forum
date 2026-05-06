@@ -7,6 +7,7 @@ const cloud = require("wx-server-sdk");
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 删除评论并同步帖子统计字段。
 exports.main = async (event, context) => {
   const { commentId } = event;
 

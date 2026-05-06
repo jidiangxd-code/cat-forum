@@ -5,6 +5,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+// 切换用户的收藏状态并同步 favorites 数据。
 exports.main = async (event, context) => {
   const { catId } = event;
 

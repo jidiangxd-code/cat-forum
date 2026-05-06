@@ -147,6 +147,7 @@ page {
   text-align: center;
   padding: 30rpx 0;
 }
+/* 页面基础容器与整体背景样式。 */
 page.dark .page-title {
   color: #a29bfe;
 }
@@ -161,6 +162,7 @@ page.dark .page-title {
   border-left: 6rpx solid #FFB74D;
   background-color: var(--color-bg);
 }
+/* 通用内容卡片与分区样式。 */
 page.dark .section-title {
   color: #a29bfe;
   border-left-color: #a29bfe;
@@ -249,6 +251,7 @@ page.dark .section-title {
   font-size: 28rpx;
 }
 .input::after { border: none; }
+/* 输入控件与编辑态样式。 */
 .input:focus {
   border-color: var(--color-border-accent);
   outline: none;

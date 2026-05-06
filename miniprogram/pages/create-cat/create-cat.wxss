@@ -5,6 +5,7 @@
   padding-bottom: 120rpx;
 }
 
+/* 封面图与占位背景样式。 */
 .cover-section {
   width: 100%;
   height: 300rpx;
@@ -33,6 +34,7 @@
   margin-top: 12rpx;
 }
 
+/* 表单输入与字段布局样式。 */
 .form {
   padding: 0 24rpx;
 }
@@ -58,6 +60,7 @@
   font-weight: normal;
   font-size: 24rpx;
 }
+/* 表单输入与字段布局样式。 */
 .form-input {
   width: 100%;
   background: #f8f8f8;
@@ -109,6 +112,7 @@
   font-weight: bold;
 }
 
+/* 提交按钮与底部提交区样式。 */
 .submit-wrap {
   position: fixed;
   bottom: 0;

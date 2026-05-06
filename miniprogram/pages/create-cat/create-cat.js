@@ -2,6 +2,7 @@
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     mode: 'create',   // 'create' | 'edit'
     catId: '',
@@ -31,6 +32,7 @@ Page({
     submitting: false
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad(options) {
     this.setData({
       appearanceOptions: api.APPEARANCE_OPTIONS,
@@ -47,6 +49,7 @@ Page({
     }
   },
 
+  // 读取已有猫咪档案并回填编辑表单。
   async loadExisting(catId) {
     wx.showLoading({ title: '加载中...' });
     try {
@@ -94,6 +97,7 @@ Page({
 
   onStatusTap(e) { this.setData({ 'form.status': e.currentTarget.dataset.val }); },
 
+  // 切换健康标签的选中状态。
   onHealthTagTap(e) {
     const val = e.currentTarget.dataset.val;
     const tags = [...(this.data.form.healthTags || [])];
@@ -106,6 +110,7 @@ Page({
     this.setData({ 'form.healthTags': tags });
   },
 
+  // 提交创建或编辑猫咪档案的表单。
   async submit() {
     const { form, mode, catId, coverLocalPath } = this.data;
 

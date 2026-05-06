@@ -2,6 +2,7 @@
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     loading: true,
     loadingMore: false,
@@ -19,16 +20,19 @@ Page({
     ]
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad() {
     this.loadNotifications();
     this.loadUnreadCount();
   },
 
+  // 在页面重新显示时同步最新状态或刷新数据。
   onShow() {
     // 每次进入刷新未读数
     this.loadUnreadCount();
   },
 
+  // 响应下拉刷新并重置列表或详情数据。
   onPullDownRefresh() {
     this.setData({ page: 1, hasMore: true, list: [] });
     Promise.all([
@@ -37,6 +41,7 @@ Page({
     ]).finally(() => wx.stopPullDownRefresh());
   },
 
+  // 在可继续加载时触发下一页数据请求。
   onReachBottom() {
     if (this.data.hasMore && !this.data.loadingMore) {
       this.setData({ loadingMore: true });

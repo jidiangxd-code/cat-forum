@@ -1,20 +1,39 @@
+// miniprogram/pages/my-comments/my-comments.js - 我的评论页面脚本
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     comments: [],
     loading: true,
-    empty: false
+    empty: false,
+    isDarkMode: wx.getStorageSync('darkMode') || false,
+    categoryMap: {
+      daily: '日常',
+      rescue: '救助',
+      neuter: '绝育',
+      adopt: '领养',
+      lost: '寻猫',
+      other: '其他'
+    }
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad() {
     this.loadMyComments();
   },
 
+  // 在页面重新显示时同步最新状态或刷新数据。
   onShow() {
+    this._syncTheme();
     this.loadMyComments();
   },
 
+  _syncTheme() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
+  },
+
+  // 加载当前用户发表过的评论列表。
   async loadMyComments() {
     this.setData({ loading: true });
 
@@ -55,12 +74,33 @@ Page({
         });
       }
 
+      const catIds = [...new Set(comments.map(c => c.catId).filter(Boolean))];
+      const catCache = {};
+      if (catIds.length > 0) {
+        const catResults = await Promise.allSettled(
+          catIds.map(id => api.getCatProfile(id))
+        );
+        catResults.forEach((result, index) => {
+          if (result.status === 'fulfilled' && result.value && result.value.data) {
+            catCache[catIds[index]] = result.value.data;
+          }
+        });
+      }
+
       const enriched = comments.map(c => {
         const post = postCache[c.postId];
+        const cat = c.catId ? catCache[c.catId] : null;
+        const postContent = post ? (post.content || '') : '';
         return {
           ...c,
-          postContent: post ? (post.content || '').substring(0, 30) : '帖子已删除',
-          postImage: post && post.images && post.images[0] ? post.images[0] : ''
+          cat,
+          catName: cat ? (cat.fullName || cat.codeName || '未知猫咪') : '未知猫咪',
+          catImage: (cat && cat.coverImage) || (post && post.images && post.images[0]) || '',
+          postId: c.postId || '',
+          postContent: postContent ? `${postContent.substring(0, 36)}${postContent.length > 36 ? '...' : ''}` : '帖子已删除',
+          postImage: post && post.images && post.images[0] ? post.images[0] : '',
+          postLocation: post ? (post.location || '') : '',
+          postCategory: post ? (post.category || '') : ''
         };
       });
 
@@ -75,6 +115,7 @@ Page({
     }
   },
 
+  // 把时间字段格式化为相对时间或日期文案。
   _formatTime(t) {
     if (!t) return '';
     const d = t instanceof Date ? t : new Date(t);
@@ -87,6 +128,7 @@ Page({
     return `${d.getMonth() + 1}月${d.getDate()}日`;
   },
 
+  // 跳转到目标帖子的详情页。
   onPostTap(e) {
     const postId = e.currentTarget.dataset.postid;
     if (!postId) {
@@ -96,6 +138,17 @@ Page({
     wx.navigateTo({ url: `/pages/detail/detail?id=${postId}` });
   },
 
+  // 跳转到评论关联的猫咪主页。
+  onCatTap(e) {
+    const catId = e.currentTarget.dataset.catid;
+    if (!catId) {
+      wx.showToast({ title: '猫咪档案不存在', icon: 'none' });
+      return;
+    }
+    wx.navigateTo({ url: `/pages/cat-home/cat-home?id=${catId}` });
+  },
+
+  // 确认并删除当前用户的评论记录。
   async onDeleteComment(e) {
     const id = e.currentTarget.dataset.id;
     wx.showModal({
@@ -117,6 +170,7 @@ Page({
     });
   },
 
+  // 返回首页继续浏览内容。
   goHome() {
     wx.switchTab({ url: '/pages/index/index' });
   }

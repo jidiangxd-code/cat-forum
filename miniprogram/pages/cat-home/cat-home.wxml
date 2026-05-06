@@ -13,6 +13,7 @@
     />
     <view class="cover-placeholder" wx:else>🐱</view>
 
+    <!-- 主视觉区域：展示页面的核心信息和主入口。 -->
     <view class="hero-info">
       <!-- 类型标签 -->
       <view class="type-badge {{cat.catType === 'formal' ? 'formal' : 'unknown'}}">
@@ -53,6 +54,7 @@
 
   <!-- 票数 + 投票按钮 -->
   <view class="vote-section">
+    <!-- 投票区域：展示票数并提供投票入口。 -->
     <view class="vote-count-area">
       <text class="vote-big">{{cat.totalVote || 0}}</text>
       <text class="vote-unit">总人气票</text>
@@ -67,12 +69,15 @@
 
   <!-- 功能按钮区 -->
   <view class="action-bar">
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-btn promote-btn" bindtap="goPromote" wx:if="{{cat.catType === 'unknown'}}">
       <text>⬆️</text><text class="action-label">完善为正式猫</text>
     </view>
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-btn edit-btn" bindtap="goEdit">
       <text>✏️</text><text class="action-label">编辑资料</text>
     </view>
+    <!-- 操作区域：承载按钮、菜单或快捷功能入口。 -->
     <view class="action-btn merge-btn" bindtap="goMerge">
       <text>🔗</text><text class="action-label">标记重复</text>
     </view>
@@ -80,16 +85,19 @@
 
   <!-- 历史帖子时间线 -->
   <view class="timeline-section">
+    <!-- 时间线区域：按时间顺序展示历史动态。 -->
     <view class="timeline-header">
       <view class="timeline-line"/>
       <text class="timeline-title">📋 猫咪动态时间线</text>
       <text class="timeline-count" wx:if="{{posts.length > 0}}">{{posts.length}} 条动态</text>
     </view>
 
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-posts" wx:if="{{!postsLoading && posts.length === 0}}">
       <text>还没有帖子，快去发布吧～</text>
     </view>
 
+    <!-- 时间线区域：按时间顺序展示历史动态。 -->
     <view class="timeline-list">
       <view class="timeline-item" wx:for="{{posts}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
         <view class="timeline-dot"/>
@@ -122,6 +130,7 @@
       </view>
     </view>
 
+    <!-- 状态区域：反馈当前数据加载进度。 -->
     <view class="loading-more" wx:if="{{postsLoading}}">加载中...</view>
     <view class="no-more" wx:elif="{{!hasMorePosts && posts.length > 0}}">没有更多了</view>
   </view>

@@ -2,6 +2,7 @@
 <view class="page-container">
   <!-- 头像编辑 -->
   <view class="avatar-section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">头像</view>
     <view class="avatar-editor" bind:tap="chooseAvatar">
       <image
@@ -18,6 +19,7 @@
 
   <!-- 昵称编辑 -->
   <view class="form-section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">昵称</view>
     <input
       class="input-field"
@@ -31,6 +33,7 @@
 
   <!-- 性别选择 -->
   <view class="form-section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">性别</view>
     <view class="gender-row">
       <view

@@ -3,11 +3,13 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 处理评论、回复写入并补充通知逻辑。
 exports.main = async (event, context) => {
   const {
     postId,     // 帖子ID（新增，支持 postId）
     catId,      // 猫咪档案ID
     content,
+    attachments = [],
     authorName: eventAuthorName = '',
     authorAvatar: eventAuthorAvatar = '',
     // 子评论字段
@@ -16,12 +18,29 @@ exports.main = async (event, context) => {
     replyToUserName
   } = event;
 
+  const normalizedContent = typeof content === 'string' ? content.trim() : '';
+  const normalizedAttachments = Array.isArray(attachments)
+    ? attachments
+        .map(item => {
+          if (!item || typeof item.url !== 'string' || !item.url.trim()) {
+            return null;
+          }
+          return {
+            type: item.type || 'image',
+            url: item.url.trim(),
+            name: typeof item.name === 'string' ? item.name.trim() : ''
+          };
+        })
+        .filter(Boolean)
+        .slice(0, 4)
+    : [];
+
   // 参数校验（兼容旧版 catId 参数）
-  if (!content || !content.trim()) {
-    return { success: false, code: 400, message: '评论内容不能为空' };
+  if (!normalizedContent && normalizedAttachments.length === 0) {
+    return { success: false, code: 400, message: '评论内容或附件不能为空' };
   }
 
-  if (content.trim().length > 500) {
+  if (normalizedContent.length > 500) {
     return { success: false, code: 400, message: '评论不能超过500字' };
   }
 
@@ -58,7 +77,7 @@ exports.main = async (event, context) => {
     // ① 新版：传 postId，校验 posts 集合
     if (postId) {
       const postRes = await db.collection('posts').doc(postId).get();
-      if (!postRes.data || postRes.data.status !== 'active') {
+      if (!postRes.data || postRes.data.status === 'deleted') {
         return { success: false, code: 404, message: '帖子不存在或已删除' };
       }
     }
@@ -91,7 +110,8 @@ exports.main = async (event, context) => {
       authorId: openid,
       authorName,
       authorAvatar: avatar,
-      content: content.trim(),
+      content: normalizedContent,
+      attachments: normalizedAttachments,
       status: 'active',
       createTime: now
     };
@@ -118,6 +138,11 @@ exports.main = async (event, context) => {
 
     // ========== 通知逻辑 ==========
     try {
+      const notifyContent = normalizedContent || normalizedAttachments.map(item => {
+        if (item.type === 'gif') return '[动图]';
+        if (item.type === 'sticker') return '[表情包]';
+        return '[图片]';
+      }).join(' ');
       const notifyPayload = (toUserId, type, extra = {}) => ({
         toUserId,
         type,
@@ -127,7 +152,7 @@ exports.main = async (event, context) => {
         targetId: postId || catId || '',
         postId: postId || '',
         catId: catId || '',
-        content: content.trim(),
+        content: notifyContent,
         ...extra
       });
 
@@ -144,7 +169,7 @@ exports.main = async (event, context) => {
               targetId: postId || catId || '',
               postId: postId || '',
               catId: catId || '',
-              content: content.trim(),
+              content: notifyContent,
               read: false,
               createTime: db.serverDate()
             }
@@ -164,7 +189,7 @@ exports.main = async (event, context) => {
                 targetId: postId,
                 postId: postId,
                 catId: catId || '',
-                content: content.trim(),
+                content: notifyContent,
                 read: false,
                 createTime: db.serverDate()
               }
@@ -185,7 +210,7 @@ exports.main = async (event, context) => {
               targetId: postId,
               postId: postId,
               catId: catId || '',
-              content: content.trim(),
+              content: notifyContent,
               read: false,
               createTime: db.serverDate()
             }
@@ -205,7 +230,8 @@ exports.main = async (event, context) => {
         authorId: openid,
         authorName,
         authorAvatar: avatar,
-        content: content.trim(),
+        content: normalizedContent,
+        attachments: normalizedAttachments,
         parentId: parentId || '',
         replyToUserId: replyToUserId || '',
         replyToUserName: replyToUserName || '',

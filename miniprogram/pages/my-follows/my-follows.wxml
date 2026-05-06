@@ -1,4 +1,5 @@
-<view class="page-container">
+<!-- miniprogram/pages/my-follows/my-follows.wxml - 关注关系页面结构 -->
+<view class="page-container {{isDarkMode ? 'dark' : ''}}">
   <!-- 页面头部 -->
   <view class="page-header">
     <text class="page-title">{{type === 'following' ? '我的关注' : '我的粉丝'}}</text>
@@ -7,6 +8,7 @@
 
   <!-- 列表 -->
   <view class="user-list" wx:if="{{list.length > 0}}">
+    <!-- 用户区域：展示头像、昵称和相关状态。 -->
     <view class="user-item" wx:for="{{list}}" wx:key="id">
       <image
         class="user-avatar"

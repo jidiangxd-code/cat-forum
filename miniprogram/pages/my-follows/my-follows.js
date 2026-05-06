@@ -1,6 +1,8 @@
+// miniprogram/pages/my-follows/my-follows.js - 关注关系页面脚本
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     type: 'following', // 'following' | 'followers'
     list: [],
@@ -8,9 +10,11 @@ Page({
     hasMore: false,
     page: 1,
     pageSize: 20,
-    emptyText: '暂无关注'
+    emptyText: '暂无关注',
+    isDarkMode: wx.getStorageSync('darkMode') || false
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad(options) {
     const type = options.type || 'following';
     this.setData({
@@ -23,10 +27,17 @@ Page({
     this.loadList();
   },
 
+  // 在页面重新显示时同步最新状态或刷新数据。
   onShow() {
     // 每次回来刷新
+    this._syncTheme();
   },
 
+  _syncTheme() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
+  },
+
+  // 按当前标签、分页和模式加载列表数据。
   async loadList() {
     this.setData({ loading: true });
     try {
@@ -43,12 +54,14 @@ Page({
     }
   },
 
+  // 在可继续加载时触发下一页数据请求。
   async onReachBottom() {
     if (!this.data.hasMore || this.data.loading) return;
     this.setData({ page: this.data.page + 1 });
     await this.loadList();
   },
 
+  // 响应下拉刷新并重置列表或详情数据。
   async onPullDownRefresh() {
     this.setData({ page: 1, list: [] });
     await this.loadList();
@@ -107,6 +120,7 @@ Page({
     }
   },
 
+  // 处理头像加载失败的兜底显示。
   onAvatarError(e) {
     const index = e.currentTarget.dataset.index;
     const list = [...this.data.list];

@@ -1,3 +1,4 @@
+// 云函数：init-collections - 初始化云数据库需要的集合与示例数据。
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 

@@ -5,6 +5,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+// 查询通知列表并计算未读数量。
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;
@@ -93,6 +94,7 @@ exports.main = async (event, context) => {
   }
 };
 
+// 处理 getTimeAgo 这段功能逻辑。
 function getTimeAgo(date) {
   const now = new Date();
   const diff = Math.floor((now - date) / 1000);

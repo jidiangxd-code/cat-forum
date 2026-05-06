@@ -1,5 +1,6 @@
 /* pages/cat-home/cat-home.wxss */
 .page { background: #FFF5EB; min-height: 100vh; padding-bottom: 60rpx; }
+/* 页面基础容器与整体背景样式。 */
 .page-loading {
   display: flex; align-items: center; justify-content: center;
   height: 100vh; font-size: 28rpx; color: #999;
@@ -8,10 +9,12 @@
 /* 封面英雄区 */
 .hero { position: relative; }
 .cover-img { width: 100%; height: 480rpx; display: block; }
+/* 封面图与占位背景样式。 */
 .cover-placeholder {
   width: 100%; height: 480rpx; background: linear-gradient(135deg, #FFE0C0, #FFBF9A);
   display: flex; align-items: center; justify-content: center; font-size: 120rpx;
 }
+/* 主视觉与封面信息区域样式。 */
 .hero-info {
   padding: 24rpx 28rpx 20rpx;
   background: #fff;
@@ -35,6 +38,7 @@
 
 /* 健康标签 */
 .health-tags-row { display: flex; flex-wrap: wrap; gap: 10rpx; margin-top: 12rpx; }
+/* 健康标签与提示标识样式。 */
 .health-tag {
   display: inline-block; padding: 4rpx 16rpx; border-radius: 20rpx;
   font-size: 22rpx; font-weight: 500;
@@ -51,6 +55,7 @@
 .vote-count-area { display: flex; align-items: baseline; gap: 8rpx; }
 .vote-big { font-size: 56rpx; font-weight: bold; color: #FF7043; }
 .vote-unit { font-size: 24rpx; color: #999; }
+/* 票数展示与投票按钮样式。 */
 .vote-btn {
   background: linear-gradient(135deg, #FF9A6A, #FF7043);
   color: #fff; padding: 20rpx 48rpx; border-radius: 44rpx;
@@ -66,6 +71,7 @@
   display: flex; background: #fff;
   margin-bottom: 16rpx; border-top: 1rpx solid #f5f5f5;
 }
+/* 操作按钮与功能入口样式。 */
 .action-btn {
   flex: 1; display: flex; flex-direction: column; align-items: center;
   padding: 24rpx 0; font-size: 32rpx;
@@ -80,6 +86,7 @@
   margin: 16rpx 0;
   padding: 0 0 30rpx;
 }
+/* 时间线展示与节点样式。 */
 .timeline-header {
   display: flex;
   align-items: center;
@@ -145,6 +152,7 @@
 }
 .timeline-card .post-imgs { margin-bottom: 12rpx; }
 .timeline-card .post-content { margin-bottom: 12rpx; }
+/* 帖子内容、图片和互动区样式。 */
 .timeline-card .post-text {
   -webkit-line-clamp: 4;
 }

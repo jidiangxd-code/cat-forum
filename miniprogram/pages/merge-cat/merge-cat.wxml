@@ -12,7 +12,9 @@
 
   <!-- 当前猫（被合并方）-->
   <view class="section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">当前档案（将被隐藏）</view>
+    <!-- 猫咪区域：展示猫咪资料、档案或绑定信息。 -->
     <view class="cat-card from-card" wx:if="{{cat}}">
       <image wx:if="{{cat.coverImage}}" class="cat-avatar" src="{{cat.coverImage}}" mode="aspectFill" />
       <view class="cat-avatar avatar-empty" wx:else>🐱</view>
@@ -30,7 +32,9 @@
 
   <!-- 目标猫（合并到哪里）-->
   <view class="section">
+    <!-- 内容区块：承载当前页面的表单或展示内容。 -->
     <view class="section-label">目标档案（保留此档案）</view>
+    <!-- 猫咪区域：展示猫咪资料、档案或绑定信息。 -->
     <view class="cat-card to-card" wx:if="{{targetCat}}">
       <image wx:if="{{targetCat.coverImage}}" class="cat-avatar" src="{{targetCat.coverImage}}" mode="aspectFill" />
       <view class="cat-avatar avatar-empty" wx:else>🐱</view>
@@ -68,15 +72,19 @@
 
 </view>
 
+<!-- 状态区域：反馈当前数据加载进度。 -->
 <view class="loading-page" wx:if="{{loading}}"><text>加载中...</text></view>
 
 <!-- 目标猫选择弹窗 -->
 <view class="picker-mask" wx:if="{{showPicker}}" bindtap="closePicker" />
+<!-- 猫咪区域：展示猫咪资料、档案或绑定信息。 -->
 <view class="cat-picker" wx:if="{{showPicker}}">
+  <!-- 选择器区域：展示待选项并支持筛选。 -->
   <view class="picker-header">
     <text class="picker-title">选择目标猫咪档案</text>
     <text class="picker-close" bindtap="closePicker">✕</text>
   </view>
+  <!-- 选择器区域：展示待选项并支持筛选。 -->
   <view class="picker-search">
     <input
       class="search-input"
@@ -85,8 +93,11 @@
       value="{{pickKeyword}}"
     />
   </view>
+  <!-- 选择器区域：展示待选项并支持筛选。 -->
   <scroll-view class="picker-list" scroll-y>
+    <!-- 状态区域：反馈当前数据加载进度。 -->
     <view class="loading-tip" wx:if="{{pickLoading}}">加载中...</view>
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-tip" wx:elif="{{pickList.length === 0}}">没有找到猫咪</view>
     <view
       wx:for="{{pickList}}"

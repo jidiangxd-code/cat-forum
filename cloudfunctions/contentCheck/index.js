@@ -10,6 +10,7 @@ function escapeRegex(str) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// 兼容旧链路的文字内容安全审核。
 exports.main = async (event, context) => {
   const { text } = event;
 

@@ -4,6 +4,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+// 查询猫咪档案列表、排行与分页数据。
 exports.main = async (event, context) => {
   const {
     mode = "list", // 'list' | 'rank_total' | 'rank_new' | 'unknown_list'

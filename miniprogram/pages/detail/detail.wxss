@@ -1,3 +1,4 @@
+/* miniprogram/pages/detail/detail.wxss - 帖子详情页面样式 */
 .page-container {
   min-height: 100vh;
   padding-bottom: 120rpx;
@@ -124,6 +125,7 @@
   height: 600rpx;
 }
 
+/* 轮播容器与切换指示器样式。 */
 .swiper-image {
   width: 100%;
   height: 600rpx;
@@ -160,12 +162,14 @@
   color: #333;
   display: block;
 }
+/* 帖子内容、图片和互动区样式。 */
 .post-time {
   font-size: 22rpx;
   color: #bbb;
   margin-top: 4rpx;
   display: block;
 }
+/* 定位标签与地点信息样式。 */
 .location-tag {
   background-color: #fff0e0;
   padding: 8rpx 20rpx;
@@ -200,6 +204,7 @@
   align-items: center;
   box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.15);
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-cover {
   width: 100rpx;
   height: 100rpx;
@@ -255,6 +260,7 @@
   padding: 24rpx;
   box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
 }
+/* 帖子内容、图片和互动区样式。 */
 .post-text {
   font-size: 30rpx;
   color: #333;
@@ -282,6 +288,7 @@
   box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
 }
 
+/* 操作按钮与功能入口样式。 */
 .action-item {
   flex: 1;
   display: flex;
@@ -299,6 +306,7 @@
   animation: likeAnim 0.3s ease;
 }
 
+/* 动效关键帧定义。 */
 @keyframes likeAnim {
   0% {
     transform: scale(1);
@@ -311,6 +319,7 @@
   }
 }
 
+/* 操作按钮与功能入口样式。 */
 .action-text {
   font-size: 24rpx;
   color: #666666;
@@ -346,6 +355,7 @@
   box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
 }
 
+/* 评论区与回复区样式。 */
 .comment-list {
   margin-top: 20rpx;
   max-height: 600rpx;
@@ -409,6 +419,26 @@
   line-height: 1.6;
 }
 
+.comment-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin: 10rpx 0 4rpx;
+}
+
+.comment-attachment-item {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 18rpx;
+  background: #f5f5f5;
+}
+
+.comment-attachment-item.small {
+  width: 128rpx;
+  height: 128rpx;
+  border-radius: 16rpx;
+}
+
 .comment-time {
   font-size: 20rpx;
   color: #cccccc;
@@ -424,6 +454,7 @@
   margin-top: 6rpx;
 }
 
+/* 回复态、引用态与子评论样式。 */
 .reply-btn {
   font-size: 22rpx;
   color: #FF9A6A;
@@ -431,6 +462,7 @@
   background: #FFF5EB;
   border-radius: 12rpx;
 }
+/* 评论区与回复区样式。 */
 .comment-like {
   font-size: 22rpx;
   color: #999;
@@ -452,6 +484,7 @@
   border-left: 3rpx solid #FFE0CC;
 }
 
+/* 回复态、引用态与子评论样式。 */
 .reply-item {
   display: flex;
   flex-direction: column;
@@ -503,12 +536,18 @@
   padding-left: 48rpx;
   word-break: break-all;
 }
+
+.reply-attachments {
+  padding-left: 48rpx;
+}
+
 .reply-actions {
   display: flex;
   justify-content: flex-end;
   padding-left: 48rpx;
   margin-top: 6rpx;
 }
+/* 空状态提示与占位样式。 */
 .empty-comment {
   text-align: center;
   padding: 40rpx;
@@ -538,6 +577,7 @@
   align-items: center;
   border-top: 1rpx solid #f0f0f0;
   box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
+  z-index: 30;
 }
 
 /* 回复模式顶部提示条 */
@@ -551,6 +591,7 @@
   margin-bottom: 12rpx;
 }
 
+/* 回复态、引用态与子评论样式。 */
 .reply-hint-text {
   font-size: 24rpx;
   color: #FF9A6A;
@@ -562,18 +603,35 @@
   color: #999;
 }
 
+/* 输入控件与编辑态样式。 */
 .input-row {
   width: 100%;
   display: flex;
   align-items: center;
 }
 
+.composer-tool-btn {
+  width: 68rpx;
+  height: 68rpx;
+  border-radius: 50%;
+  background: #fff5eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12rpx;
+  font-size: 30rpx;
+  color: #ff8c42;
+  flex-shrink: 0;
+}
+
+/* 评论区与回复区样式。 */
 .comment-input {
   flex: 1;
   background-color: #f5f5f5;
   border-radius: 30rpx;
   padding: 16rpx 24rpx;
   font-size: 26rpx;
+  min-width: 0;
 }
 
 .send-btn {
@@ -586,6 +644,136 @@
   font-weight: bold;
 }
 
+.send-btn.disabled {
+  opacity: 0.65;
+}
+
+.selected-attachment-list {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-bottom: 14rpx;
+}
+
+.selected-attachment-item {
+  position: relative;
+  width: 132rpx;
+  height: 132rpx;
+  border-radius: 18rpx;
+  overflow: hidden;
+  background: #f7f7f7;
+}
+
+.selected-attachment-image {
+  width: 100%;
+  height: 100%;
+}
+
+.selected-attachment-badge {
+  position: absolute;
+  left: 8rpx;
+  bottom: 8rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 12rpx;
+  background: rgba(0, 0, 0, 0.58);
+  color: #fff;
+  font-size: 18rpx;
+  line-height: 1.2;
+}
+
+.selected-attachment-remove {
+  position: absolute;
+  top: 6rpx;
+  right: 6rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 26rpx;
+  line-height: 36rpx;
+  text-align: center;
+}
+
+.composer-panel {
+  width: 100%;
+  margin-top: 16rpx;
+  padding: 20rpx;
+  border-radius: 24rpx;
+  background: #fff8f1;
+  box-sizing: border-box;
+}
+
+.composer-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16rpx;
+}
+
+.composer-panel-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #6b4226;
+}
+
+.panel-add-btn {
+  padding: 10rpx 18rpx;
+  border-radius: 999rpx;
+  background: #ffefe0;
+  color: #ff8c42;
+  font-size: 22rpx;
+  white-space: nowrap;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.emoji-item {
+  height: 72rpx;
+  border-radius: 18rpx;
+  background: #fff;
+  text-align: center;
+  line-height: 72rpx;
+  font-size: 36rpx;
+}
+
+.sticker-block {
+  margin-top: 16rpx;
+}
+
+.sticker-block-title {
+  display: block;
+  margin-bottom: 12rpx;
+  font-size: 22rpx;
+  color: #9a7b61;
+}
+
+.sticker-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12rpx;
+}
+
+.sticker-item {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 18rpx;
+  background: #fff;
+}
+
+.sticker-empty {
+  padding: 24rpx 0;
+  text-align: center;
+  color: #b08a6a;
+  font-size: 22rpx;
+}
+
 /* 加载状态 */
 .loading-page {
   display: flex;
@@ -596,6 +784,7 @@
   background-color: #fff5eb;
 }
 
+/* 加载提示与状态反馈样式。 */
 .loading-icon {
   font-size: 80rpx;
   margin-bottom: 20rpx;
@@ -620,6 +809,7 @@
   justify-content: center;
 }
 
+/* 举报弹层与反馈结果样式。 */
 .report-modal {
   background-color: #ffffff;
   border-radius: 32rpx 32rpx 0 0;
@@ -629,11 +819,13 @@
   animation: slideUp 0.3s ease;
 }
 
+/* 动效关键帧定义。 */
 @keyframes slideUp {
   from { transform: translateY(100%); }
   to { transform: translateY(0); }
 }
 
+/* 举报弹层与反馈结果样式。 */
 .report-title {
   font-size: 36rpx;
   font-weight: bold;
@@ -688,6 +880,7 @@
   font-weight: bold;
 }
 
+/* 举报弹层与反馈结果样式。 */
 .report-desc {
   width: 100%;
   height: 120rpx;

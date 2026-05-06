@@ -1,12 +1,12 @@
-<!-- 我的发布 -->
-<view class="page-container">
+<!-- 我的发布页面：用于回看自己发过的帖子，并提供长按删除入口 -->
+<view class="page-container {{isDarkMode ? 'dark' : ''}}">
   <!-- 加载中 -->
   <view class="loading-state" wx:if="{{loading}}">
     <text class="loading-icon">🐾</text>
     <text class="loading-text">加载中...</text>
   </view>
 
-  <!-- 空状态 -->
+  <!-- 空状态：还没有发帖时，给出引导按钮 -->
   <view class="empty-state" wx:elif="{{empty}}">
     <text class="empty-icon">📝</text>
     <text class="empty-title">还没有发布</text>
@@ -16,14 +16,14 @@
     </view>
   </view>
 
-  <!-- 帖子列表 -->
+  <!-- 帖子列表：点击进入详情，长按触发删除 -->
   <view class="posts-list" wx:else>
     <view
       class="post-item"
       wx:for="{{posts}}"
       wx:key="_id"
       data-id="{{item._id}}"
-      data-name="{{item.name || '无名小猫'}}"
+      data-name="{{item.displayTitle || '我的帖子'}}"
       bind:tap="onPostTap"
       bind:longpress="onLongPress"
     >
@@ -39,16 +39,21 @@
       <!-- 帖子信息 -->
       <view class="post-info">
         <view class="post-header">
-          <text class="post-title">{{item.name || '无名小猫'}}</text>
+          <text class="post-title">{{item.displayTitle || '我的帖子'}}</text>
           <view class="post-tag {{item.category}}">
             <text>{{categoryMap[item.category] || '未知'}}</text>
           </view>
         </view>
 
-        <text class="post-desc">{{item.description}}</text>
+        <view class="post-cat-brief" wx:if="{{item.cat}}">
+          <text class="post-cat-name">🐱 {{item.cat.fullName || item.cat.codeName}}</text>
+          <text class="post-cat-meta">{{item.cat.appearance || '外貌未知'}}{{item.cat.location ? ' · ' + item.cat.location : ''}}</text>
+        </view>
+
+        <text class="post-desc">{{item.displayContent}}</text>
 
         <view class="post-footer">
-          <text class="post-location">📍 {{item.location || '未知'}}</text>
+          <text class="post-location">{{item.timeStr}}{{item.location ? ' · 📍 ' + item.location : ''}}</text>
           <view class="post-stats">
             <text class="stat-item">❤️ {{item.likeCount || 0}}</text>
             <text class="stat-item">💬 {{item.commentCount || 0}}</text>
@@ -56,9 +61,9 @@
         </view>
       </view>
 
-      <!-- 删除提示 -->
-      <view class="delete-hint">
-        <text class="delete-text">长按删除</text>
+      <!-- 右上角删除入口：模拟器里比长按更稳，也保留长按作为快捷操作 -->
+      <view class="delete-hint" catch:tap="onDeleteTap" data-id="{{item._id}}">
+        <text class="delete-text">删除</text>
       </view>
     </view>
   </view>

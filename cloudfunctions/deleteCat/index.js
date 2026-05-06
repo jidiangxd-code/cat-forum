@@ -7,6 +7,7 @@ const cloud = require("wx-server-sdk");
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 删除或停用猫咪档案相关数据。
 exports.main = async (event, context) => {
   const { catId } = event;
 

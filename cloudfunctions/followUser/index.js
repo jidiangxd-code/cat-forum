@@ -3,6 +3,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 维护用户之间的关注和取关关系。
 exports.main = async (event, context) => {
   const { action, fromUserId, toUserId, fromUserName = '', fromUserAvatar = '' } = event;
 

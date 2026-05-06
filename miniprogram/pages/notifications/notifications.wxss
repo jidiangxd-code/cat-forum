@@ -18,6 +18,7 @@
   z-index: 10;
 }
 
+/* 标签项与激活态样式。 */
 .tab-item {
   flex: 1;
   text-align: center;
@@ -72,6 +73,7 @@
   padding: 120rpx 0;
 }
 
+/* 加载提示与状态反馈样式。 */
 .loading-text {
   font-size: 28rpx;
   color: #999;
@@ -86,6 +88,7 @@
   padding: 160rpx 0 80rpx;
 }
 
+/* 空状态提示与占位样式。 */
 .empty-icon {
   width: 160rpx;
   height: 160rpx;
@@ -108,6 +111,7 @@
   position: relative;
 }
 
+/* 通知列表与已读未读状态样式。 */
 .notification-item.unread {
   background: #fff8f0;
 }
@@ -130,6 +134,7 @@
 }
 
 .avatar-img,
+/* 头像容器与兜底展示样式。 */
 .avatar-placeholder {
   width: 88rpx;
   height: 88rpx;
@@ -264,6 +269,7 @@
   color: #999;
 }
 
+/* 结束态和无更多数据提示样式。 */
 .no-more {
   color: #ccc;
 }

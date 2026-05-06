@@ -1,6 +1,6 @@
-<!--个人中心-->
+<!-- 个人中心：集中展示登录态、我的数据和常用入口 -->
 <view class="page-container {{isDarkMode ? 'dark' : ''}}">
-  <!-- 用户信息头部 -->
+  <!-- 头部用户卡片：未登录显示登录入口，已登录显示头像昵称 -->
   <view class="profile-header">
     <view class="header-bg"></view>
     <view class="user-card">
@@ -24,7 +24,7 @@
     </view>
   </view>
 
-  <!-- 统计数据 -->
+  <!-- 数据概览：快速看我的发布、获赞和收藏 -->
   <view class="stats-card">
     <view class="stat-item">
       <text class="stat-num">{{stats.publishCount}}</text>
@@ -42,7 +42,7 @@
     </view>
   </view>
 
-  <!-- 功能菜单 -->
+  <!-- 我的内容：跳转到与自己相关的内容列表 -->
   <view class="menu-card">
     <view class="menu-title">
       <text>📋 我的内容</text>
@@ -77,7 +77,7 @@
     </view>
   </view>
 
-  <!-- 设置菜单 -->
+  <!-- 设置区：编辑资料、清缓存和应用说明都在这里 -->
   <view class="menu-card">
     <view class="menu-title">
       <text>⚙️ 设置</text>
@@ -88,6 +88,16 @@
         <text class="menu-text">编辑资料</text>
       </view>
       <text class="menu-arrow">›</text>
+    </view>
+    <view class="menu-item" bindtap="goToPersonalSettings">
+      <view class="menu-left">
+        <text class="menu-icon">⚙️</text>
+        <text class="menu-text">个人设置</text>
+      </view>
+      <view class="menu-right">
+        <text class="menu-extra">{{isDarkMode ? '夜晚' : '白天'}}</text>
+        <text class="menu-arrow">›</text>
+      </view>
     </view>
     <view class="menu-item" bindtap="clearCache">
       <view class="menu-left">
@@ -105,7 +115,7 @@
     </view>
   </view>
 
-  <!-- 版本号 -->
+  <!-- 页面底部版本信息 -->
   <view class="version-info">
     <text>校园小猫论坛 v1.0.0</text>
     <text class="version-sub">用爱守护每一只校园小猫 🐾</text>

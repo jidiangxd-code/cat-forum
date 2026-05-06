@@ -4,6 +4,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 向目标用户写入一条新的通知消息。
 exports.main = async (event, context) => {
   const { toUserId, type, fromUserId, fromUserName, fromUserAvatar, targetId, targetTitle, content, postId, catId } = event;
 

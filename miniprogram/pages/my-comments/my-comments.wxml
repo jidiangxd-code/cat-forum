@@ -1,5 +1,5 @@
 <!-- 我的评论 -->
-<view class="page-container">
+<view class="page-container {{isDarkMode ? 'dark' : ''}}">
   <!-- 加载中 -->
   <view class="loading-state" wx:if="{{loading}}">
     <text class="loading-icon">🐾</text>
@@ -11,6 +11,7 @@
     <text class="empty-icon">💬</text>
     <text class="empty-title">还没有评论</text>
     <text class="empty-desc">去和可爱小猫互动吧</text>
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-btn" bind:tap="goHome">
       <text>去首页</text>
     </view>
@@ -18,6 +19,7 @@
 
   <!-- 评论列表 -->
   <view class="comments-list" wx:else>
+    <!-- 评论区域：展示评论内容与互动入口。 -->
     <view class="comment-card" wx:for="{{comments}}" wx:key="_id">
       <!-- 猫咪信息 -->
       <view class="cat-info" bind:tap="onCatTap" data-catid="{{item.catId}}">
@@ -28,16 +30,29 @@
         />
         <view class="cat-text">
           <text class="cat-name">🐱 {{item.catName}}</text>
-          <text class="cat-hint">点击查看猫咪详情</text>
+          <text class="cat-hint">{{item.cat ? (item.cat.location || '点击查看猫咪详情') : '点击查看猫咪详情'}}</text>
         </view>
         <text class="cat-arrow">›</text>
+      </view>
+
+      <!-- 关联帖子摘要 -->
+      <view class="post-ref" bind:tap="onPostTap" data-postid="{{item.postId}}">
+        <view class="post-ref-head">
+          <text class="post-ref-title">评论的帖子</text>
+          <text class="post-ref-arrow">查看详情 ›</text>
+        </view>
+        <view class="post-ref-meta">
+          <text class="post-ref-tag" wx:if="{{item.postCategory}}">{{categoryMap[item.postCategory] || item.postCategory}}</text>
+          <text class="post-ref-location" wx:if="{{item.postLocation}}">📍 {{item.postLocation}}</text>
+        </view>
+        <text class="post-ref-content">{{item.postContent}}</text>
       </view>
 
       <!-- 评论内容 -->
       <view class="comment-content">
         <text class="comment-text">{{item.content}}</text>
         <view class="comment-footer">
-          <text class="comment-time">{{item.createTime}}</text>
+          <text class="comment-time">{{item.timeStr}}</text>
           <view class="comment-delete" catch:tap="onDeleteComment" data-id="{{item._id}}">
             <text class="delete-text">删除</text>
           </view>

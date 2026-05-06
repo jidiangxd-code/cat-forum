@@ -1,26 +1,26 @@
+// app.js - 小程序全局入口与运行时配置
+const api = require('./utils/api.js');
 App({
+  // 全局运行时状态和跨页面共享配置统一维护在这里。
   globalData: {
+    // 全局运行时缓存：用户信息、云环境和广告位配置统一从这里读取。
     userInfo: null,
-    baseUrl: 'https://example.com',
-    cloudEnvId: null,
+    baseUrl: "https://example.com",
+    cloudEnvId: null, // 云环境ID，首次启动时自动获取
     adConfig: {
-      indexBannerAdUnitId: '',
-      detailBannerAdUnitId: '',
+      // 在微信流量主后台申请后，把 adUnitId 填到这里
+      indexBannerAdUnitId: "",
+      detailBannerAdUnitId: "",
     },
   },
 
+  // 小程序启动时完成云开发、主题、openid 和本地用户缓存的准备。
   async onLaunch() {
     if (wx.cloud) {
       wx.cloud.init({
         traceUser: true,
       });
-      console.log('✅ 云开发初始化完成');
-
-      try {
-        const envId = wx.cloud.ENV || 'default';
-        console.log('☁️ 当前云环境 ID:', envId);
-        this.globalData.cloudEnvId = envId;
-      } catch (e) {}
+      console.log("✅ 云开发初始化完成");
     }
 
     this._initErrorReporter();
@@ -33,35 +33,42 @@ App({
     this._initOpenId();
     this._watchTheme();
 
+    // 检查本地存储的用户信息
     const userInfo = wx.getStorageSync('userInfo');
     if (userInfo) {
       this.globalData.userInfo = userInfo;
     }
+
+    try {
+      this.globalData.userInfo = await api.syncCurrentUserProfile();
+    } catch (e) {}
   },
 
+  // 在启动阶段提前获取并缓存当前用户的 openid。
   async _initOpenId() {
     try {
+      // 通过 login 云函数统一拿到 openid，并兼容不同返回字段。
       const res = await wx.cloud.callFunction({
-        name: 'login',
+        name: "login",
         timeout: 15000,
       });
-      console.log('[login] 完整返回:', JSON.stringify(res));
+      console.log("[login] 完整返回:", JSON.stringify(res));
+      // 兼容多种返回格式：openid / openId / result.data.openid
       const openid =
         res.result?.openid ||
         res.result?.openId ||
         res.result?.data?.openid ||
-        '';
-
+        "";
       if (openid) {
         wx.setStorageSync('openId', openid);
         console.log('✅ openid:', openid);
       } else {
-        console.warn('⚠️ openid 为空，使用 guest');
-        wx.setStorageSync('openId', 'guest');
+        console.warn("⚠️ openid 为空，使用 guest");
+        wx.setStorageSync("openId", "guest");
       }
     } catch (err) {
-      console.warn('⚠️ login 调用失败，使用 guest:', err.message || err);
-      wx.setStorageSync('openId', 'guest');
+      console.warn("⚠️ login 调用失败，使用 guest:", err.message || err);
+      wx.setStorageSync("openId", "guest");
     }
   },
 
@@ -94,11 +101,14 @@ App({
     console.log('小程序显示');
   },
 
+  // 预留后台生命周期入口，便于后续补充资源释放或统计上报。
   onHide() {
-    console.log('小程序隐藏');
+    console.log("小程序隐藏");
   },
 
+  // 对外提供广告位配置，供页面按需读取。
   getAdConfig() {
+    // 页面通过这个入口读取广告配置，避免直接依赖 globalData 结构。
     return this.globalData.adConfig || {};
   },
 

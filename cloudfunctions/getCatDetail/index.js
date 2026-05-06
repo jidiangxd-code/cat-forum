@@ -8,6 +8,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 const _ = db.command;
 
+// 聚合查询单只猫咪的档案详情。
 exports.main = async (event, context) => {
   const { catId, commentPage = 1, commentPageSize = 20 } = event;
 

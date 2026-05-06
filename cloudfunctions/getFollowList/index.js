@@ -3,6 +3,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 查询关注列表或粉丝列表。
 exports.main = async (event, context) => {
   const { userId, type, page = 1, pageSize = 20 } = event;
 

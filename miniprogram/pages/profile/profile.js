@@ -1,10 +1,13 @@
+// miniprogram/pages/profile/profile.js - 个人中心页面脚本
 const api = require('../../utils/api.js');
 
 Page({
+  // 个人中心主要围绕登录态、头像兜底和统计卡片这三类状态展开。
   data: {
     userInfo: null,
     avatarError: false,
     isLoggedIn: false,
+    isDarkMode: wx.getStorageSync('darkMode') || false,
     stats: {
       publishCount: 0,
       likeCount: 0,
@@ -13,28 +16,50 @@ Page({
     }
   },
 
+  // 首次进入个人中心时，同时准备用户信息和统计概览。
   onLoad() {
     this.loadUserInfo();
     this.loadStats();
   },
 
+  // 从其他页面返回后刷新资料和统计，保证个人中心展示的是最新数据。
   onShow() {
     // 每次显示时刷新数据
+    this._syncTheme();
     this.loadUserInfo();
     this.loadStats();
   },
 
-  // 加载用户信息
-  loadUserInfo() {
-    const userInfo = wx.getStorageSync('userInfo');
+  // 从本地缓存恢复当前主题状态。
+  _syncTheme() {
+    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
+  },
+
+  // 从本地缓存恢复昵称、头像和登录态，减少页面首屏等待。
+  async loadUserInfo() {
+    const userInfo = api.getLocalUserInfo();
     const openId = api.getOpenId();
     this.setData({
       userInfo: userInfo || null,
       isLoggedIn: !!openId && openId !== 'guest'
     });
+
+    if (!openId || openId === 'guest') {
+      return;
+    }
+
+    try {
+      const latestUserInfo = await api.syncCurrentUserProfile();
+      this.setData({
+        userInfo: latestUserInfo || null,
+        avatarError: false
+      });
+    } catch (err) {
+      console.warn('刷新用户资料失败，继续使用本地缓存', err);
+    }
   },
 
-  // 微信登录
+  // 调用 login 云函数补齐 openid，并把页面切换到已登录态。
   async doLogin() {
     try {
       wx.showLoading({ title: '登录中...' });
@@ -47,10 +72,21 @@ Page({
       }
       wx.setStorageSync('openId', openid);
 
+      const userInfo = await api.syncCurrentUserProfile(true);
+      api.markUserProfileUpdated();
+      try {
+        const app = getApp();
+        if (app && app.globalData) {
+          app.globalData.userInfo = userInfo;
+        }
+      } catch (e) {}
+
       // 获取用户信息（使用头像昵称填写能力）
+      this.setData({ userInfo: userInfo || null });
       this.setData({ isLoggedIn: true });
       wx.hideLoading();
       wx.showToast({ title: '登录成功 🎉', icon: 'success' });
+      this.loadUserInfo();
       this.loadStats();
     } catch (err) {
       wx.hideLoading();
@@ -59,18 +95,85 @@ Page({
     }
   },
 
-  // 选择头像
-  onChooseAvatar(e) {
-    const avatarUrl = e.detail.avatarUrl;
-    if (avatarUrl) {
-      const userInfo = this.data.userInfo || {};
-      userInfo.avatarUrl = avatarUrl;
-      wx.setStorageSync('userInfo', userInfo);
-      this.setData({ userInfo, avatarError: false });
+  // 处理 chooseAvatar 回调：先预览，再立即上传并持久化到云端，避免临时路径在重编译后失效。
+  async onChooseAvatar(e) {
+    const avatarUrl = String(e.detail.avatarUrl || '').trim();
+    const openId = api.getOpenId();
+    if (!avatarUrl) return;
+
+    if (!openId || openId === 'guest') {
+      wx.showToast({ title: '请先登录后再设置头像', icon: 'none' });
+      return;
+    }
+
+    const previewUserInfo = {
+      ...(this.data.userInfo || {}),
+      avatarUrl
+    };
+    wx.setStorageSync('userInfo', previewUserInfo);
+    this.setData({ userInfo: previewUserInfo, avatarError: false });
+
+    try {
+      await this._persistAvatar(avatarUrl);
+    } catch (err) {
+      console.error('保存头像失败', err);
+      wx.showToast({ title: String(err?.message || '头像保存失败').slice(0, 20), icon: 'none' });
+      await this.loadUserInfo();
     }
   },
 
-  // 加载统计数据
+  // 把 chooseAvatar 返回的临时头像上传到云存储，并写回 users 集合。
+  async _persistAvatar(filePath) {
+    wx.showLoading({ title: '保存头像中...', mask: true });
+    try {
+      const ext = (filePath.split('.').pop() || 'png').replace(/\?.*$/, '');
+      const cloudPath = `avatars/${api.getOpenId()}_${Date.now()}.${ext}`;
+      const uploadRes = await wx.cloud.uploadFile({
+        cloudPath,
+        filePath
+      });
+
+      const latestUserInfo = await api.syncCurrentUserProfile(true);
+      const saveRes = await wx.cloud.callFunction({
+        name: 'updateUserProfile',
+        data: {
+          nickName: String(latestUserInfo?.nickName || '').trim(),
+          gender: latestUserInfo?.gender || 'unknown',
+          avatarFileId: uploadRes.fileID || ''
+        }
+      });
+
+      if (!saveRes.result || saveRes.result.success === false) {
+        throw new Error(saveRes.result?.message || '头像保存失败');
+      }
+
+      const nextUserInfo = {
+        ...latestUserInfo,
+        ...(saveRes.result?.data || {}),
+        avatarUrl: saveRes.result?.data?.avatarUrl || uploadRes.fileID || ''
+      };
+      wx.setStorageSync('userInfo', nextUserInfo);
+      api.markUserProfileUpdated();
+      try {
+        const app = getApp();
+        if (app && app.globalData) {
+          app.globalData.userInfo = nextUserInfo;
+        }
+      } catch (e) {}
+
+      this.setData({
+        userInfo: nextUserInfo,
+        avatarError: false
+      });
+      wx.hideLoading();
+      wx.showToast({ title: '头像已更新', icon: 'success' });
+    } catch (err) {
+      wx.hideLoading();
+      throw err;
+    }
+  },
+
+  // 从云数据库统计我的发布数、累计获赞和收藏数量。
   async loadStats() {
     const openId = api.getOpenId();
     if (!openId || openId === 'guest') {
@@ -118,38 +221,42 @@ Page({
     }
   },
 
-  // 头像加载失败
+  // 头像资源失效时切换到默认头像兜底图。
   onAvatarError() {
     this.setData({ avatarError: true });
   },
 
-  // 我的发布
+  // 跳转到“我的发布”列表。
   goToMyPosts() {
     wx.navigateTo({ url: '/pages/my-posts/my-posts' });
   },
 
-  // 我喜欢的
+  // 跳转到“我喜欢的”列表。
   goToMyLikes() {
     wx.navigateTo({ url: '/pages/my-likes/my-likes' });
   },
 
-  // 我的评论
+  // 跳转到“我的评论”列表。
   goToMyComments() {
     wx.navigateTo({ url: '/pages/my-comments/my-comments' });
   },
 
-  // 我的收藏
+  // 跳转到“我的收藏”列表。
   goToMyFavorites() {
     wx.navigateTo({ url: '/pages/my-favorites/my-favorites' });
   },
 
-  // 编辑资料
+  // 跳转到资料编辑页。
   editProfile() {
     wx.navigateTo({ url: '/pages/edit-profile/edit-profile' });
   },
 
-  // 清除缓存
-  // Bug #20 修复：改为只清除非关键缓存，保留 openId 等数据
+  // 跳转到个人设置页。
+  goToPersonalSettings() {
+    wx.navigateTo({ url: '/pages/personal-settings/personal-settings' });
+  },
+
+  // 只清理临时缓存，避免误删 openId 等关键登录数据。
   clearCache() {
     wx.showModal({
       title: '清除缓存',
@@ -166,7 +273,7 @@ Page({
     });
   },
 
-  // 关于我们
+  // 展示应用简介和版本信息。
   aboutUs() {
     wx.showModal({
       title: '关于校园小猫论坛',

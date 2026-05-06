@@ -4,6 +4,7 @@
   min-height: 100vh;
   padding-bottom: 120rpx;
 }
+/* 加载提示与状态反馈样式。 */
 .loading-page {
   height: 100vh;
   display: flex;
@@ -39,6 +40,7 @@
   line-height: 1.6;
 }
 
+/* 通用内容卡片与分区样式。 */
 .section {
   margin: 20rpx 24rpx 0;
 }
@@ -48,6 +50,7 @@
   margin-bottom: 12rpx;
   padding-left: 4rpx;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-card {
   display: flex;
   align-items: center;
@@ -62,6 +65,7 @@
 .to-card {
   border: 2rpx solid #c8e6c9;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-avatar {
   width: 88rpx;
   height: 88rpx;
@@ -70,6 +74,7 @@
   overflow: hidden;
   flex-shrink: 0;
 }
+/* 头像容器与兜底展示样式。 */
 .avatar-empty {
   background: #ffe0c0;
   display: flex;
@@ -78,6 +83,7 @@
   font-size: 44rpx;
   border-radius: 50%;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-info {
   flex: 1;
 }
@@ -93,6 +99,7 @@
   color: #999;
   margin-top: 4rpx;
 }
+/* 票数展示与投票按钮样式。 */
 .vote-text {
   display: block;
   font-size: 22rpx;
@@ -141,6 +148,7 @@
   padding: 20rpx 24rpx;
   border: 1rpx solid #a5d6a7;
 }
+/* 预览模式与模拟展示样式。 */
 .preview-title {
   display: block;
   font-size: 26rpx;
@@ -155,6 +163,7 @@
   margin-bottom: 8rpx;
 }
 
+/* 提交按钮与底部提交区样式。 */
 .submit-wrap {
   position: fixed;
   bottom: 0;
@@ -188,6 +197,7 @@
   background: rgba(0, 0, 0, 0.4);
   z-index: 100;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-picker {
   position: fixed;
   bottom: 0;
@@ -200,6 +210,7 @@
   display: flex;
   flex-direction: column;
 }
+/* 选择器弹层与候选项样式。 */
 .picker-header {
   display: flex;
   align-items: center;
@@ -220,6 +231,7 @@
 .picker-search {
   padding: 16rpx 24rpx;
 }
+/* 搜索控件与输入区域样式。 */
 .search-input {
   width: 100%;
   background: #f5f5f5;
@@ -228,17 +240,20 @@
   font-size: 26rpx;
   box-sizing: border-box;
 }
+/* 选择器弹层与候选项样式。 */
 .picker-list {
   flex: 1;
   overflow: hidden;
 }
 .loading-tip,
+/* 空状态提示与占位样式。 */
 .empty-tip {
   text-align: center;
   padding: 60rpx;
   color: #999;
   font-size: 26rpx;
 }
+/* 选择器弹层与候选项样式。 */
 .picker-item {
   display: flex;
   align-items: center;

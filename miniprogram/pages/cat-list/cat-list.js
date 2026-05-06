@@ -2,6 +2,7 @@
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     tabs: [
       { id: 'list', name: '全部猫咪' },
@@ -32,27 +33,32 @@ Page({
     isDarkMode: wx.getStorageSync('darkMode') || false
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad() {
     this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     this.loadList();
   },
 
+  // 在页面重新显示时同步最新状态或刷新数据。
   onShow() {
     this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
     this._consumeInitialTab();
   },
 
+  // 响应下拉刷新并重置列表或详情数据。
   onPullDownRefresh() {
     this.setData({ page: 1, hasMore: true, catList: [] });
     this.loadList().then(() => wx.stopPullDownRefresh());
   },
 
+  // 在可继续加载时触发下一页数据请求。
   onReachBottom() {
     if (this.data.hasMore && !this.data.loading) {
       this.loadList();
     }
   },
 
+  // 切换标签模式并按新配置刷新数据。
   onTabChange(e) {
     const tab = e.currentTarget.dataset.tab;
     this.setData({ currentTab: tab, page: 1, catList: [], hasMore: true, keyword: '', searchMode: false });
@@ -60,6 +66,7 @@ Page({
     else this.loadList();
   },
 
+  // 按当前标签、分页和模式加载列表数据。
   async loadList() {
     if (this.data.currentTab === 'square') return this.loadCatSquare();
     if (this.data.loading) return;
@@ -85,6 +92,7 @@ Page({
     }
   },
 
+  // 消费页面入口传入的初始标签并切换视图。
   _consumeInitialTab() {
     let tab = '';
     try {
@@ -97,10 +105,12 @@ Page({
     else this.loadList();
   },
 
+  // 同步搜索关键词输入状态。
   onKeywordInput(e) {
     this.setData({ keyword: e.detail.value });
   },
 
+  // 执行当前页面的搜索流程并刷新结果视图。
   async doSearch() {
     const kw = this.data.keyword.trim();
     if (!kw) {
@@ -117,6 +127,7 @@ Page({
     }
   },
 
+  // 加载猫广场地图聚合或动态流数据。
   async loadCatSquare() {
     if (this.data.squareLoading) return;
     this.setData({ squareLoading: true, loading: true });
@@ -174,6 +185,7 @@ Page({
     }
   },
 
+  // 切换猫广场的地图视图与动态流视图。
   onSquareViewChange(e) {
     const view = e.currentTarget.dataset.view;
     if (!view || view === this.data.squareView) return;
@@ -181,6 +193,7 @@ Page({
     this.loadCatSquare();
   },
 
+  // 加载猫广场中的动态流视图数据。
   async loadSquareFeed() {
     const res = await api.getPostList({ page: 1, pageSize: 20, sort: 'latest' });
     const squareFeed = (res.data || []).map(post => ({
@@ -195,12 +208,14 @@ Page({
     });
   },
 
+  // 从猫广场动态卡片跳转到帖子详情。
   onSquarePostTap(e) {
     const id = e.currentTarget.dataset.id;
     if (!id) return;
     wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
   },
 
+  // 切换猫广场中当前高亮的猫咪。
   onSquareCatTap(e) {
     const catId = e.currentTarget.dataset.catid;
     const selected = this.data.squareCats.find(item => item.catId === catId);
@@ -208,6 +223,7 @@ Page({
     this._applySquareMap(selected);
   },
 
+  // 根据选中的猫咪轨迹刷新地图标记、连线和范围圆。
   _applySquareMap(squareCat) {
     if (!squareCat || !squareCat.points || squareCat.points.length === 0) {
       this.setData({ mapMarkers: [], mapPolyline: [], mapCircles: [] });
@@ -253,6 +269,7 @@ Page({
     });
   },
 
+  // 根据定位点估算猫咪活动中心、半径和可信度。
   _buildLocationPrediction(points) {
     if (!points || points.length === 0) {
       return { latitude: this.data.mapLatitude, longitude: this.data.mapLongitude, radius: 80, confidenceText: '暂无数据' };
@@ -275,6 +292,7 @@ Page({
     return { ...center, radius, confidenceText };
   },
 
+  // 计算两个经纬度坐标之间的球面距离。
   _distanceInMeters(lat1, lon1, lat2, lon2) {
     const toRad = n => n * Math.PI / 180;
     const earthRadius = 6371000;
@@ -286,6 +304,7 @@ Page({
     return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   },
 
+  // 把时间字段格式化为相对时间或日期文案。
   _formatTime(t) {
     if (!t) return '';
     const d = t instanceof Date ? t : new Date(t);
@@ -293,6 +312,7 @@ Page({
     return `${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   },
 
+  // 退出搜索模式并恢复默认列表视图。
   clearSearch() {
     this.setData({ keyword: '', searchMode: false, page: 1, catList: [], hasMore: true });
     this.loadList();

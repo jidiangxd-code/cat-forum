@@ -3,10 +3,12 @@
   background: #fff5eb;
   min-height: 100vh;
 }
+/* 页面基础容器与整体背景样式。 */
 .page.dark {
   background: #1a1a2e;
 }
 
+/* 页面头部与标题区域样式。 */
 .header {
   background: linear-gradient(135deg, #ff9a6a, #ff7043);
   padding: 20rpx 24rpx 24rpx;
@@ -17,6 +19,7 @@
   justify-content: space-between;
   margin-bottom: 16rpx;
 }
+/* 页面基础容器与整体背景样式。 */
 .page-title {
   font-size: 36rpx;
   font-weight: bold;
@@ -29,6 +32,7 @@
   border-radius: 30rpx;
   font-size: 24rpx;
 }
+/* 搜索控件与输入区域样式。 */
 .search-bar {
   display: flex;
   align-items: center;
@@ -74,6 +78,7 @@
   background: rgba(162, 155, 254, 0.16);
   color: #a29bfe;
 }
+/* 搜索控件与输入区域样式。 */
 .search-tip {
   padding: 16rpx 28rpx;
   font-size: 24rpx;
@@ -86,6 +91,7 @@
   color: #b0b0b0;
   border-bottom-color: #333355;
 }
+/* 标签切换区域样式。 */
 .tabs {
   display: flex;
   background: #fff;
@@ -96,6 +102,7 @@
   background: #252540;
   border-bottom-color: #333355;
 }
+/* 标签项与激活态样式。 */
 .tab {
   flex: 1;
   text-align: center;
@@ -113,9 +120,11 @@
   color: #a29bfe;
   border-bottom-color: #a29bfe;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-square {
   padding: 20rpx 24rpx 40rpx;
 }
+/* 猫广场地图、轨迹和动态流样式。 */
 .square-intro {
   display: flex;
   align-items: center;
@@ -144,9 +153,11 @@
 .page.dark .square-title,
 .page.dark .prediction-name,
 .page.dark .trace-title,
+/* 轨迹节点与记录列表样式。 */
 .page.dark .trace-location {
   color: #e0e0e0;
 }
+/* 猫广场地图、轨迹和动态流样式。 */
 .square-desc {
   display: block;
   font-size: 24rpx;
@@ -157,9 +168,11 @@
 .page.dark .prediction-meta,
 .page.dark .prediction-range,
 .page.dark .trace-time,
+/* 轨迹节点与记录列表样式。 */
 .page.dark .trace-content {
   color: #b0b0b0;
 }
+/* 猫广场地图、轨迹和动态流样式。 */
 .square-refresh {
   flex-shrink: 0;
   background: #ff7043;
@@ -265,6 +278,7 @@
 .page.dark .prediction-range {
   background: #2a2a45;
 }
+/* 猫广场地图、轨迹和动态流样式。 */
 .square-cat-row {
   margin-bottom: 20rpx;
 }
@@ -295,6 +309,7 @@
   background: #6c5ce7;
   border-color: #6c5ce7;
 }
+/* 轨迹节点与记录列表样式。 */
 .trace-list {
   background: #fff;
   border-radius: 20rpx;
@@ -342,6 +357,7 @@
   margin-top: 6rpx;
   line-height: 1.5;
 }
+/* 猫广场地图、轨迹和动态流样式。 */
 .square-empty {
   background: #fff;
   border-radius: 20rpx;
@@ -405,6 +421,7 @@
   align-items: center;
   text-align: center;
 }
+/* 排行列表与榜单徽标样式。 */
 .rank-list {
   padding: 16rpx 24rpx;
 }
@@ -495,6 +512,7 @@
   text-align: center;
   flex-shrink: 0;
 }
+/* 票数展示与投票按钮样式。 */
 .vote-num {
   display: block;
   font-size: 36rpx;
@@ -506,6 +524,7 @@
   font-size: 20rpx;
   color: #bbb;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -581,15 +600,18 @@
   align-items: center;
   justify-content: space-between;
 }
+/* 票数展示与投票按钮样式。 */
 .vote-info {
   font-size: 22rpx;
   color: #ff9a6a;
 }
+/* 猫咪资料、头像和标签样式。 */
 .cat-status {
   font-size: 20rpx;
   padding: 4rpx 10rpx;
   border-radius: 10rpx;
 }
+/* 状态标签与状态颜色样式。 */
 .status-active {
   background: #e8f5e9;
   color: #4caf50;
@@ -602,6 +624,7 @@
   background: #e3f2fd;
   color: #2196f3;
 }
+/* 空状态提示与占位样式。 */
 .empty {
   display: flex;
   flex-direction: column;
@@ -626,6 +649,7 @@
   font-size: 28rpx;
 }
 .load-more,
+/* 结束态和无更多数据提示样式。 */
 .no-more {
   text-align: center;
   padding: 30rpx;

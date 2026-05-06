@@ -1,3 +1,4 @@
+<!-- miniprogram/pages/notifications/notifications.wxml - 消息通知页面结构 -->
 <view class="container">
   <!-- 顶部 Tab 筛选 -->
   <view class="tab-bar">

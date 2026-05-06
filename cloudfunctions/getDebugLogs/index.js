@@ -3,6 +3,7 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
+// 读取云端调试日志供排查使用。
 exports.main = async (event, context) => {
   const { limit = 20, level, page = 1 } = event;
   

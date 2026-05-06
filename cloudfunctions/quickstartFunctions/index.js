@@ -1,3 +1,4 @@
+// 云函数：quickstartFunctions - 提供云开发模板演示与示例返回。
 const cloud = require("wx-server-sdk");
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV,

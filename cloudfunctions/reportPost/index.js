@@ -1,3 +1,4 @@
+// 云函数：reportPost - 提交帖子举报记录并做基础参数校验。
 const cloud = require('wx-server-sdk')
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
 

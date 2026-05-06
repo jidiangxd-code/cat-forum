@@ -13,6 +13,7 @@ function getTodayStr() {
   return `${y}-${m}-${d}`;
 }
 
+// 记录今日投票并累加猫咪人气票数。
 exports.main = async (event, context) => {
   const wxContext = cloud.getWXContext();
   const openid = wxContext.OPENID;

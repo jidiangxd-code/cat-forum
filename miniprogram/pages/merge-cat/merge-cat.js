@@ -2,6 +2,7 @@
 const api = require("../../utils/api.js");
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     catId: "", // 当前（被合并的）猫
     cat: null, // 当前猫信息
@@ -16,6 +17,7 @@ Page({
     submitting: false,
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad(options) {
     if (options.id) {
       this.setData({ catId: options.id });
@@ -23,6 +25,7 @@ Page({
     }
   },
 
+  // 读取当前猫咪或目标猫咪的详细资料。
   async loadCat(catId) {
     try {
       const res = await api.getCatProfile(catId);
@@ -51,10 +54,12 @@ Page({
     }
   },
 
+  // 关闭目标猫咪选择器。
   closePicker() {
     this.setData({ showPicker: false });
   },
 
+  // 按关键词筛选选择器中的候选猫咪。
   async onPickSearch(e) {
     const kw = e.detail.value;
     this.setData({ pickKeyword: kw });
@@ -72,11 +77,13 @@ Page({
     }
   },
 
+  // 确认当前选中的合并目标猫咪。
   onPickTarget(e) {
     const cat = e.currentTarget.dataset.cat;
     this.setData({ targetCat: cat, showPicker: false });
   },
 
+  // 清空当前选中的合并目标。
   resetTarget() {
     this.setData({ targetCat: null });
   },

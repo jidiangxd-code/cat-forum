@@ -1,5 +1,5 @@
 <!-- 我喜欢的 -->
-<view class="page-container">
+<view class="page-container {{isDarkMode ? 'dark' : ''}}">
   <!-- 加载中 -->
   <view class="loading-state" wx:if="{{loading}}">
     <text class="loading-icon">🐾</text>
@@ -9,8 +9,9 @@
   <!-- 空状态 -->
   <view class="empty-state" wx:elif="{{empty}}">
     <text class="empty-icon">💝</text>
-    <text class="empty-title">还没有喜欢的猫咪</text>
-    <text class="empty-desc">去首页发现更多可爱小猫吧</text>
+    <text class="empty-title">还没有喜欢的内容</text>
+    <text class="empty-desc">去首页点点喜欢，再回来这里查看</text>
+    <!-- 空状态区域：在暂无数据时给出提示信息。 -->
     <view class="empty-btn" bind:tap="goHome">
       <text>去逛逛</text>
     </view>
@@ -28,7 +29,7 @@
       <!-- 封面图片 -->
       <image
         class="like-cover"
-        src="{{item.coverError ? '/assets/images/default-cat.png' : (item.images[0] || '/assets/images/default-cat.png')}}"
+        src="{{item.coverError ? '/assets/images/default-cat.png' : item.coverImage}}"
         mode="aspectFill"
         binderror="onCoverError"
         data-index="{{index}}"
@@ -36,9 +37,9 @@
 
       <!-- 信息覆盖层 -->
       <view class="like-overlay">
-        <text class="like-name">{{item.name || '无名小猫'}}</text>
+        <text class="like-name">{{item.displayName}}</text>
         <view class="like-footer">
-          <text class="like-location">📍 {{item.location || '未知'}}</text>
+          <text class="like-location">📍 {{item.displayLocation}}</text>
           <view class="like-actions">
             <text class="like-stat">❤️ {{item.likeCount || 0}}</text>
           </view>

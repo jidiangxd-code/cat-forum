@@ -2,6 +2,7 @@
 const api = require('../../utils/api.js');
 
 Page({
+  // 当前页面或组件依赖的响应式状态统一维护在这里。
   data: {
     keyword: '',
     autoFocus: true,
@@ -30,6 +31,7 @@ Page({
     }
   },
 
+  // 初始化当前页面状态并触发首屏数据加载。
   onLoad(options) {
     // 页面加载时自动聚焦搜索框
     this.setData({ autoFocus: true });
@@ -43,6 +45,7 @@ Page({
     }
   },
 
+  // 在页面重新显示时同步最新状态或刷新数据。
   onShow() {
     // 每次显示时刷新历史
     const history = wx.getStorageSync('searchHistory') || [];
@@ -169,6 +172,7 @@ Page({
     wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
   },
 
+  // 把时间字段格式化为相对时间或日期文案。
   _formatTime(t) {
     if (!t) return '';
     const d = t instanceof Date ? t : new Date(t);
