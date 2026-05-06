@@ -1,39 +1,71 @@
-<!-- pages/index/index.wxml - 首页（帖子流）-->
-<view class="page">
-
-  <!-- 顶部横幅 -->
+<!-- pages/index/index.wxml - 首页（帖子流） -->
+<view class="page {{isDarkMode ? 'dark' : ''}}">
   <view class="banner">
     <view class="banner-left">
       <text class="banner-title">🐾 校园小猫</text>
       <text class="banner-sub">发现每一只可爱的猫咪</text>
     </view>
     <view class="banner-right">
-      <view class="cat-rank-btn" bindtap="goCatList">猫咪榜 🏆</view>
+      <view class="cat-rank-btn" bindtap="goCatList">猫咪榜</view>
       <view class="search-btn" bindtap="goSearch">🔍</view>
+      <view class="search-btn" bindtap="toggleDarkMode" style="font-size:26rpx;">{{isDarkMode ? '☀️' : '🌙'}}</view>
     </view>
   </view>
 
-  <!-- 帖子流 -->
+  <view class="sort-tabs">
+    <view
+      class="sort-tab {{sortBy === 'latest' ? 'active' : ''}}"
+      bindtap="switchSort"
+      data-sort="latest"
+    >🕐 最新</view>
+    <view
+      class="sort-tab {{sortBy === 'hot' ? 'active' : ''}}"
+      bindtap="switchSort"
+      data-sort="hot"
+    >🔥 热门</view>
+  </view>
+
   <view class="post-list">
     <view class="post-card" wx:for="{{postList}}" wx:key="_id">
-
-      <!-- 发布者信息 -->
       <view class="post-author" bindtap="onPostTap" data-id="{{item._id}}">
         <image
           class="author-avatar"
           src="{{item.authorAvatar || '/assets/images/default-avatar.png'}}"
           mode="aspectFill"
         />
-        <view class="author-info">
+        <view class="author-main">
           <text class="author-name">{{item.authorName || '匿名用户'}}</text>
-          <text class="post-time">{{item.createTimeStr}}</text>
+          <text class="author-meta">{{item.createTimeStr}}{{item.location ? ' · ' + item.location : ''}}</text>
         </view>
         <view class="post-category-tag" wx:if="{{item.category}}">
           {{categoryMap[item.category] || item.category}}
         </view>
       </view>
 
-      <!-- 图片组 -->
+      <view
+        class="post-cat-header {{item.cat ? '' : 'cat-missing'}}"
+        catchtap="onCatTap"
+        data-catid="{{item.catId}}"
+      >
+        <image
+          wx:if="{{item.cat && item.cat.coverImage}}"
+          class="cat-avatar"
+          src="{{item.cat.coverImage}}"
+          mode="aspectFill"
+        />
+        <view class="cat-avatar avatar-empty" wx:else>🐱</view>
+        <view class="cat-header-info">
+          <text class="cat-header-name">{{item.cat ? (item.cat.fullName || item.cat.codeName) : '未知猫咪'}}</text>
+          <text class="cat-header-meta" wx:if="{{item.cat}}">
+            {{item.cat.catType === 'formal' ? '正式猫' : '未知猫'}} · {{item.cat.appearance || '外貌未知'}}
+          </text>
+          <text class="cat-header-meta" wx:else>猫咪档案待补充</text>
+        </view>
+        <view class="cat-type-badge {{item.cat && item.cat.catType ? item.cat.catType : 'unknown'}}">
+          {{item.cat ? (item.cat.catType === 'formal' ? '正式' : '未知') : '待补'}}
+        </view>
+      </view>
+
       <view
         class="post-imgs"
         wx:if="{{item.images && item.images.length > 0}}"
@@ -55,44 +87,29 @@
         <view class="img-more-badge" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
       </view>
 
-      <!-- 文字内容 -->
       <view class="post-content" bindtap="onPostTap" data-id="{{item._id}}">
         <text class="post-text">{{item.content}}</text>
       </view>
 
-      <!-- 底部：关联猫咪 + 点赞 -->
       <view class="post-footer">
-        <!-- 关联猫咪（可点击跳转） -->
-        <view
-          class="cat-tag"
-          wx:if="{{item.cat}}"
-          catchtap="onCatTap"
-          data-catid="{{item.catId}}"
-        >
-          <text class="cat-icon">🐱</text>
-          <text class="cat-name">{{item.cat.fullName || item.cat.codeName}}</text>
-          <text class="cat-arrow">›</text>
-        </view>
-        <view class="cat-tag cat-empty" wx:else>
-          <text class="cat-icon">🐱</text>
-          <text class="cat-name">未知猫咪</text>
-        </view>
-
-        <!-- 点赞 -->
-        <view
-          class="like-btn {{item.liked ? 'liked' : ''}}"
-          catchtap="onLike"
-          data-id="{{item._id}}"
-          data-liked="{{item.liked}}"
-        >
-          <text>{{item.liked ? '❤️' : '🤍'}} {{item.likeCount || 0}}</text>
+        <text class="post-time">{{item.createTimeStr}}</text>
+        <view class="post-actions">
+          <view class="comment-entry" bindtap="onPostTap" data-id="{{item._id}}">
+            <text>💬 {{item.commentCount || 0}}</text>
+          </view>
+          <view
+            class="like-btn {{item.liked ? 'liked' : ''}}"
+            catchtap="onLike"
+            data-id="{{item._id}}"
+            data-liked="{{item.liked}}"
+          >
+            <text>{{item.liked ? '❤️' : '🤍'}} {{item.likeCount || 0}}</text>
+          </view>
         </view>
       </view>
-
     </view>
   </view>
 
-  <!-- 空状态 -->
   <view class="empty" wx:if="{{!loading && postList.length === 0}}">
     <text class="empty-icon">🐾</text>
     <text class="empty-text">还没有帖子，快去发布第一只猫咪吧！</text>
@@ -100,6 +117,10 @@
   </view>
 
   <view class="load-more" wx:if="{{loading && postList.length > 0}}">加载中...</view>
-  <view class="no-more" wx:elif="{{!hasMore && postList.length > 0}}">— 到底了 🐱 —</view>
+  <view class="no-more" wx:elif="{{!hasMore && postList.length > 0}}">到底了</view>
 
+  <view class="ad-section" wx:if="{{adUnitId}}">
+    <view class="ad-label">校园公益合作推荐</view>
+    <ad unit-id="{{adUnitId}}" ad-type="banner" ad-theme="{{isDarkMode ? 'black' : 'white'}}"></ad>
+  </view>
 </view>

@@ -1,0 +1,9 @@
+{
+  "name": "deletePost",
+  "version": "1.0.0",
+  "description": "删除当前用户自己的帖子",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.6.3"
+  }
+}

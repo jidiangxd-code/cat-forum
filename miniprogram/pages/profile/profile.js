@@ -75,7 +75,7 @@ Page({
     const openId = api.getOpenId();
     if (!openId || openId === 'guest') {
       this.setData({
-        stats: { publishCount: 0, likeCount: 0, collectCount: 0 }
+        stats: { publishCount: 0, likeCount: 0, collectCount: 0, favCount: 0 }
       });
       return;
     }
@@ -106,14 +106,14 @@ Page({
         stats: {
           publishCount: postCountRes.total || 0,
           likeCount: likeCount,
-          collectCount: likeCount,
+          collectCount: favCount,
           favCount
         }
       });
     } catch (err) {
       console.error('获取统计数据失败', err);
       this.setData({
-        stats: { publishCount: 0, likeCount: 0, collectCount: 0 }
+        stats: { publishCount: 0, likeCount: 0, collectCount: 0, favCount: 0 }
       });
     }
   },

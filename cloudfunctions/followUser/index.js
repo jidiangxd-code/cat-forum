@@ -4,7 +4,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
 exports.main = async (event, context) => {
-  const { action, fromUserId, toUserId } = event;
+  const { action, fromUserId, toUserId, fromUserName = '', fromUserAvatar = '' } = event;
 
   if (!fromUserId || !toUserId) {
     return { success: false, code: 400, message: '缺少必要参数' };
@@ -40,16 +40,15 @@ exports.main = async (event, context) => {
 
       // 给被关注者发通知
       try {
-        const userInfo = wx.getStorageSync ? wx.getStorageSync('userInfo') : {};
         await db.collection('notifications').add({
           data: {
             toUserId,
             type: 'follow',
             fromUserId,
-            fromUserName: userInfo.nickName || '某用户',
-            fromUserAvatar: userInfo.avatarUrl || '',
+            fromUserName: fromUserName || fromUserId,
+            fromUserAvatar: fromUserAvatar || '',
             targetId: fromUserId,
-            targetTitle: userInfo.nickName || '某用户',
+            targetTitle: fromUserName || fromUserId,
             read: false,
             createTime: db.serverDate()
           }

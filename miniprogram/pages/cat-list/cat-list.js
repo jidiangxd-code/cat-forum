@@ -7,10 +7,21 @@ Page({
       { id: 'list', name: '全部猫咪' },
       { id: 'rank_total', name: '人气榜' },
       { id: 'rank_new', name: '新晋猫' },
-      { id: 'unknown_list', name: '未知猫' }
+      { id: 'unknown_list', name: '未知猫' },
+      { id: 'square', name: '猫广场' }
     ],
     currentTab: 'list',
     catList: [],
+    squareCats: [],
+    squareView: 'location',
+    squareFeed: [],
+    squareLoading: false,
+    selectedSquareCat: null,
+    mapLatitude: 37.8706,
+    mapLongitude: 112.5489,
+    mapMarkers: [],
+    mapPolyline: [],
+    mapCircles: [],
     loading: false,
     hasMore: true,
     page: 1,
@@ -28,6 +39,7 @@ Page({
 
   onShow() {
     this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
+    this._consumeInitialTab();
   },
 
   onPullDownRefresh() {
@@ -44,10 +56,12 @@ Page({
   onTabChange(e) {
     const tab = e.currentTarget.dataset.tab;
     this.setData({ currentTab: tab, page: 1, catList: [], hasMore: true, keyword: '', searchMode: false });
-    this.loadList();
+    if (tab === 'square') this.loadCatSquare();
+    else this.loadList();
   },
 
   async loadList() {
+    if (this.data.currentTab === 'square') return this.loadCatSquare();
     if (this.data.loading) return;
     this.setData({ loading: true });
 
@@ -71,6 +85,18 @@ Page({
     }
   },
 
+  _consumeInitialTab() {
+    let tab = '';
+    try {
+      tab = wx.getStorageSync('catListInitialTab');
+      if (tab) wx.removeStorageSync('catListInitialTab');
+    } catch (e) {}
+    if (!tab || tab === this.data.currentTab) return;
+    this.setData({ currentTab: tab, page: 1, catList: [], hasMore: true, keyword: '', searchMode: false });
+    if (tab === 'square') this.loadCatSquare();
+    else this.loadList();
+  },
+
   onKeywordInput(e) {
     this.setData({ keyword: e.detail.value });
   },
@@ -89,6 +115,182 @@ Page({
     } catch (e) {
       this.setData({ loading: false });
     }
+  },
+
+  async loadCatSquare() {
+    if (this.data.squareLoading) return;
+    this.setData({ squareLoading: true, loading: true });
+    try {
+      if (this.data.squareView === 'circle') {
+        await this.loadSquareFeed();
+        return;
+      }
+      const res = await api.getCatLocationPosts(100);
+      const posts = res.data || [];
+      const grouped = {};
+      posts.forEach(post => {
+        if (!post.catId || !post.latitude || !post.longitude) return;
+        if (!grouped[post.catId]) grouped[post.catId] = [];
+        grouped[post.catId].push(post);
+      });
+
+      const catIds = Object.keys(grouped);
+      const catResults = await Promise.allSettled(catIds.map(id => api.getCatProfile(id)));
+      const squareCats = catIds.map((id, idx) => {
+        const cat = catResults[idx].status === 'fulfilled' ? catResults[idx].value.data : null;
+        const points = grouped[id]
+          .map(post => ({
+            id: post._id,
+            latitude: Number(post.latitude),
+            longitude: Number(post.longitude),
+            location: post.location || 'GPS 定位',
+            content: post.content || '',
+            timeText: this._formatTime(post.createTime)
+          }))
+          .filter(p => !isNaN(p.latitude) && !isNaN(p.longitude));
+        return {
+          catId: id,
+          cat,
+          name: (cat && (cat.fullName || cat.codeName)) || '未知猫',
+          appearance: (cat && cat.appearance) || '外貌未知',
+          coverImage: cat && cat.coverImage,
+          points,
+          prediction: this._buildLocationPrediction(points)
+        };
+      }).filter(item => item.points.length > 0);
+
+      const selected = squareCats[0] || null;
+      this.setData({
+        squareCats,
+        selectedSquareCat: selected,
+        squareLoading: false,
+        loading: false,
+        hasMore: false
+      });
+      this._applySquareMap(selected);
+    } catch (e) {
+      console.error('加载猫广场失败', e);
+      this.setData({ squareLoading: false, loading: false, hasMore: false });
+    }
+  },
+
+  onSquareViewChange(e) {
+    const view = e.currentTarget.dataset.view;
+    if (!view || view === this.data.squareView) return;
+    this.setData({ squareView: view });
+    this.loadCatSquare();
+  },
+
+  async loadSquareFeed() {
+    const res = await api.getPostList({ page: 1, pageSize: 20, sort: 'latest' });
+    const squareFeed = (res.data || []).map(post => ({
+      ...post,
+      timeStr: this._formatTime(post.createTime)
+    }));
+    this.setData({
+      squareFeed,
+      squareLoading: false,
+      loading: false,
+      hasMore: false
+    });
+  },
+
+  onSquarePostTap(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+  },
+
+  onSquareCatTap(e) {
+    const catId = e.currentTarget.dataset.catid;
+    const selected = this.data.squareCats.find(item => item.catId === catId);
+    this.setData({ selectedSquareCat: selected || null });
+    this._applySquareMap(selected);
+  },
+
+  _applySquareMap(squareCat) {
+    if (!squareCat || !squareCat.points || squareCat.points.length === 0) {
+      this.setData({ mapMarkers: [], mapPolyline: [], mapCircles: [] });
+      return;
+    }
+    const points = squareCat.points;
+    const prediction = squareCat.prediction;
+    const markers = points.slice(0, 12).map((point, index) => ({
+      id: index + 1,
+      latitude: point.latitude,
+      longitude: point.longitude,
+      width: index === 0 ? 34 : 24,
+      height: index === 0 ? 34 : 24,
+      callout: {
+        content: index === 0 ? `最新：${point.location}` : point.location,
+        color: '#333333',
+        bgColor: '#ffffff',
+        padding: 8,
+        borderRadius: 8,
+        display: index === 0 ? 'ALWAYS' : 'BYCLICK'
+      }
+    }));
+
+    this.setData({
+      mapLatitude: prediction.latitude,
+      mapLongitude: prediction.longitude,
+      mapMarkers: markers,
+      mapPolyline: [{
+        points: points.slice().reverse().map(p => ({ latitude: p.latitude, longitude: p.longitude })),
+        color: '#FF7043',
+        width: 4,
+        dottedLine: false,
+        arrowLine: true
+      }],
+      mapCircles: [{
+        latitude: prediction.latitude,
+        longitude: prediction.longitude,
+        radius: prediction.radius,
+        color: '#FF704355',
+        fillColor: '#FF704322',
+        strokeWidth: 2
+      }]
+    });
+  },
+
+  _buildLocationPrediction(points) {
+    if (!points || points.length === 0) {
+      return { latitude: this.data.mapLatitude, longitude: this.data.mapLongitude, radius: 80, confidenceText: '暂无数据' };
+    }
+    const weighted = points.reduce((acc, point, index) => {
+      const weight = Math.max(1, points.length - index);
+      acc.lat += point.latitude * weight;
+      acc.lng += point.longitude * weight;
+      acc.total += weight;
+      return acc;
+    }, { lat: 0, lng: 0, total: 0 });
+    const center = {
+      latitude: weighted.lat / weighted.total,
+      longitude: weighted.lng / weighted.total
+    };
+    const distances = points.map(p => this._distanceInMeters(center.latitude, center.longitude, p.latitude, p.longitude));
+    const maxDistance = Math.max(...distances, 0);
+    const radius = Math.min(300, Math.max(40, Math.round(maxDistance + 20)));
+    const confidenceText = points.length >= 5 ? '较高' : points.length >= 3 ? '中等' : '偏低';
+    return { ...center, radius, confidenceText };
+  },
+
+  _distanceInMeters(lat1, lon1, lat2, lon2) {
+    const toRad = n => n * Math.PI / 180;
+    const earthRadius = 6371000;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+      + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2))
+      * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return earthRadius * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  },
+
+  _formatTime(t) {
+    if (!t) return '';
+    const d = t instanceof Date ? t : new Date(t);
+    if (isNaN(d)) return '';
+    return `${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   },
 
   clearSearch() {

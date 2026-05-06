@@ -1,7 +1,64 @@
 .page-container {
   min-height: 100vh;
   padding-bottom: 120rpx;
-  background-color: #FFF5EB;
+  background-color: #fff5eb;
+}
+
+/* 发布者信息卡片 */
+.author-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 32rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f0e8e0;
+}
+
+.author-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.author-avatar {
+  width: 88rpx;
+  height: 88rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 3rpx solid #FFE4C4;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.author-meta {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.follow-btn {
+  padding: 10rpx 28rpx;
+  border-radius: 40rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  background: #FF7043;
+  color: #fff;
+  border: none;
+  white-space: nowrap;
+}
+
+.follow-btn.following {
+  background: #f5f5f5;
+  color: #999;
 }
 
 /* 发布者信息卡片 */
@@ -110,7 +167,7 @@
   display: block;
 }
 .location-tag {
-  background-color: #FFF0E0;
+  background-color: #fff0e0;
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
   font-size: 22rpx;
@@ -163,7 +220,7 @@
 .cat-name {
   font-size: 30rpx;
   font-weight: bold;
-  color: #6B4226;
+  color: #6b4226;
 }
 .cat-type-badge {
   padding: 4rpx 12rpx;
@@ -243,9 +300,15 @@
 }
 
 @keyframes likeAnim {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.4); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.4);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 .action-text {
@@ -258,6 +321,20 @@
   font-size: 22rpx;
   color: #999999;
   line-height: 1;
+}
+
+.detail-ad-section {
+  margin: 20rpx 24rpx;
+  padding: 20rpx 20rpx 12rpx;
+  background: #ffffff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
+}
+
+.detail-ad-label {
+  font-size: 22rpx;
+  color: #b08a6a;
+  margin-bottom: 12rpx;
 }
 
 /* 评论区 */
@@ -278,7 +355,7 @@
 .comment-item {
   display: flex;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #F5F5F5;
+  border-bottom: 1rpx solid #f5f5f5;
 }
 
 .comment-item:last-child {
@@ -320,7 +397,7 @@
 .comment-author {
   font-size: 26rpx;
   font-weight: bold;
-  color: #4A4A4A;
+  color: #4a4a4a;
   display: block;
 }
 
@@ -334,7 +411,7 @@
 
 .comment-time {
   font-size: 20rpx;
-  color: #CCCCCC;
+  color: #cccccc;
   display: block;
 }
 
@@ -342,6 +419,8 @@
 .comment-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  gap: 12rpx;
   margin-top: 6rpx;
 }
 
@@ -352,7 +431,18 @@
   background: #FFF5EB;
   border-radius: 12rpx;
 }
+.comment-like {
+  font-size: 22rpx;
+  color: #999;
+  padding: 4rpx 12rpx;
+  background: #F7F7F7;
+  border-radius: 12rpx;
+}
 
+.comment-like.liked {
+  color: #FF7043;
+  background: #FFF0E8;
+}
 /* 子评论列表 */
 .reply-list {
   margin-top: 12rpx;
@@ -413,7 +503,12 @@
   padding-left: 48rpx;
   word-break: break-all;
 }
-
+.reply-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 48rpx;
+  margin-top: 6rpx;
+}
 .empty-comment {
   text-align: center;
   padding: 40rpx;
@@ -427,7 +522,7 @@
 
 .empty-text {
   font-size: 24rpx;
-  color: #CCCCCC;
+  color: #cccccc;
 }
 
 /* 底部评论输入 */
@@ -441,7 +536,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-top: 1rpx solid #F0F0F0;
+  border-top: 1rpx solid #f0f0f0;
   box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
@@ -475,14 +570,14 @@
 
 .comment-input {
   flex: 1;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   border-radius: 30rpx;
   padding: 16rpx 24rpx;
   font-size: 26rpx;
 }
 
 .send-btn {
-  background: linear-gradient(135deg, #FFB74D, #FF8C42);
+  background: linear-gradient(135deg, #ffb74d, #ff8c42);
   color: #ffffff;
   border-radius: 30rpx;
   padding: 14rpx 28rpx;
@@ -498,7 +593,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #FFF5EB;
+  background-color: #fff5eb;
 }
 
 .loading-icon {

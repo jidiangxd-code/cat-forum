@@ -34,8 +34,12 @@ Page({
       }
 
       const db = wx.cloud.database();
+      const _ = db.command;
       const res = await db.collection('posts')
-        .where({ authorId: openId })
+        .where({
+          authorId: openId,
+          status: _.or([_.eq('active'), _.exists(false)])
+        })
         .orderBy('createTime', 'desc')
         .get();
 
@@ -100,39 +104,14 @@ Page({
     wx.showLoading({ title: '删除中...', mask: true });
 
     try {
-      const post = this.data.posts.find(p => p._id === id);
-      const db = wx.cloud.database();
-
-      // 先删除该帖子下的所有评论
-      const commentsRes = await db.collection('comments')
-        .where({ postId: id })
-        .get();
-      if (commentsRes.data && commentsRes.data.length > 0) {
-        const deletePromises = commentsRes.data.map(c =>
-          db.collection('comments').doc(c._id).remove()
-        );
-        await Promise.all(deletePromises);
-      }
-
-      // 删除帖子
-      await db.collection('posts').doc(id).remove();
-
-      // 删除云存储中的图片
-      if (post && post.images && post.images.length > 0) {
-        try {
-          await wx.cloud.deleteFile({ fileList: post.images });
-        } catch (imgErr) {
-          console.warn('删除图片失败', imgErr);
-        }
-      }
-
+      await api.deletePost(id);
       wx.hideLoading();
       wx.showToast({ title: '删除成功', icon: 'success' });
       this.loadMyPosts();
     } catch (err) {
       wx.hideLoading();
       console.error('删除失败', err);
-      wx.showToast({ title: '删除失败', icon: 'none' });
+      wx.showToast({ title: (err && err.message) || '删除失败', icon: 'none' });
     }
   },
 

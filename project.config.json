@@ -46,7 +46,7 @@
   },
   "appid": "wx508e2fc1c2ec5b53",
   "projectname": "xiao_mao_forum",
-  "libVersion": "2.20.1",
+  "libVersion": "3.15.2",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "condition": {
     "search": {

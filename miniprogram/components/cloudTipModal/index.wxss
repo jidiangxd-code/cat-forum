@@ -4,11 +4,11 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0,0,0,0.4);
+  background-color: rgba(0, 0, 0, 0.4);
   z-index: 1;
 }
-.install_tip_close{
-  position:absolute;
+.install_tip_close {
+  position: absolute;
   right: 10rpx;
   top: 10rpx;
   width: 32px;
@@ -34,7 +34,7 @@
 
 .install_tip_detail_tip {
   font-size: 25rpx;
-  color: rgba(0,0,0,0.4);
+  color: rgba(0, 0, 0, 0.4);
   margin-top: 20rpx;
   text-align: left;
 }
@@ -43,9 +43,9 @@
   display: flex;
 }
 .install_tip_detail_button {
-  color: #07C160;
+  color: #07c160;
   font-weight: 500;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
   width: 40%;
   text-align: center;
   /* height: 90rpx; */
@@ -55,6 +55,6 @@
 }
 
 .install_tip_detail_button_primary {
-  background-color: #07C160;
+  background-color: #07c160;
   color: #fff;
 }

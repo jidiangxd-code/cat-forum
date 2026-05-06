@@ -1,6 +1,6 @@
 .page-container {
   min-height: 100vh;
-  background: #FFF5EB;
+  background: #fff5eb;
   padding-bottom: 40rpx;
 }
 
@@ -25,8 +25,13 @@
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20rpx); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20rpx);
+  }
 }
 
 /* 空状态 */
@@ -56,7 +61,7 @@
 }
 
 .empty-btn {
-  background: linear-gradient(135deg, #FF9500, #FFB74D);
+  background: linear-gradient(135deg, #ff9500, #ffb74d);
   color: #fff;
   padding: 20rpx 60rpx;
   border-radius: 50rpx;
@@ -81,8 +86,8 @@
   display: flex;
   align-items: center;
   padding: 24rpx;
-  background: #FFF8F0;
-  border-bottom: 1rpx solid #F0E6D8;
+  background: #fff8f0;
+  border-bottom: 1rpx solid #f0e6d8;
 }
 
 .cat-cover {
@@ -90,7 +95,7 @@
   height: 80rpx;
   border-radius: 50%;
   margin-right: 20rpx;
-  border: 2rpx solid #FFE0CC;
+  border: 2rpx solid #ffe0cc;
 }
 
 .cat-text {
@@ -143,10 +148,10 @@
 .comment-delete {
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
-  background: #FFF0F0;
+  background: #fff0f0;
 }
 
 .delete-text {
   font-size: 24rpx;
-  color: #FF4D4F;
+  color: #ff4d4f;
 }

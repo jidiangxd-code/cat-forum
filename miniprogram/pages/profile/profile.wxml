@@ -1,5 +1,5 @@
 <!--个人中心-->
-<view class="page-container">
+<view class="page-container {{isDarkMode ? 'dark' : ''}}">
   <!-- 用户信息头部 -->
   <view class="profile-header">
     <view class="header-bg"></view>

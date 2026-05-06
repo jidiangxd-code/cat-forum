@@ -1,6 +1,6 @@
 .page-container {
   min-height: 100vh;
-  background: #FFF5EB;
+  background: #fff5eb;
   padding-bottom: 40rpx;
 }
 
@@ -25,8 +25,13 @@
 }
 
 @keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20rpx); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20rpx);
+  }
 }
 
 /* 空状态 */
@@ -56,7 +61,7 @@
 }
 
 .empty-btn {
-  background: linear-gradient(135deg, #FF9500, #FFB74D);
+  background: linear-gradient(135deg, #ff9500, #ffb74d);
   color: #fff;
   padding: 20rpx 60rpx;
   border-radius: 50rpx;

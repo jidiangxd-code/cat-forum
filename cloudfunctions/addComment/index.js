@@ -8,6 +8,8 @@ exports.main = async (event, context) => {
     postId,     // 帖子ID（新增，支持 postId）
     catId,      // 猫咪档案ID
     content,
+    authorName: eventAuthorName = '',
+    authorAvatar: eventAuthorAvatar = '',
     // 子评论字段
     parentId,
     replyToUserId,
@@ -30,15 +32,22 @@ exports.main = async (event, context) => {
   }
 
   // 获取用户信息
-  let authorName = '匿名用户';
-  let avatar = '';
+  let authorName = eventAuthorName || '匿名用户';
+  let avatar = eventAuthorAvatar || '';
   try {
     const userResult = await db.collection('users')
-      .where({ openId: openid })
+      .where({ openid })
       .get();
-    if (userResult.data && userResult.data.length > 0) {
-      authorName = userResult.data[0].authorName || '匿名用户';
-      avatar = userResult.data[0].avatar || '';
+    let user = userResult.data && userResult.data[0];
+    if (!user) {
+      const legacyUserResult = await db.collection('users')
+        .where({ openId: openid })
+        .get();
+      user = legacyUserResult.data && legacyUserResult.data[0];
+    }
+    if (user) {
+      authorName = user.nickName || user.authorName || authorName;
+      avatar = user.avatar || avatar;
     }
   } catch (e) {
     // 用户信息获取失败不影响评论
