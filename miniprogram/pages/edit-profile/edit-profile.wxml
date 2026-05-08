@@ -1,7 +1,8 @@
 <!-- 编辑资料 -->
 <view class="page-container">
+
   <!-- 头像编辑 -->
-  <view class="avatar-section">
+  <view class="card avatar-section">
     <view class="section-label">头像</view>
     <view class="avatar-editor" bind:tap="chooseAvatar">
       <image
@@ -9,24 +10,77 @@
         src="{{avatarUrl || '/assets/images/default-avatar.png'}}"
         mode="aspectFill"
       />
-      <view class="avatar-tip">
-        <text class="tip-icon">📷</text>
-        <text class="tip-text">点击更换</text>
+      <view class="avatar-overlay">
+        <text class="overlay-icon">📷</text>
+        <text class="overlay-text">更换</text>
       </view>
     </view>
   </view>
 
-  <!-- 昵称编辑 -->
-  <view class="form-section">
-    <view class="section-label">昵称</view>
-    <input
-      class="input-field"
-      placeholder="请输入昵称（2-20 个字符）"
-      value="{{nickName}}"
-      bindinput="onNickNameInput"
-      maxlength="20"
-    />
-    <view class="char-count">{{nickName.length}}/20</view>
+  <!-- 基本信息 -->
+  <view class="card">
+    <view class="section-label">基本信息</view>
+
+    <!-- 昵称 -->
+    <view class="form-row">
+      <text class="form-label">昵称</text>
+      <view class="form-input-wrap">
+        <input
+          class="input-field"
+          placeholder="请输入昵称"
+          value="{{nickName}}"
+          bindinput="onNickNameInput"
+          maxlength="20"
+        />
+        <text class="char-count">{{nickName.length}}/20</text>
+      </view>
+    </view>
+
+    <!-- 性别 -->
+    <view class="form-row">
+      <text class="form-label">性别</text>
+      <view class="gender-group">
+        <view
+          wx:for="{{genderOptions}}"
+          wx:key="value"
+          class="gender-item {{gender === item.value ? 'active' : ''}}"
+          bindtap="onGenderTap"
+          data-val="{{item.value}}"
+        >
+          {{item.label}}
+        </view>
+      </view>
+    </view>
+
+    <!-- 校区 -->
+    <view class="form-row">
+      <text class="form-label">校区</text>
+      <view class="form-input-wrap">
+        <input
+          class="input-field"
+          placeholder="你所在的校区"
+          value="{{campus}}"
+          bindinput="onCampusInput"
+          maxlength="20"
+        />
+      </view>
+    </view>
+  </view>
+
+  <!-- 个性签名 -->
+  <view class="card">
+    <view class="section-label">个性签名</view>
+    <view class="bio-wrap">
+      <textarea
+        class="bio-textarea"
+        placeholder="介绍一下自己吧～"
+        value="{{bio}}"
+        bindinput="onBioInput"
+        maxlength="100"
+        auto-height
+      />
+      <text class="char-count bio-count">{{bio.length}}/100</text>
+    </view>
   </view>
 
   <!-- 保存按钮 -->
@@ -41,15 +95,4 @@
     </button>
   </view>
 
-  <!-- 提示说明 -->
-  <view class="tips-section">
-    <view class="tip-item">
-      <text class="tip-icon">ℹ️</text>
-      <text class="tip-text">昵称修改后，其他用户可以看到你的新昵称</text>
-    </view>
-    <view class="tip-item">
-      <text class="tip-icon">🔒</text>
-      <text class="tip-text">头像会上传到云存储，请上传合适的图片</text>
-    </view>
-  </view>
 </view>

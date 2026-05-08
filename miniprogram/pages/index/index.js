@@ -10,6 +10,8 @@ Page({
     pageSize: 15,
     // 猫咪档案缓存（catId -> cat）
     catCache: {},
+    // 用户信息缓存（authorId -> user）
+    authorCache: {},
     // 分类映射
     categoryMap: {
       daily: '日常',
@@ -47,26 +49,67 @@ Page({
 
       // 批量获取未缓存的猫咪档案
       const catIds = [...new Set(posts.map(p => p.catId).filter(Boolean))];
-      const newIds = catIds.filter(id => !this.data.catCache[id]);
-      if (newIds.length > 0) {
+      const newCatIds = catIds.filter(id => !this.data.catCache[id]);
+      if (newCatIds.length > 0) {
         const catResults = await Promise.allSettled(
-          newIds.map(id => api.getCatProfile(id))
+          newCatIds.map(id => api.getCatProfile(id))
         );
-        const newCache = { ...this.data.catCache };
+        const newCatCache = { ...this.data.catCache };
         catResults.forEach((r, i) => {
           if (r.status === 'fulfilled' && r.value.data) {
-            newCache[newIds[i]] = r.value.data;
+            newCatCache[newCatIds[i]] = r.value.data;
           }
         });
-        this.setData({ catCache: newCache });
+        this.setData({ catCache: newCatCache });
       }
 
-      // 合并猫咪信息到帖子
-      const enriched = posts.map(p => ({
-        ...p,
-        cat: this.data.catCache[p.catId] || null,
-        createTimeStr: this._formatTime(p.createTime)
-      }));
+      // 批量获取缺失作者信息的用户数据
+      const authorIds = [...new Set(
+        posts
+          .filter(p => !p.authorName && p.authorId)
+          .map(p => p.authorId)
+      )];
+      const newAuthorIds = authorIds.filter(id => !this.data.authorCache[id]);
+      if (newAuthorIds.length > 0) {
+        const db = wx.cloud.database();
+        const authorResults = await Promise.allSettled(
+          newAuthorIds.map(id =>
+            db.collection('users').where({ openid: id }).limit(1).get()
+          )
+        );
+        const newAuthorCache = { ...this.data.authorCache };
+        authorResults.forEach((r, i) => {
+          if (r.status === 'fulfilled' && r.value.data && r.value.data.length > 0) {
+            const user = r.value.data[0];
+            newAuthorCache[newAuthorIds[i]] = {
+              nickName: user.nickName || '匿名用户',
+              avatar: user.avatar || ''
+            };
+          } else {
+            newAuthorCache[newAuthorIds[i]] = { nickName: '匿名用户', avatar: '' };
+          }
+        });
+        this.setData({ authorCache: newAuthorCache });
+      }
+
+      // 合并猫咪信息和作者信息到帖子
+      const enriched = posts.map(p => {
+        const cat = this.data.catCache[p.catId] || null;
+        // 优先用帖子自带的 authorName/authorAvatar，没有则从缓存查
+        let authorName = p.authorName;
+        let authorAvatar = p.authorAvatar;
+        if (!authorName && p.authorId && this.data.authorCache[p.authorId]) {
+          authorName = this.data.authorCache[p.authorId].nickName;
+          authorAvatar = this.data.authorCache[p.authorId].avatar;
+        }
+        return {
+          ...p,
+          cat,
+          authorName: authorName || '匿名用户',
+          authorAvatar: authorAvatar || '',
+          createTimeStr: this._formatTime(p.createTime)
+        };
+      });
 
       this.setData({
         postList: reset ? enriched : [...this.data.postList, ...enriched],

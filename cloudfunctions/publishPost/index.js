@@ -39,9 +39,23 @@ exports.main = async (event, context) => {
     if (!cat) return { success: false, code: 404, message: '绑定的猫咪档案不存在' };
     if (cat.isMerged) return { success: false, code: 400, message: '该猫咪已被合并，请重新选择' };
 
+    // 查询用户信息，用于冗余存储到帖子（避免查帖子时再查 users 集合）
+    let authorName = '匿名用户';
+    let authorAvatar = '';
+    try {
+      const userRes = await db.collection('users').where({ openid }).limit(1).get();
+      if (userRes.data && userRes.data.length > 0) {
+        const user = userRes.data[0];
+        authorName = user.nickName || '匿名用户';
+        authorAvatar = user.avatar || '';
+      }
+    } catch (e) {
+      console.warn('查询用户信息失败，使用默认值', e);
+    }
+
     const now = new Date();
 
-    // 写入帖子
+    // 写入帖子（冗余存储 authorName / authorAvatar）
     const result = await db.collection('posts').add({
       data: {
         catId,
@@ -50,6 +64,8 @@ exports.main = async (event, context) => {
         content: content.trim(),
         category,
         authorId: openid,
+        authorName,
+        authorAvatar,
         likeCount: 0,
         likedBy: [],
         commentCount: 0,
