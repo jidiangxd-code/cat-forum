@@ -1,8 +1,11 @@
 // pages/search/search.js - 搜索页
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    themeId: theme.getThemeId(),
+    pageClass: theme.getPageClass(),
     keyword: '',
     autoFocus: true,
     activeTab: 'cats',      // 'cats' | 'posts'
@@ -31,6 +34,7 @@ Page({
   },
 
   onLoad(options) {
+    theme.applyTheme(this);
     // 页面加载时自动聚焦搜索框
     this.setData({ autoFocus: true });
     // 读取搜索历史

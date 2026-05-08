@@ -43,7 +43,7 @@ exports.main = async (event, context) => {
     let authorName = '匿名用户';
     let authorAvatar = '';
     try {
-      const userRes = await db.collection('users').where({ openid }).limit(1).get();
+      const userRes = await db.collection('users').where({ openid: openid }).limit(1).get();
       if (userRes.data && userRes.data.length > 0) {
         const user = userRes.data[0];
         authorName = user.nickName || '匿名用户';

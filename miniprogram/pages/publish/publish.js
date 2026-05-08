@@ -1,8 +1,12 @@
 // pages/publish/publish.js - 发帖页（强制绑猫）
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    // 主题
+    pageClass: theme.getPageClass(),
+    themeId: theme.getThemeId(),
     // 图片
     images: [],
     uploadedUrls: [],
@@ -40,7 +44,9 @@ Page({
   },
 
   onLoad() {
-    this.setData({ appearanceOptions: api.APPEARANCE_OPTIONS });
+    const current = theme.getCurrentId();
+    this.setData({ pageClass: 'page theme-' + current, themeId: current, appearanceOptions: api.APPEARANCE_OPTIONS });
+    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
   },
 
   // 选择图片

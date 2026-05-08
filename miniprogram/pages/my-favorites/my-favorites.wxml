@@ -1,5 +1,5 @@
 <!-- pages/my-favorites/my-favorites.wxml - 我的收藏 -->
-<view class="page-container">
+<view class="page-container {{pageClass}}">
 
   <!-- 收藏列表 -->
   <view class="post-list" wx:if="{{posts.length > 0}}">

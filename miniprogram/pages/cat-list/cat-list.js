@@ -1,8 +1,13 @@
 // pages/cat-list/cat-list.js - 猫咪档案列表页（含排行榜）
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    // 主题
+    pageClass: theme.getPageClass(),
+    themeId: theme.getThemeId(),
+    // 内容
     tabs: [
       { id: 'list', name: '全部猫咪' },
       { id: 'rank_total', name: '人气榜' },
@@ -16,18 +21,14 @@ Page({
     page: 1,
     pageSize: 20,
     keyword: '',
-    searchMode: false,
-    // 深色模式
-    isDarkMode: wx.getStorageSync('darkMode') || false
+    searchMode: false
   },
 
   onLoad() {
-    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
+    const current = theme.getCurrentId();
+    this.setData({ pageClass: 'page theme-' + current, themeId: current });
+    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
     this.loadList();
-  },
-
-  onShow() {
-    this.setData({ isDarkMode: wx.getStorageSync('darkMode') || false });
   },
 
   onPullDownRefresh() {

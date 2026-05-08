@@ -1,6 +1,7 @@
+/* pages/my-likes/my-likes.wxss（已迁移到 CSS 变量）*/
 .page-container {
   min-height: 100vh;
-  background: #FFF5EB;
+  background: var(--color-bg);
   padding-bottom: 40rpx;
 }
 
@@ -20,7 +21,7 @@
 
 .loading-text {
   margin-top: 20rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   font-size: 28rpx;
 }
 
@@ -45,19 +46,19 @@
 .empty-title {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 16rpx;
 }
 
 .empty-desc {
   font-size: 28rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   margin-bottom: 50rpx;
 }
 
 .empty-btn {
-  background: linear-gradient(135deg, #FF9500, #FFB74D);
-  color: #fff;
+  background: var(--btn-primary-gradient);
+  color: var(--color-text-white);
   padding: 20rpx 60rpx;
   border-radius: 50rpx;
   font-size: 30rpx;
@@ -78,7 +79,7 @@
   overflow: hidden;
   position: relative;
   margin-bottom: 20rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+  box-shadow: var(--color-shadow-card);
 }
 
 .like-item:nth-child(odd) {
@@ -104,7 +105,7 @@
 }
 
 .like-name {
-  color: #fff;
+  color: var(--color-text-white);
   font-size: 30rpx;
   font-weight: bold;
   display: block;
@@ -139,7 +140,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.15);
+  box-shadow: var(--color-shadow-btn);
 }
 
 .unlike-icon {

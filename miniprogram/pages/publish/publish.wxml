@@ -1,5 +1,5 @@
 <!-- pages/publish/publish.wxml - 发帖页（强制绑猫）-->
-<view class="page">
+<view class="{{pageClass}}">
 
   <!-- 顶部标题 -->
   <view class="header">

@@ -1,5 +1,5 @@
 <!-- pages/cat-home/cat-home.wxml - 猫咪专属主页 -->
-<view class="page" wx:if="{{!loading}}">
+<view class="{{pageClass}}" wx:if="{{!loading}}">
 
   <!-- 顶部封面 + 基本信息 -->
   <view class="hero">

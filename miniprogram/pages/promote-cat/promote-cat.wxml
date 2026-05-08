@@ -1,5 +1,5 @@
 <!-- pages/promote-cat/promote-cat.wxml -->
-<view class="page" wx:if="{{!loading}}">
+<view class="page {{pageClass}}" wx:if="{{!loading}}">
 
   <!-- 当前未知猫信息预览 -->
   <view class="current-cat">

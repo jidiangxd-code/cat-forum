@@ -1,5 +1,5 @@
 <!--详情页 - 帖子详情 + 评论-->
-<view class="page-container" wx:if="{{post}}">
+<view class="{{pageClass}}" wx:if="{{post}}">
   <!-- 图片轮播 -->
   <swiper class="image-swiper" indicator-dots circular autoplay wx:if="{{post.images && post.images.length > 0}}">
     <swiper-item wx:for="{{post.images}}" wx:key="*this">
@@ -114,15 +114,25 @@
 
   <!-- 底部评论输入 -->
   <view class="comment-input-bar">
-    <input
-      class="comment-input"
-      placeholder="说点什么吧..."
-      value="{{inputContent}}"
-      bindinput="onInputComment"
-      bindconfirm="submitComment"
-    />
-    <view class="send-btn" bindtap="submitComment">
-      <text>发送</text>
+    <view class="input-wrap">
+      <image class="input-avatar" src="/assets/images/default-avatar.png" mode="aspectFill" />
+      <input
+        class="comment-input"
+        placeholder="说点什么吧..."
+        value="{{inputContent}}"
+        bindinput="onInputComment"
+        confirm-type="send"
+        bindconfirm="submitComment"
+        disabled="{{submittingComment}}"
+        maxlength="500"
+      />
+      <text class="char-count" wx:if="{{inputContent.length > 0}}">{{inputContent.length}}</text>
+    </view>
+    <view 
+      class="send-btn {{submittingComment || !inputContent.trim() ? 'disabled' : ''}}" 
+      bindtap="submitComment"
+    >
+      <text>{{submittingComment ? '发送中' : '发送'}}</text>
     </view>
   </view>
 </view>

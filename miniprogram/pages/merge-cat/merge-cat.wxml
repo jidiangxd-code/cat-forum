@@ -1,5 +1,5 @@
 <!-- pages/merge-cat/merge-cat.wxml -->
-<view class="page" wx:if="{{!loading}}">
+<view class="page {{pageClass}}" wx:if="{{!loading}}">
 
   <!-- 操作说明 -->
   <view class="notice">

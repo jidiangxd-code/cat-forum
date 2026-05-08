@@ -1,7 +1,12 @@
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    // 主题
+    pageClass: theme.getPageClass(),
+    themeId: theme.getThemeId(),
+    // 内容
     postId: '',
     catId: '',
     post: null,
@@ -13,6 +18,8 @@ Page({
     inputContent: '',
     imageErrors: [],
     avatarError: false,
+    submittingComment: false,  // 防止评论重复提交
+    togglingFavorite: false,   // 防止收藏重复操作
     categoryMap: {
       daily: '日常',
       rescue: '救助',
@@ -24,6 +31,10 @@ Page({
   },
 
   onLoad(options) {
+    // 应用当前主题
+    const current = theme.getCurrentId();
+    this.setData({ pageClass: 'page theme-' + current, themeId: current });
+    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
     if (options.id) {
       this.setData({ postId: options.id });
       this.loadPostDetail();
@@ -44,9 +55,6 @@ Page({
     };
   },
 
-  /**
-   * 加载帖子详情
-   */
   async loadPostDetail() {
     this.setData({ loading: true });
 
@@ -54,7 +62,6 @@ Page({
       const res = await api.getPostDetail(this.data.postId);
       const post = res.data;
       
-      // 格式化时间
       post.createTimeStr = this._formatTime(post.createTime);
       
       // 检查是否已收藏
@@ -77,7 +84,6 @@ Page({
         catId: post.catId || ''
       });
 
-      // 加载关联猫咪信息
       if (post.catId) {
         this.loadCatProfile(post.catId);
       }
@@ -102,9 +108,6 @@ Page({
     return `${d.getMonth() + 1}月${d.getDate()}日 ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
   },
 
-  /**
-   * 加载猫咪档案信息
-   */
   async loadCatProfile(catId) {
     try {
       const res = await api.getCatProfile(catId);
@@ -116,9 +119,6 @@ Page({
     }
   },
 
-  /**
-   * 加载评论
-   */
   async loadComments() {
     try {
       const res = await api.getComments(this.data.postId);
@@ -132,22 +132,6 @@ Page({
     }
   },
 
-  _formatTime(t) {
-    if (!t) return '';
-    const d = t instanceof Date ? t : new Date(t);
-    if (isNaN(d)) return '';
-    const now = new Date();
-    const diff = now - d;
-    if (diff < 60000) return '刚刚';
-    if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
-    if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
-    return `${d.getMonth() + 1}月${d.getDate()}日`;
-  },
-
-  /**
-   * 点赞/取消点赞
-   * 本地先更新，再同步到云数据库
-   */
   toggleLike() {
     const liked = this.data.liked;
     const post = { ...this.data.post };
@@ -157,16 +141,18 @@ Page({
 
     const openid = api.getOpenId();
     api.togglePostLike(this.data.postId, openid, !liked).catch(err => {
-      // 回滚
       post.likeCount = liked ? (post.likeCount + 1) : (post.likeCount - 1);
       this.setData({ post });
     });
   },
 
   /**
-   * 收藏/取消收藏
+   * 收藏/取消收藏（带防重机制）
    */
   async toggleFavorite() {
+    // 防重：正在操作中则忽略
+    if (this.data.togglingFavorite) return;
+
     const openid = api.getOpenId();
     if (!openid || openid === 'guest') {
       wx.showToast({ title: '请先登录', icon: 'none' });
@@ -174,7 +160,7 @@ Page({
     }
 
     const favorited = this.data.favorited;
-    this.setData({ favorited: !favorited });
+    this.setData({ favorited: !favorited, togglingFavorite: true });
 
     try {
       await api.toggleFavorite(this.data.postId, !favorited);
@@ -184,16 +170,17 @@ Page({
         duration: 1000
       });
     } catch (err) {
-      // 回滚
+      // 回滚状态
       this.setData({ favorited });
       wx.showToast({ title: '操作失败', icon: 'none' });
+    } finally {
+      // 延迟解锁，防止快速双击
+      setTimeout(() => {
+        this.setData({ togglingFavorite: false });
+      }, 500);
     }
   },
 
-  /**
-   * 预览图片
-   * Bug #18 修复：增加空值保护
-   */
   previewImage(e) {
     if (!this.data.cat || !this.data.cat.images || this.data.cat.images.length === 0) {
       wx.showToast({ title: '暂无图片', icon: 'none' });
@@ -206,20 +193,25 @@ Page({
     });
   },
 
-  // 输入评论
   onInputComment(e) {
     this.setData({ inputContent: e.detail.value });
   },
 
   /**
-   * 提交评论
+   * 提交评论（带防重机制）
    */
   async submitComment() {
+    // 防重：正在提交中则忽略
+    if (this.data.submittingComment) return;
+
     const content = this.data.inputContent.trim();
     if (!content) {
       wx.showToast({ title: '请输入评论内容', icon: 'none' });
       return;
     }
+
+    // 立即锁定
+    this.setData({ submittingComment: true });
 
     const userInfo = wx.getStorageSync('userInfo') || {};
 
@@ -227,6 +219,7 @@ Page({
       // 内容安全审核
       const checkResult = await api.checkContent({ content, images: [] });
       if (!checkResult.success) {
+        this.setData({ submittingComment: false });
         wx.showToast({ title: checkResult.reason || '内容包含违规信息', icon: 'none', duration: 2500 });
         return;
       }
@@ -253,19 +246,18 @@ Page({
     } catch (err) {
       console.error('评论失败', err);
       wx.showToast({ title: '评论失败，请重试', icon: 'none' });
+    } finally {
+      // 延迟解锁，防止快速双击
+      setTimeout(() => {
+        this.setData({ submittingComment: false });
+      }, 500);
     }
   },
 
-  /**
-   * 跳转到"我喜欢的"页面
-   */
   goToMyLikes() {
     wx.switchTab({ url: '/pages/profile/profile' });
   },
 
-  /**
-   * 轮播图加载失败处理
-   */
   onSwiperImageError(e) {
     const index = e.currentTarget.dataset.index;
     const imageErrors = [...this.data.imageErrors];
@@ -273,16 +265,10 @@ Page({
     this.setData({ imageErrors });
   },
 
-  /**
-   * 头像加载失败处理
-   */
   onAvatarError() {
     this.setData({ avatarError: true });
   },
 
-  /**
-   * 评论头像加载失败处理
-   */
   onCommentAvatarError(e) {
     const index = e.currentTarget.dataset.index;
     const comments = [...this.data.comments];
@@ -292,9 +278,6 @@ Page({
     }
   },
 
-  /**
-   * 点击猫咪头像跳转猫咪主页
-   */
   onCatTap() {
     if (this.data.catId) {
       wx.navigateTo({ url: `/pages/cat-home/cat-home?id=${this.data.catId}` });

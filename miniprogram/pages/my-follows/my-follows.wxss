@@ -1,6 +1,7 @@
+/* pages/my-follows/my-follows.wxss（已迁移到 CSS 变量）*/
 .page-container {
   min-height: 100vh;
-  background-color: #FFF5EB;
+  background-color: var(--color-bg);
   padding-bottom: 40rpx;
 }
 
@@ -10,35 +11,35 @@
   align-items: center;
   justify-content: space-between;
   padding: 32rpx 32rpx 24rpx;
-  background: #fff;
-  border-bottom: 1rpx solid #f0e8e0;
+  background: var(--color-bg-card);
+  border-bottom: 1rpx solid var(--color-border);
 }
 
 .page-title {
   font-size: 36rpx;
   font-weight: 700;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .page-count {
   font-size: 26rpx;
-  color: #999;
+  color: var(--color-text-secondary);
 }
 
 /* 用户列表 */
 .user-list {
-  background: #fff;
+  background: var(--color-bg-card);
   margin: 24rpx;
   border-radius: 20rpx;
   overflow: hidden;
-  box-shadow: 0 2rpx 16rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--color-shadow-card);
 }
 
 .user-item {
   display: flex;
   align-items: center;
   padding: 28rpx 32rpx;
-  border-bottom: 1rpx solid #f5f0eb;
+  border-bottom: 1rpx solid var(--color-border-light);
 }
 
 .user-item:last-child {
@@ -50,7 +51,7 @@
   height: 96rpx;
   border-radius: 50%;
   margin-right: 24rpx;
-  border: 3rpx solid #FFE4C4;
+  border: 3rpx solid var(--color-border-accent);
   flex-shrink: 0;
 }
 
@@ -65,7 +66,7 @@
 .user-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 8rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -74,7 +75,7 @@
 
 .user-id {
   font-size: 22rpx;
-  color: #bbb;
+  color: var(--color-text-desc);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -86,15 +87,15 @@
   border-radius: 40rpx;
   font-size: 26rpx;
   font-weight: 600;
-  background: #FF7043;
-  color: #fff;
+  background: var(--color-bg-btn-primary);
+  color: var(--color-text-white);
   flex-shrink: 0;
   border: none;
 }
 
 .follow-btn.following {
-  background: #f5f5f5;
-  color: #999;
+  background: var(--color-bg-disabled);
+  color: var(--color-text-secondary);
 }
 
 /* 空状态 */
@@ -113,7 +114,7 @@
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--color-text-secondary);
 }
 
 /* 加载状态 */
@@ -125,7 +126,7 @@
 
 .loading-text {
   font-size: 26rpx;
-  color: #999;
+  color: var(--color-text-secondary);
 }
 
 /* 没有更多 */
@@ -137,5 +138,5 @@
 
 .no-more-text {
   font-size: 24rpx;
-  color: #ccc;
+  color: var(--color-text-muted);
 }

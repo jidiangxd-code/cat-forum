@@ -1,7 +1,7 @@
-/* pages/search/search.wxss - 搜索页样式 */
+/* pages/search/search.wxss - 搜索页样式（已迁移到 CSS 变量）*/
 .page {
   min-height: 100vh;
-  background-color: #FFF5EB;
+  background-color: var(--color-bg);
 }
 
 /* 搜索框区域 */
@@ -9,14 +9,14 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: linear-gradient(135deg, #FF9A6A, #FF7043);
+  background: var(--banner-gradient);
   padding: 16rpx 24rpx 24rpx;
 }
 
 .search-input-wrap {
   display: flex;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--color-bg-card);
   border-radius: 40rpx;
   padding: 0 24rpx;
   height: 72rpx;
@@ -31,22 +31,22 @@
 .search-input {
   flex: 1;
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-text-primary);
   height: 72rpx;
   line-height: 72rpx;
 }
 
 .search-clear {
   font-size: 32rpx;
-  color: #ccc;
+  color: var(--color-text-muted);
   padding: 8rpx;
 }
 
 /* Tab 切换 */
 .search-tabs {
   display: flex;
-  background-color: #ffffff;
-  border-bottom: 1rpx solid #f0f0f0;
+  background-color: var(--color-bg-card);
+  border-bottom: 1rpx solid var(--color-border);
 }
 
 .tab-item {
@@ -54,12 +54,12 @@
   text-align: center;
   padding: 20rpx 0;
   font-size: 28rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   position: relative;
 }
 
 .tab-item.active {
-  color: #FF8C42;
+  color: var(--color-text-accent);
   font-weight: bold;
 }
 
@@ -71,7 +71,7 @@
   transform: translateX(-50%);
   width: 48rpx;
   height: 4rpx;
-  background: #FF8C42;
+  background: var(--color-text-accent);
   border-radius: 4rpx;
 }
 
@@ -89,12 +89,12 @@
 
 .history-title {
   font-size: 26rpx;
-  color: #999;
+  color: var(--color-text-secondary);
 }
 
 .history-clear {
   font-size: 24rpx;
-  color: #FF9A6A;
+  color: var(--color-text-accent);
 }
 
 .history-tags {
@@ -104,17 +104,17 @@
 }
 
 .history-tag {
-  background-color: #fff;
-  color: #666;
+  background-color: var(--color-bg-card);
+  color: var(--color-text-secondary);
   padding: 10rpx 24rpx;
   border-radius: 24rpx;
   font-size: 26rpx;
-  border: 1rpx solid #f0f0f0;
+  border: 1rpx solid var(--color-border);
 }
 
 .history-tag:active {
-  background-color: #FFF0E0;
-  color: #FF8C42;
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-accent);
 }
 
 /* 搜索结果 */
@@ -126,11 +126,11 @@
 .cat-card {
   display: flex;
   align-items: center;
-  background: #fff;
+  background: var(--color-bg-card);
   padding: 20rpx 24rpx;
   margin: 0 16rpx 12rpx;
   border-radius: 16rpx;
-  box-shadow: 0 2rpx 8rpx rgba(255, 154, 106, 0.08);
+  box-shadow: var(--color-shadow-card);
 }
 
 .cat-avatar {
@@ -140,7 +140,7 @@
   margin-right: 16rpx;
   overflow: hidden;
   flex-shrink: 0;
-  background: #FFE0C0;
+  background: var(--avatar-bg);
 }
 
 .cat-avatar image {
@@ -156,7 +156,7 @@
 .cat-name {
   font-size: 30rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 6rpx;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -165,7 +165,7 @@
 
 .cat-meta {
   font-size: 22rpx;
-  color: #999;
+  color: var(--color-text-desc);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -173,7 +173,7 @@
 
 .cat-vote {
   font-size: 24rpx;
-  color: #FF9A6A;
+  color: var(--color-text-accent);
   font-weight: bold;
   flex-shrink: 0;
   margin-left: 12rpx;
@@ -181,11 +181,11 @@
 
 /* ===== 帖子卡片 ===== */
 .post-card {
-  background: #fff;
+  background: var(--color-bg-card);
   margin: 0 16rpx 12rpx;
   padding: 20rpx 24rpx;
   border-radius: 16rpx;
-  box-shadow: 0 2rpx 8rpx rgba(255, 154, 106, 0.08);
+  box-shadow: var(--color-shadow-card);
 }
 
 .post-header {
@@ -196,13 +196,13 @@
 
 .post-cat-name {
   font-size: 24rpx;
-  color: #FF8C42;
+  color: var(--color-text-accent);
   margin-left: 8rpx;
 }
 
 .post-text {
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-text-primary);
   line-height: 1.6;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -219,12 +219,12 @@
 
 .post-time {
   font-size: 22rpx;
-  color: #bbb;
+  color: var(--color-text-desc);
 }
 
 .post-stats {
   font-size: 22rpx;
-  color: #bbb;
+  color: var(--color-text-desc);
 }
 
 /* 空状态 */
@@ -242,7 +242,7 @@
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   text-align: center;
 }
 
@@ -253,7 +253,7 @@
 
 .hot-title {
   font-size: 26rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   margin-bottom: 16rpx;
 }
 
@@ -264,17 +264,17 @@
 }
 
 .hot-tag {
-  background-color: #fff;
-  color: #666;
+  background-color: var(--color-bg-card);
+  color: var(--color-text-secondary);
   padding: 10rpx 24rpx;
   border-radius: 24rpx;
   font-size: 26rpx;
-  border: 1rpx solid #f0f0f0;
+  border: 1rpx solid var(--color-border);
 }
 
 .hot-tag:active {
-  background-color: #FFF0E0;
-  color: #FF8C42;
+  background-color: var(--color-bg-hover);
+  color: var(--color-text-accent);
 }
 
 /* 加载提示 */
@@ -282,5 +282,5 @@
   text-align: center;
   padding: 40rpx;
   font-size: 26rpx;
-  color: #bbb;
+  color: var(--color-text-desc);
 }

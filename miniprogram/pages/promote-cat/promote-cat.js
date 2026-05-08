@@ -1,8 +1,11 @@
 // pages/promote-cat/promote-cat.js - 未知猫转正
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    themeId: theme.getThemeId(),
+    pageClass: theme.getPageClass(),
     catId: '',
     cat: null,
     loading: true,
@@ -30,6 +33,7 @@ Page({
   },
 
   onLoad(options) {
+    theme.applyTheme(this);
     this.setData({
       appearanceOptions: api.APPEARANCE_OPTIONS,
       genderOptions: api.GENDER_OPTIONS,

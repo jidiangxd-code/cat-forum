@@ -1,8 +1,13 @@
 // pages/cat-home/cat-home.js - 猫咪专属主页
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    // 主题
+    pageClass: theme.getPageClass(),
+    themeId: theme.getThemeId(),
+    // 内容
     catId: '',
     cat: null,
     posts: [],
@@ -21,6 +26,9 @@ Page({
   },
 
   onLoad(options) {
+    const current = theme.getCurrentId();
+    this.setData({ pageClass: 'page theme-' + current, themeId: current });
+    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
     if (options.id) {
       this.setData({ catId: options.id });
       this.loadAll();

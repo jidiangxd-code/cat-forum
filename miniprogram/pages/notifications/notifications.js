@@ -1,8 +1,11 @@
 // pages/notifications/notifications.js - 消息通知页
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    themeId: theme.getThemeId(),
+    pageClass: theme.getPageClass(),
     loading: true,
     loadingMore: false,
     list: [],
@@ -20,6 +23,7 @@ Page({
   },
 
   onLoad() {
+    theme.applyTheme(this);
     this.loadNotifications();
     this.loadUnreadCount();
   },

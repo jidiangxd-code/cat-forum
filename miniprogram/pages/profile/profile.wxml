@@ -1,5 +1,5 @@
-<!--个人中心-->
-<view class="page-container">
+<!--个人中心 - 带Tab切换 + 主题选择-->
+<view class="{{pageClass}}">
   <!-- 用户信息头部 -->
   <view class="profile-header">
     <view class="header-bg"></view>
@@ -18,7 +18,16 @@
         <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
           <image class="user-avatar" src="{{avatarError ? '/assets/images/default-avatar.png' : (userInfo.avatarUrl || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onAvatarError" />
         </button>
-        <text class="user-name">{{userInfo.nickName || '爱猫同学'}}</text>
+        <!-- 昵称显示/编辑区 -->
+        <view class="nickname-wrap" bindtap="toggleNickNameEdit">
+          <text class="user-name" wx:if="{{!editingNickName}}">{{userInfo.nickName || '爱猫同学'}}</text>
+          <input wx:if="{{editingNickName}}" class="nickname-input" type="nickname" placeholder="请输入昵称" value="{{nickNameDraft}}" bindinput="onNickNameInput" bindconfirm="saveNickName" confirm-type="done" focus="{{editingNickName}}" />
+          <text wx:if="{{!editingNickName}}" class="edit-icon">✏️</text>
+        </view>
+        <view wx:if="{{editingNickName}}" class="nickname-actions">
+          <button class="btn-small btn-cancel" catchtap="toggleNickNameEdit">取消</button>
+          <button class="btn-small btn-confirm" catchtap="saveNickName">保存</button>
+        </view>
         <text class="user-desc">🐱 校园猫咪守护者</text>
       </block>
     </view>
@@ -42,47 +51,123 @@
     </view>
   </view>
 
-  <!-- 功能菜单 -->
-  <view class="menu-card">
-    <view class="menu-title">
-      <text>📋 我的内容</text>
-    </view>
-    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyPosts' : 'doLogin'}}">
-      <view class="menu-left">
-        <text class="menu-icon">📝</text>
-        <text class="menu-text">我的发布</text>
+  <!-- 主题选择 -->
+  <view class="theme-card">
+    <view class="theme-title">🎨 主题皮肤</view>
+    <view class="theme-list">
+      <view
+        class="theme-item {{themeId === item.id ? 'active' : ''}}"
+        wx:for="{{themeOptions}}"
+        wx:key="id"
+        bindtap="switchTheme"
+        data-id="{{item.id}}"
+      >
+        <view class="theme-swatch theme-swatch-{{item.id}}"></view>
+        <text class="theme-name">{{item.icon}} {{item.name}}</text>
+        <text class="theme-check" wx:if="{{themeId === item.id}}">✓</text>
       </view>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyLikes' : 'doLogin'}}">
-      <view class="menu-left">
-        <text class="menu-icon">❤️</text>
-        <text class="menu-text">我喜欢的</text>
-      </view>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyComments' : 'doLogin'}}">
-      <view class="menu-left">
-        <text class="menu-icon">💬</text>
-        <text class="menu-text">我的评论</text>
-      </view>
-      <text class="menu-arrow">›</text>
-    </view>
-    <view class="menu-item" bindtap="{{isLoggedIn ? 'goToMyFavorites' : 'doLogin'}}">
-      <view class="menu-left">
-        <text class="menu-icon">⭐</text>
-        <text class="menu-text">我的收藏</text>
-      </view>
-      <text class="menu-arrow">›</text>
     </view>
   </view>
 
-  <!-- 设置菜单 -->
-  <view class="menu-card">
-    <view class="menu-title">
-      <text>⚙️ 设置</text>
+  <!-- Tab 切换栏 -->
+  <view class="tab-bar" wx:if="{{isLoggedIn}}">
+    <view 
+      class="tab-item {{currentTab === item.key ? 'active' : ''}}"
+      wx:for="{{tabs}}"
+      wx:key="key"
+      bindtap="switchTab"
+      data-tab="{{item.key}}"
+    >
+      <text class="tab-icon">{{item.icon}}</text>
+      <text class="tab-text">{{item.label}}</text>
     </view>
-    <view class="menu-item" bindtap="{{isLoggedIn ? 'editProfile' : 'doLogin'}}">
+  </view>
+
+  <!-- Tab 内容区 -->
+  <view class="tab-content" wx:if="{{isLoggedIn}}">
+    <!-- 加载中 -->
+    <view class="tab-loading" wx:if="{{tabLoading[currentTab]}}">
+      <text class="loading-icon">🐾</text>
+      <text>加载中...</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="tab-empty" wx:elif="{{tabEmpty[currentTab]}}">
+      <text class="empty-icon">📝</text>
+      <text class="empty-text">暂无内容</text>
+      <text class="empty-hint">快去探索精彩内容吧～</text>
+    </view>
+
+    <!-- 列表内容 -->
+    <scroll-view scroll-y class="tab-list" wx:else>
+      <!-- 我的发布 -->
+      <block wx:if="{{currentTab === 'posts'}}">
+        <view class="post-item" wx:for="{{tabData.posts}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
+          <image class="post-cover" src="{{item.images[0] || '/assets/images/default-cat.png'}}" mode="aspectFill" />
+          <view class="post-info">
+            <text class="post-title">{{item.content}}</text>
+            <view class="post-meta">
+              <text class="post-time">{{item.timeStr}}</text>
+              <text class="post-count">❤️ {{item.likeCount || 0}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 我喜欢的 -->
+      <block wx:if="{{currentTab === 'likes'}}">
+        <view class="post-item" wx:for="{{tabData.likes}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
+          <image class="post-cover" src="{{item.images[0] || '/assets/images/default-cat.png'}}" mode="aspectFill" />
+          <view class="post-info">
+            <text class="post-title">{{item.content}}</text>
+            <view class="post-meta">
+              <text class="post-time">{{item.timeStr}}</text>
+              <text class="post-count">❤️ {{item.likeCount || 0}}</text>
+            </view>
+          </view>
+        </view>
+      </block>
+
+      <!-- 我的评论 -->
+      <block wx:if="{{currentTab === 'comments'}}">
+        <view class="comment-item" wx:for="{{tabData.comments}}" wx:key="_id" bindtap="onPostTap" data-id="{{item.postId}}">
+          <text class="comment-text">{{item.content}}</text>
+          <view class="comment-meta">
+            <text class="comment-time">{{item.timeStr}}</text>
+            <text class="comment-post">查看原帖 ›</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 我的收藏 -->
+      <block wx:if="{{currentTab === 'favorites'}}">
+        <view class="post-item" wx:for="{{tabData.favorites}}" wx:key="_id" bindtap="onPostTap" data-id="{{item._id}}">
+          <image class="post-cover" src="{{item.images[0] || '/assets/images/default-cat.png'}}" mode="aspectFill" />
+          <view class="post-info">
+            <text class="post-title">{{item.content}}</text>
+            <view class="post-meta">
+              <text class="post-time">{{item.timeStr}}</text>
+              <view class="post-actions">
+                <text class="post-count">❤️ {{item.likeCount || 0}}</text>
+                <text class="unfav-btn" catchtap="unfavorite" data-id="{{item._id}}">取消收藏</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+
+  <!-- 未登录提示 -->
+  <view class="login-prompt" wx:if="{{!isLoggedIn}}">
+    <text class="prompt-icon">🔒</text>
+    <text class="prompt-text">登录后查看我的内容</text>
+    <view class="prompt-btn" bindtap="doLogin">立即登录</view>
+  </view>
+
+  <!-- 设置菜单 -->
+  <view class="menu-card" wx:if="{{isLoggedIn}}">
+    <view class="menu-item" bindtap="editProfile">
       <view class="menu-left">
         <text class="menu-icon">👤</text>
         <text class="menu-text">编辑资料</text>

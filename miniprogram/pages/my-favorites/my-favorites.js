@@ -1,8 +1,11 @@
 // pages/my-favorites/my-favorites.js - 我的收藏
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    themeId: theme.getThemeId(),
+    pageClass: theme.getPageClass(),
     posts: [],
     loading: true,
     empty: false,
@@ -19,6 +22,7 @@ Page({
   },
 
   onLoad() {
+    theme.applyTheme(this);
     this.loadFavorites();
   },
 

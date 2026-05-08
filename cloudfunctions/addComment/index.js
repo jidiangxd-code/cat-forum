@@ -34,10 +34,10 @@ exports.main = async (event, context) => {
   let avatar = '';
   try {
     const userResult = await db.collection('users')
-      .where({ openId: openid })
+      .where({ openid: openid })
       .get();
     if (userResult.data && userResult.data.length > 0) {
-      authorName = userResult.data[0].authorName || '匿名用户';
+      authorName = userResult.data[0].nickName || '匿名用户';
       avatar = userResult.data[0].avatar || '';
     }
   } catch (e) {

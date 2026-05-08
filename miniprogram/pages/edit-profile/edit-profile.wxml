@@ -1,5 +1,5 @@
 <!-- 编辑资料 -->
-<view class="page-container">
+<view class="page-container {{pageClass}}">
 
   <!-- 头像编辑 -->
   <view class="card avatar-section">

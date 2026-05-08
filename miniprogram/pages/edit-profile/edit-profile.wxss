@@ -1,22 +1,23 @@
+/* pages/edit-profile/edit-profile.wxss（已迁移到 CSS 变量）*/
 .page-container {
   min-height: 100vh;
-  background: #FFF5EB;
+  background: var(--color-bg);
   padding: 30rpx;
   padding-bottom: 60rpx;
 }
 
 /* 通用卡片 */
 .card {
-  background: #fff;
+  background: var(--color-bg-card);
   border-radius: 24rpx;
   padding: 36rpx 30rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
+  box-shadow: var(--color-shadow-card);
 }
 
 .section-label {
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-text-primary);
   font-weight: 600;
   margin-bottom: 28rpx;
 }
@@ -38,7 +39,7 @@
   width: 180rpx;
   height: 180rpx;
   border-radius: 50%;
-  border: 4rpx solid #FFE0CC;
+  border: 4rpx solid var(--color-border-accent);
 }
 
 .avatar-overlay {
@@ -61,7 +62,7 @@
 
 .overlay-text {
   font-size: 22rpx;
-  color: #fff;
+  color: var(--color-text-white);
 }
 
 /* ===== 表单行 ===== */
@@ -78,7 +79,7 @@
 .form-label {
   width: 100rpx;
   font-size: 28rpx;
-  color: #666;
+  color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
@@ -90,11 +91,11 @@
 .input-field {
   width: 100%;
   height: 80rpx;
-  background: #F8F9FA;
+  background: var(--color-bg-disabled);
   border-radius: 16rpx;
   padding: 0 24rpx;
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .char-count {
@@ -103,7 +104,7 @@
   top: 50%;
   transform: translateY(-50%);
   font-size: 22rpx;
-  color: #bbb;
+  color: var(--color-text-muted);
 }
 
 /* ===== 性别选择 ===== */
@@ -118,18 +119,18 @@
   height: 72rpx;
   line-height: 72rpx;
   text-align: center;
-  background: #F8F9FA;
+  background: var(--color-bg-disabled);
   border-radius: 16rpx;
   font-size: 28rpx;
-  color: #666;
+  color: var(--color-text-secondary);
   transition: all 0.2s;
 }
 
 .gender-item.active {
-  background: linear-gradient(135deg, #FF9500, #FFB74D);
-  color: #fff;
+  background: var(--btn-primary-gradient);
+  color: var(--color-text-white);
   font-weight: 600;
-  box-shadow: 0 4rpx 12rpx rgba(255, 149, 0, 0.3);
+  box-shadow: var(--color-shadow-btn);
 }
 
 /* ===== 个性签名 ===== */
@@ -140,11 +141,11 @@
 .bio-textarea {
   width: 100%;
   min-height: 120rpx;
-  background: #F8F9FA;
+  background: var(--color-bg-disabled);
   border-radius: 16rpx;
   padding: 20rpx 24rpx;
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-text-primary);
   box-sizing: border-box;
   line-height: 1.6;
 }
@@ -165,18 +166,18 @@
 .save-btn {
   width: 100%;
   height: 96rpx;
-  background: linear-gradient(135deg, #FF9500, #FFB74D);
-  color: #fff;
+  background: var(--btn-primary-gradient);
+  color: var(--color-text-white);
   font-size: 32rpx;
   font-weight: bold;
   border-radius: 48rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8rpx 24rpx rgba(255, 149, 0, 0.3);
+  box-shadow: var(--color-shadow-btn);
 }
 
 .save-btn[disabled] {
-  background: #ccc;
+  background: var(--color-bg-disabled);
   box-shadow: none;
 }

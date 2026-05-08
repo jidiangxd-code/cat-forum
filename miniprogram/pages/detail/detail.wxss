@@ -1,7 +1,8 @@
+/* pages/detail/detail.wxss - 详情页样式（已迁移到 CSS 变量）*/
 .page-container {
   min-height: 100vh;
   padding-bottom: 120rpx;
-  background-color: #FFF5EB;
+  background-color: var(--color-bg);
 }
 
 /* 发布者信息卡片 */
@@ -10,8 +11,8 @@
   align-items: center;
   justify-content: space-between;
   padding: 24rpx 32rpx;
-  background: #fff;
-  border-bottom: 1rpx solid #f0e8e0;
+  background: var(--color-bg-card);
+  border-bottom: 1rpx solid var(--color-border);
 }
 
 .author-left {
@@ -25,7 +26,7 @@
   height: 88rpx;
   border-radius: 50%;
   margin-right: 20rpx;
-  border: 3rpx solid #FFE4C4;
+  border: 3rpx solid var(--color-border-accent);
 }
 
 .author-info {
@@ -36,13 +37,13 @@
 .author-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 6rpx;
 }
 
 .author-meta {
   font-size: 24rpx;
-  color: #999;
+  color: var(--color-text-secondary);
 }
 
 .follow-btn {
@@ -50,15 +51,15 @@
   border-radius: 40rpx;
   font-size: 26rpx;
   font-weight: 600;
-  background: #FF7043;
-  color: #fff;
+  background: var(--color-bg-btn-primary);
+  color: var(--color-text-white);
   border: none;
   white-space: nowrap;
 }
 
 .follow-btn.following {
-  background: #f5f5f5;
-  color: #999;
+  background: var(--color-bg-disabled);
+  color: var(--color-text-secondary);
 }
 
 /* 图片轮播 */
@@ -75,10 +76,10 @@
 /* 发布者信息 */
 .author-section {
   margin: -40rpx 24rpx 20rpx;
-  background: #fff;
+  background: var(--color-bg-card);
   border-radius: 24rpx;
   padding: 24rpx;
-  box-shadow: 0 8rpx 24rpx rgba(255, 154, 106, 0.2);
+  box-shadow: var(--color-shadow-card);
   position: relative;
   z-index: 10;
 }
@@ -91,8 +92,8 @@
   height: 72rpx;
   border-radius: 50%;
   margin-right: 16rpx;
-  border: 3rpx solid #FFE4C4;
-  background: #f0f0f0;
+  border: 3rpx solid var(--color-border-accent);
+  background: var(--color-bg-image);
 }
 .author-details {
   flex: 1;
@@ -100,21 +101,21 @@
 .author-name {
   font-size: 30rpx;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text-primary);
   display: block;
 }
 .post-time {
   font-size: 22rpx;
-  color: #bbb;
+  color: var(--color-text-desc);
   margin-top: 4rpx;
   display: block;
 }
 .location-tag {
-  background-color: #FFF0E0;
+  background-color: var(--color-bg-tag);
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
   font-size: 22rpx;
-  color: #E67E22;
+  color: var(--color-text-accent);
   display: inline-block;
   margin-top: 12rpx;
 }
@@ -125,8 +126,8 @@
 }
 .category-tag {
   display: inline-block;
-  background: #FFF0E0;
-  color: #FF9A6A;
+  background: var(--color-bg-tag);
+  color: var(--color-text-accent);
   padding: 8rpx 20rpx;
   border-radius: 20rpx;
   font-size: 24rpx;
@@ -136,12 +137,12 @@
 /* 关联猫咪卡片 */
 .cat-card {
   margin: 0 24rpx 20rpx;
-  background: linear-gradient(135deg, #FFF5EB, #FFE8D6);
+  background: var(--primary-gradient);
   border-radius: 24rpx;
   padding: 20rpx;
   display: flex;
   align-items: center;
-  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.15);
+  box-shadow: var(--color-shadow-card);
 }
 .cat-cover {
   width: 100rpx;
@@ -149,7 +150,7 @@
   border-radius: 16rpx;
   margin-right: 16rpx;
   flex-shrink: 0;
-  background: #fff;
+  background: var(--color-bg-card);
 }
 .cat-info {
   flex: 1;
@@ -163,7 +164,7 @@
 .cat-name {
   font-size: 30rpx;
   font-weight: bold;
-  color: #6B4226;
+  color: var(--color-text-accent);
 }
 .cat-type-badge {
   padding: 4rpx 12rpx;
@@ -171,36 +172,36 @@
   font-size: 20rpx;
   font-weight: bold;
 }
-.cat-type-badge.formal { background: #FF9A6A; color: #fff; }
-.cat-type-badge.unknown { background: #88BBFF; color: #fff; }
+.cat-type-badge.formal { background: var(--color-bg-badge); color: var(--color-text-white); }
+.cat-type-badge.unknown { background: var(--color-text-blue); color: var(--color-text-white); }
 .cat-meta {
   font-size: 22rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   display: block;
   margin-top: 4rpx;
 }
 .cat-stats {
   font-size: 22rpx;
-  color: #FF7043;
+  color: var(--color-text-accent);
   margin-top: 6rpx;
 }
 .cat-arrow {
   font-size: 40rpx;
-  color: #FF9A6A;
+  color: var(--color-text-accent);
   margin-left: 12rpx;
 }
 
 /* 帖子内容 */
 .post-content-section {
   margin: 0 24rpx 20rpx;
-  background: #fff;
+  background: var(--color-bg-card);
   border-radius: 24rpx;
   padding: 24rpx;
-  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
+  box-shadow: var(--color-shadow-card);
 }
 .post-text {
   font-size: 30rpx;
-  color: #333;
+  color: var(--color-text-primary);
   line-height: 1.8;
   word-break: break-all;
 }
@@ -219,10 +220,10 @@
 .action-bar {
   display: flex;
   margin: 20rpx 24rpx;
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
   border-radius: 20rpx;
   padding: 24rpx 0;
-  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
+  box-shadow: var(--color-shadow-card);
 }
 
 .action-item {
@@ -250,23 +251,23 @@
 
 .action-text {
   font-size: 24rpx;
-  color: #666666;
+  color: var(--color-text-secondary);
   line-height: 1;
 }
 
 .action-count {
   font-size: 22rpx;
-  color: #999999;
+  color: var(--color-text-desc);
   line-height: 1;
 }
 
 /* 评论区 */
 .comment-section {
   margin: 20rpx 24rpx;
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
   border-radius: 20rpx;
   padding: 24rpx;
-  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
+  box-shadow: var(--color-shadow-card);
 }
 
 .comment-list {
@@ -278,7 +279,7 @@
 .comment-item {
   display: flex;
   padding: 20rpx 0;
-  border-bottom: 1rpx solid #F5F5F5;
+  border-bottom: 1rpx solid var(--color-border);
 }
 
 .comment-item:last-child {
@@ -287,7 +288,7 @@
 
 /* 未读评论左侧竖线 */
 .comment-unread {
-  border-left: 4rpx solid #FF9A6A;
+  border-left: 4rpx solid var(--color-text-accent);
   padding-left: 12rpx !important;
   margin-left: -12rpx;
 }
@@ -320,13 +321,13 @@
 .comment-author {
   font-size: 26rpx;
   font-weight: bold;
-  color: #4A4A4A;
+  color: var(--color-text-primary);
   display: block;
 }
 
 .comment-text {
   font-size: 26rpx;
-  color: #666666;
+  color: var(--color-text-secondary);
   margin: 8rpx 0;
   display: block;
   line-height: 1.6;
@@ -334,7 +335,7 @@
 
 .comment-time {
   font-size: 20rpx;
-  color: #CCCCCC;
+  color: var(--color-text-muted);
   display: block;
 }
 
@@ -347,19 +348,19 @@
 
 .reply-btn {
   font-size: 22rpx;
-  color: #FF9A6A;
+  color: var(--color-text-accent);
   padding: 4rpx 12rpx;
-  background: #FFF5EB;
+  background: var(--color-bg);
   border-radius: 12rpx;
 }
 
 /* 子评论列表 */
 .reply-list {
   margin-top: 12rpx;
-  background: #FAFAFA;
+  background: var(--color-bg-disabled);
   border-radius: 12rpx;
   padding: 12rpx 16rpx;
-  border-left: 3rpx solid #FFE0CC;
+  border-left: 3rpx solid var(--color-border-accent);
 }
 
 .reply-item {
@@ -369,7 +370,7 @@
 }
 
 .reply-item + .reply-item {
-  border-top: 1rpx solid #F0F0F0;
+  border-top: 1rpx solid var(--color-border);
   padding-top: 12rpx;
   margin-top: 8rpx;
 }
@@ -392,23 +393,23 @@
 .reply-author {
   font-size: 24rpx;
   font-weight: bold;
-  color: #4A4A4A;
+  color: var(--color-text-primary);
 }
 
 .reply-connector {
   font-size: 22rpx;
-  color: #999;
+  color: var(--color-text-secondary);
 }
 
 .reply-to {
   font-size: 24rpx;
-  color: #FF9A6A;
+  color: var(--color-text-accent);
   font-weight: bold;
 }
 
 .reply-text {
   font-size: 24rpx;
-  color: #555;
+  color: var(--color-text-secondary);
   line-height: 1.5;
   padding-left: 48rpx;
   word-break: break-all;
@@ -427,7 +428,7 @@
 
 .empty-text {
   font-size: 24rpx;
-  color: #CCCCCC;
+  color: var(--color-text-muted);
 }
 
 /* 底部评论输入 */
@@ -436,59 +437,75 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
   padding: 16rpx 24rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  border-top: 1rpx solid #F0F0F0;
-  box-shadow: 0 -4rpx 12rpx rgba(0, 0, 0, 0.05);
+  border-top: 1rpx solid var(--color-border);
+  box-shadow: var(--color-shadow-modal);
+  z-index: 100;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
 }
 
-/* 回复模式顶部提示条 */
-.reply-hint-bar {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8rpx 0 12rpx;
-  border-bottom: 1rpx solid #FFE0CC;
-  margin-bottom: 12rpx;
-}
-
-.reply-hint-text {
-  font-size: 24rpx;
-  color: #FF9A6A;
-  font-weight: bold;
-}
-
-.reply-cancel {
-  font-size: 24rpx;
-  color: #999;
-}
-
-.input-row {
-  width: 100%;
+.input-wrap {
+  flex: 1;
   display: flex;
   align-items: center;
+  background-color: var(--color-bg-disabled);
+  border-radius: 40rpx;
+  padding: 8rpx 8rpx 8rpx 20rpx;
+  transition: all 0.2s;
+}
+
+.input-wrap:focus-within {
+  background-color: var(--color-bg-card);
+  box-shadow: 0 0 0 2rpx var(--color-text-accent);
+}
+
+.input-avatar {
+  width: 52rpx;
+  height: 52rpx;
+  border-radius: 50%;
+  margin-right: 14rpx;
+  flex-shrink: 0;
+  border: 2rpx solid var(--color-border);
 }
 
 .comment-input {
   flex: 1;
-  background-color: #F5F5F5;
-  border-radius: 30rpx;
-  padding: 16rpx 24rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
+  color: var(--color-text-primary);
+  min-height: 52rpx;
+}
+
+.comment-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.char-count {
+  font-size: 22rpx;
+  color: var(--color-text-muted);
+  margin-right: 8rpx;
+  flex-shrink: 0;
 }
 
 .send-btn {
-  background: linear-gradient(135deg, #FFB74D, #FF8C42);
-  color: #ffffff;
-  border-radius: 30rpx;
-  padding: 14rpx 28rpx;
+  background: var(--btn-primary-gradient);
+  color: var(--color-text-white);
+  border-radius: 36rpx;
+  padding: 18rpx 32rpx;
   margin-left: 16rpx;
-  font-size: 26rpx;
+  font-size: 28rpx;
   font-weight: bold;
+  white-space: nowrap;
+  transition: all 0.2s;
+  box-shadow: var(--color-shadow-btn);
+}
+
+.send-btn.disabled {
+  background: var(--color-bg-disabled);
+  color: var(--color-text-muted);
+  box-shadow: none;
 }
 
 /* 加载状态 */
@@ -498,7 +515,7 @@
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #FFF5EB;
+  background-color: var(--color-bg);
 }
 
 .loading-icon {
@@ -508,7 +525,7 @@
 
 .loading-text {
   font-size: 28rpx;
-  color: #999999;
+  color: var(--color-text-secondary);
 }
 
 /* ==================== 举报弹窗 ==================== */
@@ -526,7 +543,7 @@
 }
 
 .report-modal {
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
   border-radius: 32rpx 32rpx 0 0;
   padding: 40rpx 32rpx;
   width: 100%;
@@ -542,7 +559,7 @@
 .report-title {
   font-size: 36rpx;
   font-weight: bold;
-  color: #333;
+  color: var(--color-text-primary);
   display: block;
   text-align: center;
   margin-bottom: 8rpx;
@@ -550,7 +567,7 @@
 
 .report-subtitle {
   font-size: 24rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   display: block;
   text-align: center;
   margin-bottom: 24rpx;
@@ -566,14 +583,14 @@
   padding: 24rpx 20rpx;
   border-radius: 16rpx;
   margin-bottom: 12rpx;
-  background-color: #FAFAFA;
+  background-color: var(--color-bg-disabled);
   border: 2rpx solid transparent;
   transition: all 0.2s;
 }
 
 .report-reason-item.selected {
-  background-color: #FFF5EB;
-  border-color: #FF9A6A;
+  background-color: var(--color-bg);
+  border-color: var(--color-text-accent);
 }
 
 .reason-icon {
@@ -584,23 +601,23 @@
 .reason-text {
   flex: 1;
   font-size: 30rpx;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .reason-check {
   font-size: 32rpx;
-  color: #FF9A6A;
+  color: var(--color-text-accent);
   font-weight: bold;
 }
 
 .report-desc {
   width: 100%;
   height: 120rpx;
-  background-color: #FAFAFA;
+  background-color: var(--color-bg-disabled);
   border-radius: 16rpx;
   padding: 16rpx 20rpx;
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-text-primary);
   margin-bottom: 24rpx;
   box-sizing: border-box;
 }
@@ -622,13 +639,13 @@
 }
 
 .report-cancel-btn {
-  background-color: #F5F5F5;
-  color: #666;
+  background-color: var(--color-bg-disabled);
+  color: var(--color-text-secondary);
 }
 
 .report-submit-btn {
-  background: linear-gradient(135deg, #FF6B6B, #EE5A24);
-  color: #ffffff;
+  background: var(--btn-primary-gradient);
+  color: var(--color-text-white);
 }
 
 .report-submit-btn.disabled {
@@ -656,5 +673,5 @@
 
 .report-success-toast .toast-text {
   font-size: 28rpx;
-  color: #ffffff;
+  color: var(--color-text-white);
 }

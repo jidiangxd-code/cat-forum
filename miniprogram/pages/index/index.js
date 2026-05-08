@@ -1,8 +1,15 @@
 // pages/index/index.js - 首页（帖子流）
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    // 主题
+    pageClass: theme.getPageClass(),
+    themeId: theme.getThemeId(),
+    themeName: theme.getCurrent().name,
+    themeIcon: theme.getCurrent().icon,
+    // 内容
     postList: [],
     loading: true,
     hasMore: true,
@@ -24,6 +31,11 @@ Page({
   },
 
   onLoad() {
+    // 应用当前主题
+    const current = theme.getCurrentId();
+    this.setData({ pageClass: 'page theme-' + current, themeId: current, themeName: theme.getCurrent().name, themeIcon: theme.getCurrent().icon });
+    // 监听主题变化
+    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id, themeName: t.name, themeIcon: t.icon }));
     this.loadPosts(true);
   },
 

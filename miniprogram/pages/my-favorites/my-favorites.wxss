@@ -1,7 +1,7 @@
-/* pages/my-favorites/my-favorites.wxss */
+/* pages/my-favorites/my-favorites.wxss（已迁移到 CSS 变量）*/
 .page-container {
   min-height: 100vh;
-  background-color: #FFF5EB;
+  background-color: var(--color-bg);
   padding-bottom: 30rpx;
 }
 
@@ -11,11 +11,11 @@
 }
 
 .post-card {
-  background-color: #ffffff;
+  background-color: var(--color-bg-card);
   border-radius: 20rpx;
   margin-bottom: 20rpx;
   overflow: hidden;
-  box-shadow: 0 4rpx 12rpx rgba(255, 154, 106, 0.1);
+  box-shadow: var(--color-shadow-card);
 }
 
 /* 图片组 */
@@ -43,7 +43,7 @@
   right: 16rpx;
   bottom: 16rpx;
   background: rgba(0,0,0,0.5);
-  color: #fff;
+  color: var(--color-text-white);
   padding: 4rpx 16rpx;
   border-radius: 16rpx;
   font-size: 22rpx;
@@ -56,8 +56,8 @@
 
 .post-category-tag {
   display: inline-block;
-  background-color: #FFF0E0;
-  color: #FF8C42;
+  background-color: var(--color-bg-tag);
+  color: var(--color-text-accent);
   padding: 4rpx 16rpx;
   border-radius: 12rpx;
   font-size: 22rpx;
@@ -66,7 +66,7 @@
 
 .post-text {
   font-size: 28rpx;
-  color: #333;
+  color: var(--color-text-primary);
   line-height: 1.6;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -80,24 +80,24 @@
   justify-content: space-between;
   align-items: center;
   padding: 16rpx 20rpx;
-  border-top: 1rpx solid #F5F5F5;
+  border-top: 1rpx solid var(--color-border-light);
 }
 
 .post-time {
   font-size: 22rpx;
-  color: #bbb;
+  color: var(--color-text-desc);
 }
 
 .unfav-btn {
   font-size: 22rpx;
-  color: #FF9A6A;
+  color: var(--color-text-accent);
   padding: 6rpx 16rpx;
   border-radius: 16rpx;
-  background-color: #FFF5EB;
+  background-color: var(--color-bg-tag);
 }
 
 .unfav-btn:active {
-  background-color: #FFE0CC;
+  background-color: var(--color-bg-hover);
 }
 
 /* 空状态 */
@@ -115,13 +115,13 @@
 
 .empty-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--color-text-secondary);
   margin-bottom: 30rpx;
 }
 
 .empty-btn {
-  background: linear-gradient(135deg, #FFB74D, #FF8C42);
-  color: #ffffff;
+  background: var(--primary-gradient);
+  color: var(--color-text-white);
   padding: 16rpx 48rpx;
   border-radius: 30rpx;
   font-size: 28rpx;
@@ -133,7 +133,7 @@
   text-align: center;
   padding: 30rpx;
   font-size: 24rpx;
-  color: #ccc;
+  color: var(--color-text-muted);
 }
 
 .loading-page {
@@ -151,5 +151,5 @@
 
 .loading-text {
   font-size: 28rpx;
-  color: #999;
+  color: var(--color-text-secondary);
 }

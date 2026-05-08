@@ -1,13 +1,17 @@
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    themeId: theme.getThemeId(),
+    pageClass: theme.getPageClass(),
     likes: [],
     loading: true,
     empty: false
   },
 
   onLoad() {
+    theme.applyTheme(this);
     this.loadMyLikes();
   },
 

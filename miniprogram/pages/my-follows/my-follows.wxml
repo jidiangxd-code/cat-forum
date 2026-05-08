@@ -1,4 +1,4 @@
-<view class="page-container">
+<view class="page-container {{pageClass}}">
   <!-- 页面头部 -->
   <view class="page-header">
     <text class="page-title">{{type === 'following' ? '我的关注' : '我的粉丝'}}</text>

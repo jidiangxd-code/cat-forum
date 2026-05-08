@@ -1,7 +1,7 @@
 <!-- pages/index/index.wxml - 首页（帖子流）-->
-<view class="page">
+<view class="{{pageClass}}">
 
-  <!-- 顶部横幅 -->
+  <!-- 顶部横幅（渐变色跟随主题）-->
   <view class="banner">
     <view class="banner-left">
       <text class="banner-title">🐾 校园小猫</text>

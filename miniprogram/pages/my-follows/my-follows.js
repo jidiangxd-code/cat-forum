@@ -1,7 +1,10 @@
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    themeId: theme.getThemeId(),
+    pageClass: theme.getPageClass(),
     type: 'following', // 'following' | 'followers'
     list: [],
     loading: true,
@@ -12,6 +15,7 @@ Page({
   },
 
   onLoad(options) {
+    theme.applyTheme(this);
     const type = options.type || 'following';
     this.setData({
       type,

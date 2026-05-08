@@ -1,8 +1,11 @@
 // pages/merge-cat/merge-cat.js - 标记重复猫、发起合并
 const api = require('../../utils/api.js');
+const theme = require('../../utils/theme.js');
 
 Page({
   data: {
+    themeId: theme.getThemeId(),
+    pageClass: theme.getPageClass(),
     catId: '',          // 当前（被合并的）猫
     cat: null,          // 当前猫信息
     loading: true,
@@ -17,6 +20,7 @@ Page({
   },
 
   onLoad(options) {
+    theme.applyTheme(this);
     if (options.id) {
       this.setData({ catId: options.id });
       this.loadCat(options.id);

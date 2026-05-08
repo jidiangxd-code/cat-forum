@@ -1,5 +1,5 @@
 <!-- 我的评论 -->
-<view class="page-container">
+<view class="page-container {{pageClass}}">
   <!-- 加载中 -->
   <view class="loading-state" wx:if="{{loading}}">
     <text class="loading-icon">🐾</text>
