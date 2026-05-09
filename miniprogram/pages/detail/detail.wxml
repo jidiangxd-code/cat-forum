@@ -40,26 +40,46 @@
     </view>
   </view>
 
-  <!-- 关联猫咪信息卡片（可点击跳转） -->
-  <view class="cat-card" wx:if="{{cat}}" bindtap="onCatTap">
-    <image
-      class="cat-cover"
-      src="{{cat.coverImage || '/assets/images/default-cat.png'}}"
-      mode="aspectFill"
-    />
-    <view class="cat-info">
-      <view class="cat-name-row">
-        <text class="cat-name">{{cat.fullName || cat.codeName}}</text>
-        <view class="cat-type-badge {{cat.catType}}">
-          {{cat.catType === 'formal' ? '正式猫' : '未知猫'}}
+  <!-- 关联猫咪信息卡片（可点击跳转，作者可纠错） -->
+  <view class="cat-card-wrapper" wx:if="{{cat}}">
+    <view class="cat-card" bindtap="onCatTap">
+      <image
+        class="cat-cover"
+        src="{{cat.coverImage || '/assets/images/default-cat.png'}}"
+        mode="aspectFill"
+      />
+      <view class="cat-info">
+        <view class="cat-name-row">
+          <text class="cat-name">{{cat.fullName || cat.codeName}}</text>
+          <view class="cat-type-badge {{cat.catType}}">
+            {{cat.catType === 'formal' ? '正式猫' : '未知猫'}}
+          </view>
+        </view>
+        <text class="cat-meta">{{cat.appearance}} · {{cat.gender === 'male' ? '♂公' : cat.gender === 'female' ? '♀母' : '性别未知'}} · {{cat.location || '地点未知'}}</text>
+        <view class="cat-stats" wx:if="{{cat.totalVote}}">
+          <text>🔥 {{cat.totalVote}} 人投票</text>
         </view>
       </view>
-      <text class="cat-meta">{{cat.appearance}} · {{cat.gender === 'male' ? '♂公' : cat.gender === 'female' ? '♀母' : '性别未知'}} · {{cat.location || '地点未知'}}</text>
-      <view class="cat-stats" wx:if="{{cat.totalVote}}">
-        <text>🔥 {{cat.totalVote}} 人投票</text>
+      <text class="cat-arrow">›</text>
+    </view>
+    <!-- 仅帖子作者可见的纠错按钮 -->
+    <view class="correct-cat-btn" wx:if="{{isOwn}}" catchtap="goBindCat">
+      <text>⚙️ 归档有误？点击修改</text>
+    </view>
+  </view>
+
+  <!-- 未归档状态（取消关联后显示，作者可重新绑定） -->
+  <view class="cat-card-unbound" wx:if="{{!cat && isOwn && !catId}}">
+    <text class="unbound-icon">🐱</text>
+    <text class="unbound-text">此帖子尚未关联猫咪档案</text>
+    <view class="unbound-actions">
+      <view class="unbound-action-btn primary" catchtap="goBindCat">
+        <text>📋 选择已有猫咪</text>
+      </view>
+      <view class="unbound-action-btn" catchtap="goCreateCat">
+        <text>🆕 创建新猫咪</text>
       </view>
     </view>
-    <text class="cat-arrow">›</text>
   </view>
 
   <!-- 帖子内容 -->
@@ -141,6 +161,7 @@
       <text>{{submittingComment ? '发送中' : '发送'}}</text>
     </view>
   </view>
+
 </view>
 
 <!-- 加载中 -->

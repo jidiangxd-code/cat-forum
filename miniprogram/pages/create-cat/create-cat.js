@@ -44,6 +44,10 @@ Page({
       statusOptions: api.STATUS_OPTIONS
     });
 
+    // 读取 bindPostId（从帖子详情页跳转过来，创建后自动绑定）
+    if (options.bindPostId) {
+      this.setData({ bindPostId: options.bindPostId });
+    }
 
     if (options.id) {
       this.setData({ catId: options.id, mode: 'edit' });
@@ -152,11 +156,29 @@ Page({
         });
 
         wx.hideLoading();
-        wx.showToast({ title: '档案创建成功 🎉', icon: 'success' });
 
-        setTimeout(() => {
-          wx.redirectTo({ url: `/pages/cat-home/cat-home?id=${res.data._id}` });
-        }, 1200);
+        // 如果有 bindPostId，自动绑定到帖子
+        if (this.data.bindPostId) {
+          try {
+            await api.callCloud('publishPost', {
+              action: 'updateCatId',
+              postId: this.data.bindPostId,
+              newCatId: res.data._id
+            });
+            wx.showToast({ title: '创建并绑定成功 ✅', icon: 'success' });
+          } catch (e) {
+            console.warn('绑定帖子失败', e);
+            wx.showToast({ title: '猫咪已创建，但绑定失败', icon: 'none' });
+          }
+          setTimeout(() => {
+            wx.redirectTo({ url: `/pages/detail/detail?id=${this.data.bindPostId}` });
+          }, 1200);
+        } else {
+          wx.showToast({ title: '档案创建成功 🎉', icon: 'success' });
+          setTimeout(() => {
+            wx.redirectTo({ url: `/pages/cat-home/cat-home?id=${res.data._id}` });
+          }, 1200);
+        }
 
       } else {
         await api.updateCat(catId, 'edit', {

@@ -20,6 +20,8 @@ Page({
     avatarError: false,
     submittingComment: false,  // 防止评论重复提交
     togglingFavorite: false,   // 防止收藏重复操作
+    // 帖子归属
+    isOwn: false,              // 当前用户是否为帖子作者
     categoryMap: {
       daily: '日常',
       rescue: '救助',
@@ -37,6 +39,13 @@ Page({
       this.setData({ postId: options.id });
       this.loadPostDetail();
       this.loadComments();
+    }
+  },
+
+  onShow() {
+    // 从绑定页返回后刷新详情（可能改绑了猫咪）
+    if (this.data.postId) {
+      this.loadPostDetail();
     }
   },
 
@@ -79,7 +88,8 @@ Page({
         liked: post.likedBy && post.likedBy.includes(openid),
         favorited,
         loading: false,
-        catId: post.catId || ''
+        catId: post.catId || '',
+        isOwn: post.authorId === openid  // 判断是否为帖子作者
       });
 
       if (post.catId) {
@@ -331,5 +341,22 @@ Page({
     if (this.data.catId) {
       wx.navigateTo({ url: `/pages/cat-home/cat-home?id=${this.data.catId}` });
     }
+  },
+
+  // ==================== 纠错功能（跳转到 bind-cat 页面） ====================
+
+  /** 打开绑定猫咪选择页 */
+  goBindCat() {
+    const catName = this.data.cat?.fullName || this.data.cat?.codeName || '';
+    wx.navigateTo({
+      url: `/pages/bind-cat/bind-cat?postId=${this.data.postId}&currentCatId=${this.data.catId || ''}&currentCatName=${encodeURIComponent(catName)}`
+    });
+  },
+
+  /** 创建新猫咪并绑定（跳转创建页） */
+  goCreateCat() {
+    wx.navigateTo({
+      url: `/pages/create-cat/create-cat?bindPostId=${this.data.postId}`
+    });
   }
 });

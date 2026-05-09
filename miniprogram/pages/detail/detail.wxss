@@ -712,3 +712,64 @@
   font-size: 28rpx;
   color: var(--color-text-white);
 }
+
+/* ==================== 纠错功能样式 ==================== */
+
+/* 猫咪卡片外层容器 */
+.cat-card-wrapper {
+  margin: 20rpx 24rpx 0;
+}
+
+/* 纠错按钮（仅作者可见） */
+.correct-cat-btn {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8rpx 16rpx 0;
+}
+
+.correct-cat-btn text {
+  font-size: 24rpx;
+  color: var(--color-text-accent);
+  font-weight: 500;
+}
+
+/* 未归档状态提示 */
+.cat-card-unbound {
+  margin: 20rpx 24rpx 0;
+  padding: 32rpx;
+  background: var(--color-bg-card);
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  border: 2rpx dashed var(--color-border);
+}
+
+.unbound-icon {
+  font-size: 48rpx;
+}
+
+.unbound-text {
+  font-size: 26rpx;
+  color: var(--color-text-secondary);
+}
+
+.unbound-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 8rpx;
+}
+
+.unbound-action-btn {
+  padding: 16rpx 32rpx;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+  background: var(--color-bg-disabled);
+  color: var(--color-text-secondary);
+}
+
+.unbound-action-btn.primary {
+  background: var(--color-bg-btn-primary);
+  color: var(--color-text-white);
+}

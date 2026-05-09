@@ -1,0 +1,148 @@
+/* pages/bind-cat/bind-cat.wxss - 帖子绑定猫咪选择页样式 */
+.page { background: var(--color-bg); min-height: 100vh; padding-bottom: 140rpx; }
+
+/* 当前绑定状态 */
+.current-bind {
+  display: flex; align-items: center; padding: 20rpx 24rpx;
+  background: var(--color-bg-card); border-bottom: 1rpx solid var(--color-border);
+}
+.current-label { font-size: 26rpx; color: var(--color-text-secondary); flex-shrink: 0; }
+.current-name { font-size: 28rpx; font-weight: bold; color: var(--color-text-primary); flex: 1; margin-left: 8rpx; }
+.unbind-btn {
+  background: rgba(244,67,54,0.1); color: #f44336;
+  padding: 8rpx 20rpx; border-radius: 24rpx;
+  font-size: 24rpx; flex-shrink: 0;
+}
+
+/* 搜索栏 */
+.search-bar {
+  display: flex; align-items: center; gap: 12rpx;
+  padding: 16rpx 24rpx; background: var(--color-bg);
+}
+.search-input {
+  flex: 1; background: var(--color-bg-card); border-radius: 40rpx;
+  padding: 14rpx 24rpx; font-size: 26rpx;
+  border: 1rpx solid var(--color-border);
+}
+.search-btn {
+  background: var(--color-bg-btn-primary); color: var(--color-text-white);
+  padding: 14rpx 24rpx; border-radius: 40rpx;
+  font-size: 26rpx; font-weight: bold; flex-shrink: 0;
+}
+.clear-btn {
+  background: var(--color-bg-card); color: var(--color-text-secondary);
+  width: 60rpx; height: 60rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28rpx; flex-shrink: 0;
+}
+
+/* Tab */
+.tabs {
+  display: flex; background: var(--color-bg); padding: 0 16rpx;
+  border-bottom: 1rpx solid var(--color-border);
+}
+.tab {
+  flex: 1; text-align: center; padding: 24rpx 0;
+  font-size: 26rpx; color: var(--color-text-secondary);
+}
+.tab.active {
+  color: var(--color-text-accent);
+  border-bottom: 4rpx solid var(--color-text-accent);
+  font-weight: bold;
+}
+
+/* 搜索提示 */
+.search-tip {
+  padding: 16rpx 28rpx; font-size: 24rpx; color: var(--color-text-secondary);
+  background: var(--color-bg-card); border-bottom: 1rpx solid var(--color-border);
+}
+
+/* 猫咪列表 */
+.cat-list { padding: 16rpx 24rpx; }
+.cat-item {
+  display: flex; align-items: center;
+  background: var(--color-bg-card); border-radius: 16rpx;
+  padding: 20rpx; margin-bottom: 16rpx;
+  box-shadow: var(--color-shadow-card);
+  border: 2rpx solid transparent;
+}
+.cat-item.is-current {
+  border-color: var(--color-text-accent);
+  background: var(--color-bg-card);
+}
+.cat-avatar {
+  width: 88rpx; height: 88rpx; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0;
+}
+.cat-avatar-empty {
+  background: var(--color-bg-tag);
+  display: flex; align-items: center;
+  justify-content: center; font-size: 44rpx;
+}
+.cat-info { flex: 1; margin-left: 20rpx; }
+.cat-name-row { display: flex; align-items: center; gap: 8rpx; margin-bottom: 6rpx; }
+.cat-name { font-size: 28rpx; font-weight: bold; color: var(--color-text-primary); }
+.cat-type-badge {
+  padding: 4rpx 12rpx; border-radius: 12rpx;
+  font-size: 20rpx; font-weight: bold;
+}
+.cat-type-badge.formal { background: var(--color-bg-badge); color: var(--color-text-white); }
+.cat-type-badge.unknown { background: var(--color-text-blue); color: var(--color-text-white); }
+.current-badge {
+  padding: 4rpx 12rpx; border-radius: 12rpx;
+  font-size: 20rpx; font-weight: bold;
+  background: var(--color-text-accent); color: var(--color-text-white);
+}
+.cat-meta {
+  display: block; font-size: 22rpx; color: var(--color-text-secondary);
+}
+.select-arrow {
+  font-size: 36rpx; color: var(--color-text-muted);
+  flex-shrink: 0; margin-left: 8rpx;
+}
+
+/* 空状态 */
+.empty {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 120rpx 40rpx;
+}
+.empty-icon { font-size: 80rpx; margin-bottom: 20rpx; }
+.empty-text { font-size: 28rpx; color: var(--color-text-secondary); margin-bottom: 32rpx; }
+.empty-btn {
+  background: var(--color-bg-btn-primary); color: var(--color-text-white);
+  padding: 20rpx 48rpx; border-radius: 40rpx; font-size: 28rpx;
+}
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 20rpx 24rpx; background: var(--color-bg);
+  border-top: 1rpx solid var(--color-border);
+  box-shadow: 0 -4rpx 16rpx rgba(0,0,0,0.05);
+  z-index: 100;
+}
+.create-new-btn {
+  background: var(--color-bg-btn-primary); color: var(--color-text-white);
+  text-align: center; padding: 22rpx 0; border-radius: 44rpx;
+  font-size: 28rpx; font-weight: bold;
+}
+
+/* 加载/无更多 */
+.load-more, .no-more {
+  text-align: center; padding: 30rpx;
+  font-size: 24rpx; color: var(--color-text-muted);
+}
+
+/* 操作中遮罩 */
+.bind-loading-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4); z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+}
+.bind-loading-content {
+  background: var(--color-bg-card); border-radius: 20rpx;
+  padding: 48rpx 64rpx; display: flex; flex-direction: column;
+  align-items: center; gap: 16rpx;
+}
+.bind-loading-spinner { font-size: 64rpx; }
+.bind-loading-text { font-size: 28rpx; color: var(--color-text-secondary); }

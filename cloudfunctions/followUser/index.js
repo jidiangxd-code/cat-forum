@@ -2,9 +2,42 @@
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
+const _ = db.command;
+
+// 获取用户信息（用于通知），优先用前端传入的，再查库
+async function getUserInfoForNotify(userId, eventUserInfo) {
+  // eventUserInfo 格式：{ nickName, avatar }
+  if (eventUserInfo && eventUserInfo.nickName) {
+    return {
+      nickName: eventUserInfo.nickName,
+      avatar: eventUserInfo.avatar || ''
+    };
+  }
+  // fallback：查 users 集合
+  try {
+    const res = await db.collection('users')
+      .where(_.or([{ _openid: userId }, { openid: userId }]))
+      .limit(1).get();
+    if (res.data && res.data.length > 0) {
+      const u = res.data[0];
+      return {
+        nickName: u.nickName || '爱猫同学',
+        avatar: u.avatar || ''
+      };
+    }
+  } catch (e) {
+    console.warn('查询用户信息失败', e);
+  }
+  // 都查不到，用 userId 构建一个名字
+  const shortId = String(userId || '').substring(0, 6);
+  return {
+    nickName: `用户${shortId}` || '爱猫同学',
+    avatar: ''
+  };
+}
 
 exports.main = async (event, context) => {
-  const { action, fromUserId, toUserId } = event;
+  const { action, fromUserId, toUserId, userInfo } = event;
 
   if (!fromUserId || !toUserId) {
     return { success: false, code: 400, message: '缺少必要参数' };
@@ -38,18 +71,18 @@ exports.main = async (event, context) => {
         }
       });
 
-      // 给被关注者发通知
+      // 给被关注者发通知（使用 getUserInfoForNotify 获取用户信息）
       try {
-        const userInfo = wx.getStorageSync ? wx.getStorageSync('userInfo') : {};
+        const info = await getUserInfoForNotify(fromUserId, userInfo);
         await db.collection('notifications').add({
           data: {
             toUserId,
             type: 'follow',
             fromUserId,
-            fromUserName: userInfo.nickName || '某用户',
-            fromUserAvatar: userInfo.avatarUrl || '',
+            fromUserName: info.nickName,
+            fromUserAvatar: info.avatar,
             targetId: fromUserId,
-            targetTitle: userInfo.nickName || '某用户',
+            targetTitle: info.nickName,
             read: false,
             createTime: db.serverDate()
           }

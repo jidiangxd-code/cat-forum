@@ -1,0 +1,102 @@
+<!-- pages/bind-cat/bind-cat.wxml - 帖子绑定猫咪选择页 -->
+<view class="{{pageClass}}">
+  <!-- 当前绑定状态 -->
+  <view class="current-bind" wx:if="{{currentCatId}}">
+    <text class="current-label">当前绑定：</text>
+    <text class="current-name">{{currentCatName}}</text>
+    <view class="unbind-btn" bindtap="unbindCat">取消关联</view>
+  </view>
+
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <input
+      class="search-input"
+      placeholder="搜索猫咪名字/代号..."
+      value="{{keyword}}"
+      bindinput="onKeywordInput"
+      bindconfirm="doSearch"
+    />
+    <view class="search-btn" bindtap="doSearch">搜索</view>
+    <view class="clear-btn" wx:if="{{searchMode}}" bindtap="clearSearch">✕</view>
+  </view>
+
+  <!-- Tab 切换（搜索模式下隐藏） -->
+  <view class="tabs" wx:if="{{!searchMode}}">
+    <view
+      wx:for="{{tabs}}"
+      wx:key="id"
+      class="tab {{currentTab === item.id ? 'active' : ''}}"
+      bindtap="onTabChange"
+      data-tab="{{item.id}}"
+    >{{item.name}}</view>
+  </view>
+
+  <!-- 搜索结果提示 -->
+  <view class="search-tip" wx:if="{{searchMode}}">
+    搜索"{{keyword}}"，找到 {{catList.length}} 只猫
+  </view>
+
+  <!-- 猫咪列表 -->
+  <view class="cat-list">
+    <view
+      wx:for="{{catList}}"
+      wx:key="_id"
+      class="cat-item {{item._id === currentCatId ? 'is-current' : ''}}"
+      bindtap="selectCat"
+      data-id="{{item._id}}"
+      data-name="{{item.fullName || item.codeName}}"
+    >
+      <image
+        wx:if="{{item.coverImage}}"
+        class="cat-avatar"
+        src="{{item.coverImage}}"
+        mode="aspectFill"
+      />
+      <view class="cat-avatar cat-avatar-empty" wx:else>🐱</view>
+      <view class="cat-info">
+        <view class="cat-name-row">
+          <text class="cat-name">{{item.fullName || item.codeName}}</text>
+          <view class="cat-type-badge {{item.catType === 'formal' ? 'formal' : 'unknown'}}">
+            {{item.catType === 'formal' ? '正式' : '未知'}}
+          </view>
+          <view class="current-badge" wx:if="{{item._id === currentCatId}}">已绑定</view>
+        </view>
+        <text class="cat-meta">{{item.appearance}} · {{item.gender === 'male' ? '♂公' : item.gender === 'female' ? '♀母' : '性别未知'}} · {{item.location || '地点未知'}}</text>
+      </view>
+      <text class="select-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view class="empty" wx:if="{{!loading && catList.length === 0 && !searchMode}}">
+    <text class="empty-icon">🐾</text>
+    <text class="empty-text">还没有猫咪档案</text>
+    <view class="empty-btn" bindtap="goCreateCat">创建新猫咪</view>
+  </view>
+
+  <!-- 搜索无结果 -->
+  <view class="empty" wx:if="{{!loading && catList.length === 0 && searchMode}}">
+    <text class="empty-icon">🔍</text>
+    <text class="empty-text">未找到匹配的猫咪</text>
+    <view class="empty-btn" bindtap="goCreateCat">创建新猫咪</view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="create-new-btn" bindtap="goCreateCat">
+      <text>🆕 创建新猫咪并绑定</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="load-more" wx:if="{{loading && catList.length > 0}}">加载中...</view>
+  <view class="no-more" wx:elif="{{!hasMore && catList.length > 0 && !loading}}">已加载全部</view>
+</view>
+
+<!-- 操作中遮罩 -->
+<view class="bind-loading-mask" wx:if="{{binding}}">
+  <view class="bind-loading-content">
+    <text class="bind-loading-spinner">⏳</text>
+    <text class="bind-loading-text">处理中...</text>
+  </view>
+</view>

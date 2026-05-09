@@ -397,6 +397,7 @@ const STATUS_OPTIONS = [
 
 module.exports = {
   getOpenId,
+  callCloud,
   checkContent,
   createCat,
   updateCat,

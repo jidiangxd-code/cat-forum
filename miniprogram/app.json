@@ -14,7 +14,8 @@
     "pages/my-likes/my-likes",
     "pages/my-comments/my-comments",
     "pages/edit-profile/edit-profile",
-    "pages/my-favorites/my-favorites"
+    "pages/my-favorites/my-favorites",
+    "pages/bind-cat/bind-cat"
   ],
   "window": {
     "backgroundTextStyle": "light",
