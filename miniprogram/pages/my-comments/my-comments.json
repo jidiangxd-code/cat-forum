@@ -1,6 +1,5 @@
 {
   "navigationBarTitleText": "我的评论",
-  "navigationBarBackgroundColor": "#FF9A6A",
   "navigationBarTextStyle": "white",
-  "backgroundColor": "#FFF5EB"
+  "usingComponents": {}
 }

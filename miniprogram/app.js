@@ -45,6 +45,8 @@ App({
       if (openid) {
         wx.setStorageSync('openId', openid);
         console.log('✅ openid:', openid);
+        // 同步拉取用户信息，存入 Storage（供评论、帖子等模块读取作者名）
+        this._syncUserInfo(openid);
       } else {
         console.warn('⚠️ openid 为空，使用 guest');
         wx.setStorageSync('openId', 'guest');
@@ -52,6 +54,27 @@ App({
     } catch (err) {
       console.warn('⚠️ login 调用失败，使用 guest:', err.message || err);
       wx.setStorageSync('openId', 'guest');
+    }
+  },
+
+  async _syncUserInfo(openid) {
+    try {
+      const db = wx.cloud.database();
+      const res = await db.collection('users').where({ openid }).limit(1).get();
+      if (res.data && res.data.length > 0) {
+        const user = res.data[0];
+        const userInfo = {
+          nickName: user.nickName || '',
+          avatarUrl: user.avatar || ''
+        };
+        wx.setStorageSync('userInfo', userInfo);
+        this.globalData.userInfo = userInfo;
+        console.log('✅ 用户信息已同步:', userInfo.nickName);
+      } else {
+        console.log('ℹ️ users 集合中暂无该用户记录（首次使用）');
+      }
+    } catch (e) {
+      console.warn('⚠️ 同步用户信息失败:', e);
     }
   },
 

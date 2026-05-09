@@ -81,7 +81,7 @@
     <view class="action-item">
       <text class="action-icon">💬</text>
       <text class="action-text">评论</text>
-      <text class="action-count">{{post.commentCount || comments.length}}</text>
+      <text class="action-count">{{comments.length}}</text>
     </view>
     <button class="action-item share-btn" open-type="share">
       <text class="action-icon">📤</text>
@@ -99,9 +99,15 @@
       <view class="comment-item" wx:for="{{comments}}" wx:key="_id">
         <image class="comment-avatar" src="{{item.avatarError ? '/assets/images/default-avatar.png' : (item.authorAvatar || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onCommentAvatarError" data-index="{{index}}" />
         <view class="comment-content">
-          <text class="comment-author">{{item.authorName}}</text>
+          <view class="comment-header">
+            <text class="comment-author">{{item.authorName || '匿名用户'}}</text>
+            <text class="comment-time">{{item.timeStr}}</text>
+          </view>
           <text class="comment-text">{{item.content}}</text>
-          <text class="comment-time">{{item.timeStr || item.createTime}}</text>
+        </view>
+        <!-- 仅自己的评论显示删除按钮 -->
+        <view class="comment-delete-btn" wx:if="{{item.isOwn}}" bindtap="deleteComment" data-id="{{item._id}}">
+          <text>🗑</text>
         </view>
       </view>
     </view>

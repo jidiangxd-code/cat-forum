@@ -37,15 +37,13 @@ Page({
   },
 
   onLoad(options) {
-    const current = theme.getCurrentId();
+    theme.applyTheme(this);
     this.setData({
-      pageClass: 'page theme-' + current,
-      themeId: current,
       appearanceOptions: api.APPEARANCE_OPTIONS,
       genderOptions: api.GENDER_OPTIONS,
       statusOptions: api.STATUS_OPTIONS
     });
-    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
+
 
     if (options.id) {
       this.setData({ catId: options.id, mode: 'edit' });

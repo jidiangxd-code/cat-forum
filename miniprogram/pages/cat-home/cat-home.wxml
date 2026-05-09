@@ -115,7 +115,7 @@
             <text class="post-text">{{item.content}}</text>
           </view>
           <view class="post-footer">
-            <text class="post-time">📅 {{item.createTime}}</text>
+            <text class="post-time">📅 {{item.createTimeStr}}</text>
             <text class="post-stats">❤️ {{item.likeCount || 0}}  💬 {{item.commentCount || 0}}</text>
           </view>
         </view>

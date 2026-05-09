@@ -26,9 +26,7 @@ Page({
   },
 
   onLoad(options) {
-    const current = theme.getCurrentId();
-    this.setData({ pageClass: 'page theme-' + current, themeId: current });
-    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
+    theme.applyTheme(this);
     if (options.id) {
       this.setData({ catId: options.id });
       this.loadAll();
@@ -85,7 +83,10 @@ Page({
     this.setData({ postsLoading: true });
     try {
       const res = await api.getCatPosts(this.data.catId, this.data.postsPage, 10);
-      const list = res.data || [];
+      const list = (res.data || []).map(p => ({
+        ...p,
+        createTimeStr: this._formatTime(p.createTime)
+      }));
       this.setData({
         posts: reset ? list : [...this.data.posts, ...list],
         hasMorePosts: list.length >= 10,
@@ -95,6 +96,18 @@ Page({
     } catch (e) {
       this.setData({ postsLoading: false, hasMorePosts: false });
     }
+  },
+
+  _formatTime(t) {
+    if (!t) return '';
+    const d = t instanceof Date ? t : new Date(t);
+    if (isNaN(d)) return '';
+    const now = new Date();
+    const diff = now - d;
+    if (diff < 60000) return '刚刚';
+    if (diff < 3600000) return `${Math.floor(diff / 60000)}分钟前`;
+    if (diff < 86400000) return `${Math.floor(diff / 3600000)}小时前`;
+    return `${d.getMonth() + 1}月${d.getDate()}日`;
   },
 
   async loadMorePosts() {

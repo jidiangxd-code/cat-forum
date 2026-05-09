@@ -33,7 +33,7 @@
         </view>
       </view>
 
-      <!-- 图片组 -->
+      <!-- 图片组（整块可点击进入详情，不再点图片直接预览） -->
       <view
         class="post-imgs"
         wx:if="{{item.images && item.images.length > 0}}"
@@ -48,9 +48,6 @@
           class="post-img {{item.images.length === 1 ? 'single' : ''}}"
           src="{{img}}"
           mode="aspectFill"
-          catchtap="previewImage"
-          data-images="{{item.images}}"
-          data-index="{{index}}"
         />
         <view class="img-more-badge" wx:if="{{item.images.length > 3}}">+{{item.images.length - 3}}</view>
       </view>

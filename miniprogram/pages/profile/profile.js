@@ -53,6 +53,9 @@ Page({
     const current = theme.getCurrentId();
     this.setData({ pageClass: 'page theme-' + current, themeId: current, themeName: theme.getCurrent().name, themeOptions: theme.getAll() });
     theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id, themeName: t.name }));
+    // 设置页面背景色和导航栏颜色
+    this._applyThemeBackground();
+    theme._updateNavBar(theme.getCurrent());
     this.loadUserInfo();
     this.loadStats();
   },
@@ -64,11 +67,31 @@ Page({
   },
 
   onShow() {
+    // 每次显示页面时更新背景色和导航栏颜色
+    this._applyThemeBackground();
+    theme._updateNavBar(theme.getCurrent());
     this.loadUserInfo();
     this.loadStats();
     // 加载当前 Tab 数据
     if (this.data.isLoggedIn) {
       this._loadCurrentTab();
+    }
+  },
+
+  _applyThemeBackground() {
+    try {
+      const t = theme.getCurrent();
+      const bgColor = t['--color-bg'];
+      console.log('[profile] 设置背景色:', bgColor);
+      wx.setBackgroundColor({
+        backgroundColor: bgColor,
+        backgroundColorTop: bgColor,
+        backgroundColorBottom: bgColor,
+        success: () => console.log('[profile] 背景色设置成功'),
+        fail: (err) => console.warn('[profile] 背景色设置失败:', err)
+      });
+    } catch (e) {
+      console.warn('[profile] _applyThemeBackground 异常:', e);
     }
   },
 

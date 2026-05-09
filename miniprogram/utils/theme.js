@@ -39,8 +39,8 @@ const THEMES = {
     '--color-text-desc': '#999999',
     '--color-text-muted': '#cccccc',
     '--color-text-placeholder': '#c0c0c0',
-    '--color-text-accent': '#FF8C42',
-    '--color-text-accent-light': '#FF9A6A',
+    '--color-text-accent': '#E87C32',
+    '--color-text-accent-light': '#FF8C42',
     '--color-text-tag': '#E67E22',
     '--color-text-tag-health': '#4CAF50',
     '--color-text-white': '#ffffff',
@@ -74,26 +74,26 @@ const THEMES = {
     name: '黑夜',
     icon: '🌙',
     desc: '深邃静谧，护眼舒适',
-    '--color-bg': '#12121F',
-    '--color-bg-card': '#1E1E30',
-    '--color-bg-input': '#2A2A40',
-    '--color-bg-hover': '#252538',
-    '--color-bg-tab': '#1E1E30',
-    '--color-bg-active': '#252538',
-    '--color-bg-disabled': '#2A2A40',
-    '--color-bg-image': '#2A2A40',
-    '--color-bg-divider': '#2A2A40',
+    '--color-bg': '#18182A',
+    '--color-bg-card': '#252545',
+    '--color-bg-input': '#2E2E48',
+    '--color-bg-hover': '#2E2E48',
+    '--color-bg-tab': '#252545',
+    '--color-bg-active': '#2E2E48',
+    '--color-bg-disabled': '#2E2E48',
+    '--color-bg-image': '#2E2E48',
+    '--color-bg-divider': '#32324A',
     '--color-bg-tag': '#2E2E48',
     '--color-bg-tag-health': '#1A3A2A',
     '--color-bg-badge': '#6C5CE7',
     '--color-bg-btn-primary': '#6C5CE7',
     '--color-bg-btn-secondary': '#252538',
     '--color-bg-btn-danger': '#E74C3C',
-    '--color-text-primary': '#E8E8F0',
-    '--color-text-secondary': '#A0A0B8',
-    '--color-text-desc': '#707088',
-    '--color-text-muted': '#505068',
-    '--color-text-placeholder': '#404058',
+    '--color-text-primary': '#F0F0F8',
+    '--color-text-secondary': '#C0C0D8',
+    '--color-text-desc': '#9090A8',
+    '--color-text-muted': '#686880',
+    '--color-text-placeholder': '#585870',
     '--color-text-accent': '#A29BFE',
     '--color-text-accent-light': '#6C5CE7',
     '--color-text-tag': '#A29BFE',
@@ -140,11 +140,11 @@ const THEMES = {
     '--color-bg-btn-primary': '#4CAF50',
     '--color-bg-btn-secondary': '#F0FAF5',
     '--color-bg-btn-danger': '#FF5252',
-    '--color-text-primary': '#2D6A4F',
-    '--color-text-secondary': '#52A97A',
-    '--color-text-desc': '#7AB896',
-    '--color-text-muted': '#A8D5BC',
-    '--color-text-placeholder': '#A8D5BC',
+    '--color-text-primary': '#1B4A2F',
+    '--color-text-secondary': '#2D7A4A',
+    '--color-text-desc': '#3A6A4A',
+    '--color-text-muted': '#609060',
+    '--color-text-placeholder': '#709070',
     '--color-text-accent': '#4CAF50',
     '--color-text-accent-light': '#66BB6A',
     '--color-text-tag': '#2D6A4F',
@@ -191,11 +191,11 @@ const THEMES = {
     '--color-bg-btn-primary': '#FF6B9D',
     '--color-bg-btn-secondary': '#FFF5F8',
     '--color-bg-btn-danger': '#FF5252',
-    '--color-text-primary': '#C06078',
-    '--color-text-secondary': '#E091A8',
-    '--color-text-desc': '#F0A0B8',
-    '--color-text-muted': '#F8C0CC',
-    '--color-text-placeholder': '#F8C0CC',
+    '--color-text-primary': '#902050',
+    '--color-text-secondary': '#B04060',
+    '--color-text-desc': '#C05070',
+    '--color-text-muted': '#D06080',
+    '--color-text-placeholder': '#D06080',
     '--color-text-accent': '#FF6B9D',
     '--color-text-accent-light': '#FF8FB3',
     '--color-text-tag': '#D45070',
@@ -361,21 +361,33 @@ const ThemeManager = {
 
   // 更新 page 根元素背景色和前景色
   _updatePageStyle(theme) {
+    const bgColor = theme['--color-bg'];
+    console.log('[ThemeManager] 设置页面背景色:', bgColor);
+    
     try {
-      const pages = getCurrentPages();
-      for (let i = 0; i < pages.length; i++) {
-        try {
-          wx.setPageStyle({
-            style: {
-              backgroundColor: theme['--color-bg'],
-              rootBackgroundColor: theme['--color-bg'],
-            }
-          });
-        } catch (e) {
-          // setPageStyle 可能在低版本基础库不支持，忽略
+      // 使用 wx.setBackgroundColor 设置页面背景色
+      wx.setBackgroundColor({
+        backgroundColor: bgColor,
+        backgroundColorTop: bgColor,
+        backgroundColorBottom: bgColor,
+        success: () => {
+          console.log('[ThemeManager] 背景色设置成功:', bgColor);
+        },
+        fail: (err) => {
+          console.warn('[ThemeManager] setBackgroundColor 失败:', err);
+          // 备用方案：尝试设置页面样式
+          try {
+            wx.setPageStyle({
+              style: { backgroundColor: bgColor }
+            });
+          } catch (e) {
+            console.warn('[ThemeManager] setPageStyle 也失败:', e);
+          }
         }
-      }
-    } catch (e) {}
+      });
+    } catch (e) {
+      console.warn('[ThemeManager] setBackgroundColor 调用异常:', e);
+    }
   },
 
   // 更新 NavigationBar 颜色
@@ -384,10 +396,53 @@ const ThemeManager = {
       wx.setNavigationBarColor({
         frontColor: '#ffffff',
         backgroundColor: theme['--nav-bg'],
+        animation: { duration: 0, timingFunc: 'linear' },
         fail: () => {}
       });
       // 标题颜色固定白色，背景色跟随主题
     } catch (e) {}
+  },
+
+  /**
+   * applyTheme(page)
+   * 页面 onLoad 中调用：初始化 pageClass/themeId，注册主题监听，同步导航栏 & 背景色
+   * 
+   * 用法：
+   *   onLoad() {
+   *     theme.applyTheme(this);
+   *   }
+   */
+  applyTheme(page) {
+    if (!page || typeof page.setData !== 'function') return;
+
+    const id = currentThemeId;
+    const t = THEMES[id] || THEMES.orange;
+
+    // 1. 初始化页面数据
+    page.setData({
+      pageClass: 'page theme-' + id,
+      themeId: id,
+      themeName: t.name,
+      themeIcon: t.icon,
+    });
+
+    // 2. 注册主题变化监听
+    this.onChange((newTheme) => {
+      if (page.setData) {
+        page.setData({
+          pageClass: 'page theme-' + newTheme.id,
+          themeId: newTheme.id,
+          themeName: newTheme.name,
+          themeIcon: newTheme.icon,
+        });
+      }
+    });
+
+    // 3. 立即同步导航栏颜色（覆盖 .json 中的静态值）
+    this._updateNavBar(t);
+
+    // 4. 同步页面背景色
+    this._updatePageStyle(t);
   },
 };
 

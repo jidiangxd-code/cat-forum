@@ -31,10 +31,8 @@ Page({
   },
 
   onLoad(options) {
-    // 应用当前主题
-    const current = theme.getCurrentId();
-    this.setData({ pageClass: 'page theme-' + current, themeId: current });
-    theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
+    // 应用当前主题（含导航栏颜色）
+    theme.applyTheme(this);
     if (options.id) {
       this.setData({ postId: options.id });
       this.loadPostDetail();
@@ -122,10 +120,14 @@ Page({
   async loadComments() {
     try {
       const res = await api.getComments(this.data.postId);
-      const comments = (res.data || []).map(c => ({
-        ...c,
-        timeStr: this._formatTime(c.createTime)
-      }));
+      const myOpenId = api.getOpenId();
+      const comments = (res.data || [])
+        .filter(c => c.status !== 'deleted')   // 过滤软删除评论
+        .map(c => ({
+          ...c,
+          timeStr: this._formatTime(c.createTime),
+          isOwn: c.authorId === myOpenId        // 标记是否为自己的评论（显示删除按钮）
+        }));
       this.setData({ comments });
     } catch (err) {
       console.error('加载评论失败', err);
@@ -199,6 +201,7 @@ Page({
 
   /**
    * 提交评论（带防重机制）
+   * 使用 addComment 云函数（含通知逻辑）
    */
   async submitComment() {
     // 防重：正在提交中则忽略
@@ -213,8 +216,6 @@ Page({
     // 立即锁定
     this.setData({ submittingComment: true });
 
-    const userInfo = wx.getStorageSync('userInfo') || {};
-
     try {
       // 内容安全审核
       const checkResult = await api.checkContent({ content, images: [] });
@@ -224,14 +225,19 @@ Page({
         return;
       }
 
-      await api.addComment({
-        postId: this.data.postId,
-        catId: this.data.catId,
-        content,
-        authorId: api.getOpenId(),
-        authorName: userInfo.nickName || '匿名用户',
-        authorAvatar: userInfo.avatarUrl || ''
+      // 调用云函数添加评论（含自动通知帖子作者逻辑）
+      const result = await wx.cloud.callFunction({
+        name: 'addComment',
+        data: {
+          postId: this.data.postId,
+          catId: this.data.catId,
+          content
+        }
       });
+
+      if (!result.result || !result.result.success) {
+        throw new Error(result.result?.message || '评论失败');
+      }
 
       // 更新帖子的评论计数
       if (this.data.post) {
@@ -245,12 +251,55 @@ Page({
       wx.showToast({ title: '评论成功 🎉', icon: 'success' });
     } catch (err) {
       console.error('评论失败', err);
-      wx.showToast({ title: '评论失败，请重试', icon: 'none' });
+      wx.showToast({ title: err.message || '评论失败，请重试', icon: 'none' });
     } finally {
       // 延迟解锁，防止快速双击
       setTimeout(() => {
         this.setData({ submittingComment: false });
       }, 500);
+    }
+  },
+
+  /**
+   * 删除自己的评论
+   */
+  async deleteComment(e) {
+    const commentId = e.currentTarget.dataset.id;
+    if (!commentId) return;
+
+    const confirmed = await new Promise(resolve => {
+      wx.showModal({
+        title: '删除评论',
+        content: '确定要删除这条评论吗？',
+        confirmText: '删除',
+        confirmColor: '#f44336',
+        success: (res) => resolve(res.confirm),
+        fail: () => resolve(false)
+      });
+    });
+    if (!confirmed) return;
+
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'deleteComment',
+        data: { commentId }
+      });
+      if (res.result && res.result.success) {
+        // 本地移除该评论
+        const comments = this.data.comments.filter(c => c._id !== commentId);
+        this.setData({ comments });
+        if (this.data.post) {
+          this.setData({
+            post: { ...this.data.post, commentCount: Math.max(0, (this.data.post.commentCount || 1) - 1) }
+          });
+        }
+        wx.showToast({ title: '评论已删除', icon: 'success' });
+      } else {
+        wx.showToast({ title: res.result?.message || '删除失败', icon: 'none' });
+      }
+    } catch (err) {
+      console.error('删除评论失败', err);
+      wx.showToast({ title: '删除失败，请重试', icon: 'none' });
     }
   },
 

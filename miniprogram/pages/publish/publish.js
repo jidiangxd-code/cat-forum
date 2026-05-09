@@ -47,6 +47,32 @@ Page({
     const current = theme.getCurrentId();
     this.setData({ pageClass: 'page theme-' + current, themeId: current, appearanceOptions: api.APPEARANCE_OPTIONS });
     theme.onChange((t) => this.setData({ pageClass: 'page theme-' + t.id, themeId: t.id }));
+    // 设置页面背景色和导航栏颜色
+    this._applyThemeBackground();
+    theme._updateNavBar(theme.getCurrent());
+  },
+
+  onShow() {
+    // 每次显示页面时更新背景色和导航栏颜色
+    this._applyThemeBackground();
+    theme._updateNavBar(theme.getCurrent());
+  },
+
+  _applyThemeBackground() {
+    try {
+      const t = theme.getCurrent();
+      const bgColor = t['--color-bg'];
+      console.log('[publish] 设置背景色:', bgColor);
+      wx.setBackgroundColor({
+        backgroundColor: bgColor,
+        backgroundColorTop: bgColor,
+        backgroundColorBottom: bgColor,
+        success: () => console.log('[publish] 背景色设置成功'),
+        fail: (err) => console.warn('[publish] 背景色设置失败:', err)
+      });
+    } catch (e) {
+      console.warn('[publish] _applyThemeBackground 异常:', e);
+    }
   },
 
   // 选择图片

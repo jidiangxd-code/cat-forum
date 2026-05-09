@@ -1,4 +1,10 @@
 /* pages/detail/detail.wxss - 详情页样式（已迁移到 CSS 变量）*/
+
+/* 页面底部留白，防止评论被固定输入框遮挡 */
+.page {
+  padding-bottom: 220rpx;
+}
+
 .page-container {
   min-height: 100vh;
   padding-bottom: 120rpx;
@@ -337,6 +343,37 @@
   font-size: 20rpx;
   color: var(--color-text-muted);
   display: block;
+}
+
+/* 评论头部：作者名 + 时间同行 */
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6rpx;
+}
+
+.comment-header .comment-time {
+  display: inline;
+  margin-left: 12rpx;
+}
+
+/* 自己评论的删除按钮 */
+.comment-delete-btn {
+  flex-shrink: 0;
+  width: 60rpx;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.comment-delete-btn:active {
+  opacity: 1;
+  color: #f44336;
 }
 
 /* 回复操作按钮 */

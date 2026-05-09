@@ -40,14 +40,19 @@ exports.main = async (event, context) => {
     if (cat.isMerged) return { success: false, code: 400, message: '该猫咪已被合并，请重新选择' };
 
     // 查询用户信息，用于冗余存储到帖子（避免查帖子时再查 users 集合）
+    // 注意：users 集合的 _openid 是系统字段，对应用户的 openid
     let authorName = '匿名用户';
     let authorAvatar = '';
     try {
-      const userRes = await db.collection('users').where({ openid: openid }).limit(1).get();
+      const _ = db.command;
+      const userRes = await db.collection('users')
+        .where(_.or([{ _openid: openid }, { openid: openid }]))
+        .limit(1)
+        .get();
       if (userRes.data && userRes.data.length > 0) {
         const user = userRes.data[0];
-        authorName = user.nickName || '匿名用户';
-        authorAvatar = user.avatar || '';
+        authorName = user.nickName || user.nickname || '匿名用户';
+        authorAvatar = user.avatar || user.avatarUrl || '';
       }
     } catch (e) {
       console.warn('查询用户信息失败，使用默认值', e);

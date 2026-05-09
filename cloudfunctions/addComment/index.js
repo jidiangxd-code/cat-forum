@@ -30,17 +30,22 @@ exports.main = async (event, context) => {
   }
 
   // 获取用户信息
+  // 注意：users 集合的 _openid 是系统字段（对应用户的 openid）
   let authorName = '匿名用户';
   let avatar = '';
   try {
+    const _ = db.command;
     const userResult = await db.collection('users')
-      .where({ openid: openid })
+      .where(_.or([{ _openid: openid }, { openid: openid }]))
+      .limit(1)
       .get();
     if (userResult.data && userResult.data.length > 0) {
-      authorName = userResult.data[0].nickName || '匿名用户';
-      avatar = userResult.data[0].avatar || '';
+      const u = userResult.data[0];
+      authorName = u.nickName || u.nickname || '匿名用户';
+      avatar = u.avatar || u.avatarUrl || '';
     }
   } catch (e) {
+    console.warn('获取用户信息失败', e);
     // 用户信息获取失败不影响评论
   }
 

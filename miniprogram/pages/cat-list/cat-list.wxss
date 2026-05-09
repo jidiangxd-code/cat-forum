@@ -30,7 +30,7 @@
   background: var(--color-bg-card); border-bottom: 1rpx solid var(--color-border);
 }
 .tabs {
-  display: flex; background: var(--color-bg-card); padding: 0 16rpx;
+  display: flex; background: var(--color-bg); padding: 0 16rpx;
   border-bottom: 1rpx solid var(--color-border);
 }
 .tab {

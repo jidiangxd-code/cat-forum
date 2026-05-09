@@ -151,6 +151,8 @@ function getCatPosts(catId, page = 1, pageSize = 20) {
 
 /**
  * 获取帖子详情
+ * TODO: 云函数部署完成后改为 callCloud('getPostDetail', { postId })
+ * 暂用直查数据库，旧数据可能显示"匿名用户"，部署后自动修复
  */
 function getPostDetail(postId) {
   const db = getDB();
@@ -175,6 +177,11 @@ function getPostList(params = {}) {
 
 // ==================== 评论 ====================
 
+/**
+ * 获取评论列表
+ * TODO: 云函数部署完成后改为 callCloud('getComments', { postId })
+ * 暂用直查数据库，旧数据可能显示"匿名用户"，部署后自动修复
+ */
 function getComments(postId) {
   const db = getDB();
   return db.collection('comments')
