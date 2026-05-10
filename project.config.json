@@ -46,6 +46,7 @@
   },
   "appid": "wx508e2fc1c2ec5b53",
   "projectname": "xiao_mao_forum",
+  "envId": "cloud1-d6gz1l670de10862e",
   "libVersion": "2.20.1",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "condition": {
@@ -74,7 +75,15 @@
   "compileType": "miniprogram",
   "srcMiniprogramRoot": "miniprogram/",
   "packOptions": {
-    "ignore": [],
+    "ignore": [
+      { "type": "file", "value": "node_modules" },
+      { "type": "file", "value": "*.map" },
+      { "type": "directory", "value": "node_modules" },
+      { "type": "directory", "value": "cloudfunctions" },
+      { "type": "directory", "value": "docs" },
+      { "type": "directory", "value": ".workbuddy" },
+      { "type": "directory", "value": "scripts" }
+    ],
     "include": []
   },
   "editorSetting": {

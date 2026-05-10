@@ -13,22 +13,15 @@
         <text class="user-name">点击登录</text>
         <text class="user-desc">登录后即可发布和评论 🐱</text>
       </block>
-      <!-- 已登录：显示用户信息 -->
+      <!-- 已登录：纯展示用户信息 -->
       <block wx:else>
-        <button class="avatar-btn" open-type="chooseAvatar" bindchooseavatar="onChooseAvatar">
-          <image class="user-avatar" src="{{avatarError ? '/assets/images/default-avatar.png' : (userInfo.avatarUrl || '/assets/images/default-avatar.png')}}" mode="aspectFill" binderror="onAvatarError" />
-        </button>
-        <!-- 昵称显示/编辑区 -->
-        <view class="nickname-wrap" bindtap="toggleNickNameEdit">
-          <text class="user-name" wx:if="{{!editingNickName}}">{{userInfo.nickName || '爱猫同学'}}</text>
-          <input wx:if="{{editingNickName}}" class="nickname-input" type="nickname" placeholder="请输入昵称" value="{{nickNameDraft}}" bindinput="onNickNameInput" bindconfirm="saveNickName" confirm-type="done" focus="{{editingNickName}}" />
-          <text wx:if="{{!editingNickName}}" class="edit-icon">✏️</text>
+        <image class="user-avatar" src="{{userInfo.avatarUrl || '/assets/images/default-avatar.png'}}" mode="aspectFill" binderror="onAvatarError" />
+        <text class="user-name">{{userInfo.nickName || '爱猫同学'}}</text>
+        <view class="user-tags">
+          <text class="user-tag" wx:if="{{userInfo.gender}}">{{userInfo.gender === 'male' ? '♂ 男' : userInfo.gender === 'female' ? '♀ 女' : '⚪ 保密'}}</text>
+          <text class="user-tag" wx:if="{{userInfo.campus}}">🏫 {{userInfo.campus}}</text>
         </view>
-        <view wx:if="{{editingNickName}}" class="nickname-actions">
-          <button class="btn-small btn-cancel" catchtap="toggleNickNameEdit">取消</button>
-          <button class="btn-small btn-confirm" catchtap="saveNickName">保存</button>
-        </view>
-        <text class="user-desc">🐱 校园猫咪守护者</text>
+        <text class="user-desc">{{userInfo.bio || '🐱 校园猫咪守护者'}}</text>
       </block>
     </view>
   </view>

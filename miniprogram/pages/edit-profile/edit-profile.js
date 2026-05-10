@@ -3,190 +3,209 @@ const theme = require('../../utils/theme.js');
 
 Page({
   data: {
-    themeId: theme.getThemeId(),
-    pageClass: theme.getPageClass(),
+    themeId: '',
+    pageClass: '',
     nickName: '',
     avatarUrl: '',
     avatarFileId: '',
     gender: '',
     genderOptions: [
-      { label: '男', value: 'male' },
-      { label: '女', value: 'female' },
-      { label: '保密', value: 'secret' }
+      { label: '♂ 男', value: 'male' },
+      { label: '♀ 女', value: 'female' },
+      { label: '⚪ 保密', value: 'secret' }
     ],
     campus: '',
     bio: '',
-    saving: false
+    saving: false,
+    hasChanges: false
   },
 
   onLoad() {
-    theme.applyTheme(this);
+    this.setData({
+      themeId: theme.getThemeId(),
+      pageClass: theme.getPageClass()
+    });
+    theme.onChange(t => this.setData({ pageClass: theme.getPageClass() }));
     this.loadUserInfo();
   },
 
-  // 加载用户信息（本地缓存 + 云端同步）
+  onShow() {
+    this.setData({
+      themeId: theme.getThemeId(),
+      pageClass: theme.getPageClass()
+    });
+  },
+
+  // ===== 加载用户信息 =====
   async loadUserInfo() {
     const openid = api.getOpenId();
     if (!openid || openid === 'guest') return;
 
-    // 先读本地缓存快速展示
-    const localInfo = wx.getStorageSync('userInfo');
+    const local = wx.getStorageSync('userInfo') || {};
     this.setData({
-      nickName: localInfo?.nickName || '',
-      avatarUrl: localInfo?.avatarUrl || '',
-      gender: localInfo?.gender || '',
-      campus: localInfo?.campus || '',
-      bio: localInfo?.bio || ''
+      nickName: local.nickName || '',
+      avatarUrl: local.avatarUrl || '',
+      gender: local.gender || '',
+      campus: local.campus || '',
+      bio: local.bio || ''
     });
 
-    // 再从云端拉取最新数据
     try {
       const db = wx.cloud.database();
-      const res = await db.collection('users').where({ openid }).limit(1).get();
-
+      const res = await db.collection('users').where({ openid: openid }).limit(1).get();
       if (res.data && res.data.length > 0) {
-        const user = res.data[0];
-        const newData = {
-          nickName: user.nickName || localInfo?.nickName || '',
-          avatarUrl: user.avatar || localInfo?.avatarUrl || '',
-          avatarFileId: user.avatar || '',
-          gender: user.gender || '',
-          campus: user.campus || '',
-          bio: user.bio || ''
-        };
-        this.setData(newData);
-
-        // 同步更新本地缓存
-        const cached = localInfo || {};
-        cached.nickName = newData.nickName;
-        cached.avatarUrl = newData.avatarUrl;
-        cached.gender = newData.gender;
-        cached.campus = newData.campus;
-        cached.bio = newData.bio;
-        wx.setStorageSync('userInfo', cached);
+        const u = res.data[0];
+        this.setData({
+          nickName: u.nickName || this.data.nickName || '',
+          avatarUrl: u.avatar || this.data.avatarUrl || '',
+          avatarFileId: u.avatar || '',
+          gender: u.gender || '',
+          campus: u.campus || '',
+          bio: u.bio || ''
+        });
       }
     } catch (e) {
-      console.warn('从云端加载用户信息失败，使用本地缓存', e);
-      wx.showToast({ title: '用户资料加载失败', icon: 'none' });
+      console.warn('云端加载失败', e);
     }
   },
 
-  // 输入昵称
-  onNickNameInput(e) {
-    this.setData({ nickName: e.detail.value });
-  },
-
-  // 选择性别
-  onGenderTap(e) {
-    const val = e.currentTarget.dataset.val;
-    this.setData({ gender: this.data.gender === val ? '' : val });
-  },
-
-  // 输入校区
-  onCampusInput(e) {
-    this.setData({ campus: e.detail.value });
-  },
-
-  // 输入个性签名
-  onBioInput(e) {
-    this.setData({ bio: e.detail.value });
-  },
-
-  // 选择头像
-  chooseAvatar() {
+  // ===== 头像 =====
+  onChooseAvatar() {
     wx.chooseMedia({
       count: 1,
       mediaType: ['image'],
       sourceType: ['album', 'camera'],
       success: (res) => {
-        const tempFilePath = res.tempFiles[0].tempFilePath;
-        this.setData({ avatarUrl: tempFilePath });
-        this._uploadAvatar(tempFilePath);
+        const fp = res.tempFiles[0].tempFilePath;
+        this.setData({ avatarUrl: fp, hasChanges: true });
+        this._uploadAvatar(fp);
       }
     });
   },
 
-  // 上传头像到云存储
   async _uploadAvatar(filePath) {
     wx.showLoading({ title: '上传中...', mask: true });
     try {
-      const ext = filePath.split('.').pop() || 'jpg';
-      const cloudPath = `avatars/${Date.now()}.${ext}`;
-      const uploadResult = await wx.cloud.uploadFile({ cloudPath, filePath });
-
-      this.setData({ avatarFileId: uploadResult.fileID });
+      const parts = filePath.split('.');
+      const ext = parts[parts.length - 1] || 'jpg';
+      const rnd = Math.random().toString(36).slice(2, 8);
+      const cloudPath = 'avatars/' + Date.now() + '_' + rnd + '.' + ext;
+      const upRes = await wx.cloud.uploadFile({ cloudPath: cloudPath, filePath: filePath });
+      this.setData({ avatarFileId: upRes.fileID, avatarUrl: upRes.fileID });
       wx.hideLoading();
       wx.showToast({ title: '头像上传成功', icon: 'success' });
     } catch (err) {
       wx.hideLoading();
-      console.error('上传头像失败', err);
-      wx.showToast({ title: '上传失败', icon: 'none' });
+      console.error('头像上传失败', err);
+      wx.showToast({ title: '头像上传失败', icon: 'none' });
     }
   },
 
-  // 保存修改
+  onAvatarError() {
+    this.setData({ avatarUrl: '/assets/images/default-avatar.png' });
+  },
+
+  // ===== 昵称 =====
+  onNickNameInput(e) {
+    this.setData({ nickName: e.detail.value, hasChanges: true });
+  },
+
+  // ===== 性别 =====
+  onGenderTap(e) {
+    const val = e.currentTarget.dataset.val;
+    this.setData({ gender: this.data.gender === val ? '' : val, hasChanges: true });
+  },
+
+  // ===== 校区 =====
+  onCampusInput(e) {
+    this.setData({ campus: e.detail.value, hasChanges: true });
+  },
+
+  // ===== 个性签名 =====
+  onBioInput(e) {
+    this.setData({ bio: e.detail.value, hasChanges: true });
+  },
+
+  // ===== 保存 =====
   async submitEdit() {
-    if (!this.data.nickName.trim()) {
+    const name = (this.data.nickName || '').trim();
+    if (!name) {
       wx.showToast({ title: '昵称不能为空', icon: 'none' });
       return;
     }
-    if (this.data.nickName.trim().length < 2) {
+    if (name.length < 2) {
       wx.showToast({ title: '昵称至少2个字符', icon: 'none' });
+      return;
+    }
+    if (name.length > 20) {
+      wx.showToast({ title: '昵称最多20个字符', icon: 'none' });
       return;
     }
 
     this.setData({ saving: true });
+    wx.showLoading({ title: '保存中...', mask: true });
+
+    const gender = this.data.gender || '';
+    const campus = (this.data.campus || '').trim();
+    const bio = (this.data.bio || '').trim();
+    const avatarFileId = this.data.avatarFileId || '';
 
     try {
-      // 通过 updateUserProfile 云函数更新云端
       try {
-        await wx.cloud.callFunction({
-          name: 'updateUserProfile',
-          data: {
-            nickName: this.data.nickName.trim(),
-            avatar: this.data.avatarFileId || undefined,
-            campus: this.data.campus.trim(),
-            gender: this.data.gender || '',
-            bio: this.data.bio.trim()
-          }
-        });
-      } catch (err) {
-        console.warn('updateUserProfile 云函数失败，尝试直接更新', err);
-        // fallback: 直接操作数据库
-        const db = wx.cloud.database();
-        const myOpenId = api.getOpenId();
-        const userResult = await db.collection('users').where({ openid: myOpenId }).get();
-        const updateData = {
-          nickName: this.data.nickName.trim(),
-          gender: this.data.gender || '',
-          campus: this.data.campus.trim(),
-          bio: this.data.bio.trim(),
-          updatedAt: db.serverDate()
-        };
-        if (this.data.avatarFileId) updateData.avatar = this.data.avatarFileId;
-        if (userResult.data.length > 0) {
-          await db.collection('users').doc(userResult.data[0]._id).update({ data: updateData });
-        } else {
-          await db.collection('users').add({ data: { openid: myOpenId, ...updateData, createdAt: db.serverDate() } });
-        }
+        const d = { nickName: name, gender: gender, campus: campus, bio: bio };
+        if (avatarFileId) d.avatar = avatarFileId;
+        await wx.cloud.callFunction({ name: 'updateUserProfile', data: d });
+      } catch (fnErr) {
+        console.warn('云函数失败，直写数据库', fnErr);
+        await this._fallbackSave(name, gender, campus, bio, avatarFileId);
       }
 
-      // 更新本地存储
-      const userInfo = wx.getStorageSync('userInfo') || {};
-      userInfo.nickName = this.data.nickName.trim();
-      userInfo.avatarUrl = this.data.avatarUrl;
-      userInfo.gender = this.data.gender;
-      userInfo.campus = this.data.campus;
-      userInfo.bio = this.data.bio;
-      wx.setStorageSync('userInfo', userInfo);
+      const local = wx.getStorageSync('userInfo') || {};
+      local.nickName = name;
+      local.avatarUrl = avatarFileId || local.avatarUrl || '';
+      local.gender = gender;
+      local.campus = campus;
+      local.bio = bio;
+      wx.setStorageSync('userInfo', local);
 
-      wx.showToast({ title: '保存成功 ✨', icon: 'success' });
-      setTimeout(() => { wx.navigateBack(); }, 1500);
+      wx.hideLoading();
+      this.setData({ saving: false, hasChanges: false });
+      wx.showToast({ title: '保存成功', icon: 'success' });
+      setTimeout(() => wx.navigateBack(), 1500);
     } catch (err) {
+      wx.hideLoading();
+      this.setData({ saving: false });
       console.error('保存失败', err);
       wx.showToast({ title: '保存失败', icon: 'none' });
-    } finally {
-      this.setData({ saving: false });
+    }
+  },
+
+  async _fallbackSave(nickName, gender, campus, bio, avatarFileId) {
+    const db = wx.cloud.database();
+    const openid = api.getOpenId();
+    const res = await db.collection('users').where({ openid: openid }).limit(1).get();
+    const now = new Date();
+    const data = { nickName: nickName, gender: gender, campus: campus, bio: bio, updateTime: now };
+    if (avatarFileId) data.avatar = avatarFileId;
+    if (res.data.length > 0) {
+      await db.collection('users').doc(res.data[0]._id).update({ data: data });
+    } else {
+      await db.collection('users').add({ data: { openid: openid, ...data, createTime: now } });
+    }
+  },
+
+  // ===== 返回确认 =====
+  onBack() {
+    if (this.data.hasChanges && !this.data.saving) {
+      wx.showModal({
+        title: '放弃修改？',
+        content: '你有未保存的修改，确定要返回吗？',
+        confirmText: '放弃',
+        confirmColor: '#FF4D4F',
+        success: (res) => { if (res.confirm) wx.navigateBack(); }
+      });
+    } else {
+      wx.navigateBack();
     }
   }
 });

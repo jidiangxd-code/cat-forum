@@ -316,11 +316,19 @@ async function getFavoritePosts(page = 1, pageSize = 20) {
 
 /**
  * 内容安全审核（文字+图片）
- * @param {object} params - content: 文字内容, images: 图片URL数组
- * @returns {object} { success: boolean, reason: string }
+ * 不使用 callCloud 封装，因为 success:false 是正常业务逻辑（内容违规），
+ * 不是云函数调用异常，应该用返回值而非异常来处理。
+ * @param {object} params - content: 文字内容, images: 图片云文件ID数组
+ * @returns {object} { success: boolean, type: string, reason: string }
  */
 function checkContent(params) {
-  return callCloud('checkContent', params);
+  return wx.cloud.callFunction({ name: 'checkContent', data: params })
+    .then(res => res.result || { success: true, reason: '' })
+    .catch(err => {
+      // 网络等异常才走到这里
+      console.error('[api] checkContent 调用失败:', err);
+      return { success: true, reason: '' };  // 异常时放行，不阻断用户
+    });
 }
 
 // ==================== 图片上传 ====================

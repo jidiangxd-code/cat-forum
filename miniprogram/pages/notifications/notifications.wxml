@@ -18,7 +18,7 @@
     scroll-y
     class="notification-list"
     bindrefresherrefresh="onRefresh"
-    refresher-enabled
+    refresher-enabled="{{false}}"
     bindscrolltolower="loadMore"
     lower-threshold="100"
   >
@@ -29,7 +29,7 @@
 
     <!-- 空状态 -->
     <view class="empty-wrapper" wx:elif="{{!loading && list.length === 0}}">
-      <image class="empty-icon" src="/miniprogram/images/default-avatar.png" mode="aspectFit" />
+      <image class="empty-icon" src="/assets/images/default-avatar.png" mode="aspectFit" />
       <text class="empty-text">{{activeTab === 'all' ? '暂无通知' : '此类通知为空'}}</text>
     </view>
 
@@ -66,7 +66,7 @@
         <view class="notif-content">
           <view class="notif-header">
             <text class="notif-user">{{item.fromUserName || '某用户'}}</text>
-            <text class="notif-action">{{getNotifText(item.type)}}</text>
+            <text class="notif-action">{{item.notifText || '有新动态'}}</text>
           </view>
           <text class="notif-text" wx:if="{{item.content}}">{{item.content}}</text>
           <text class="notif-target" wx:if="{{item.targetTitle}}">「{{item.targetTitle}}」</text>

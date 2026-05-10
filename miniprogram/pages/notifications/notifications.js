@@ -69,7 +69,18 @@ Page({
       });
 
       if (res.result && res.result.success) {
-        const newList = res.result.data.list || [];
+        const notifTextMap = {
+          like_post: '赞了你的帖子',
+          like_cat: '赞了你的猫咪',
+          comment: '评论了你的帖子',
+          reply: '回复了你',
+          follow: '关注了你',
+          system: '系统通知'
+        };
+        const newList = (res.result.data.list || []).map(n => ({
+          ...n,
+          notifText: notifTextMap[n.type] || '有新动态'
+        }));
         this.setData({
           list: refresh || page === 1 ? newList : [...this.data.list, ...newList],
           hasMore: res.result.data.hasMore,

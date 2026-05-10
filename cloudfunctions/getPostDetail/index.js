@@ -1,4 +1,4 @@
-// 云函数：获取帖子详情（联表查询作者信息，解决匿名用户问题）
+// 云函数：获取帖子详情（每次都联表查询最新作者信息）
 const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
@@ -19,8 +19,9 @@ exports.main = async (event, context) => {
 
     const post = postRes.data;
 
-    // 2. 如果帖子没有 authorName（旧数据），联表查询 users 集合补充
-    if (!post.authorName || post.authorName === '匿名用户') {
+    // 2. 每次都联表查询 users 集合，获取最新昵称和头像
+    //    这样即使用户改了名，帖子详情也能显示最新名字
+    if (post.authorId) {
       try {
         const userRes = await db.collection('users')
           .where(_.or([
@@ -31,16 +32,18 @@ exports.main = async (event, context) => {
           .get();
         if (userRes.data && userRes.data.length > 0) {
           const user = userRes.data[0];
-          post.authorName = user.nickName || user.nickname || '匿名用户';
-          post.authorAvatar = user.avatar || user.avatarUrl || '';
+          // 用最新昵称覆盖（如果 users 里有的话）
+          if (user.nickName) {
+            post.authorName = user.nickName;
+          }
+          if (user.avatar) {
+            post.authorAvatar = user.avatar;
+          }
         }
       } catch (e) {
-        console.warn('查询作者信息失败（不影响帖子详情）', e);
+        console.warn('查询最新作者信息失败（使用帖子内存储的值）', e);
       }
     }
-
-    // 3. 同时获取作者是否已认证（users 集合里的信息）
-    //    上面已经查过了，无需重复查询
 
     return { success: true, data: post };
   } catch (err) {

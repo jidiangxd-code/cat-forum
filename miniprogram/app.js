@@ -9,16 +9,17 @@ App({
   },
 
   async onLaunch() {
-    // 初始化云开发环境
+    // 初始化云开发环境（明确指定 env，避免开发者版/体验版连不同环境）
     if (wx.cloud) {
       wx.cloud.init({
+        env: 'cloud1-d6gz1l670de10862e',
         traceUser: true
       });
-      console.log('✅ 云开发初始化完成');
+      console.log('云开发初始化完成，env:', 'cloud1-d6gz1l670de10862e');
       
       try {
         const envId = wx.cloud.ENV || 'default';
-        console.log('☁️ 当前云环境 ID:', envId);
+        console.log('当前云环境 ID:', envId);
         this.globalData.cloudEnvId = envId;
       } catch(e) {}
     }
@@ -30,37 +31,42 @@ App({
     const savedTheme = theme.loadSaved();
     theme.apply(savedTheme);
 
-    // 获取用户 openid
+    // 获取用户 openid（带超时保护，不阻塞主流程）
     this._initOpenId();
   },
 
   async _initOpenId() {
     try {
-      const res = await wx.cloud.callFunction({
-        name: 'login',
-        timeout: 15000
-      });
+      const res = await Promise.race([
+        wx.cloud.callFunction({
+          name: 'login',
+          timeout: 8000
+        }),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('login timeout')), 8000))
+      ]);
       console.log('[login] 完整返回:', JSON.stringify(res));
       const openid = res.result?.openid || res.result?.openId || res.result?.data?.openid || '';
       if (openid) {
         wx.setStorageSync('openId', openid);
-        console.log('✅ openid:', openid);
+        console.log('openid:', openid);
         // 同步拉取用户信息，存入 Storage（供评论、帖子等模块读取作者名）
         this._syncUserInfo(openid);
       } else {
-        console.warn('⚠️ openid 为空，使用 guest');
+        console.warn('openid 为空，使用 guest');
         wx.setStorageSync('openId', 'guest');
       }
     } catch (err) {
-      console.warn('⚠️ login 调用失败，使用 guest:', err.message || err);
+      console.warn('login 调用失败，使用 guest:', err.message || err);
       wx.setStorageSync('openId', 'guest');
     }
   },
 
   async _syncUserInfo(openid) {
     try {
-      const db = wx.cloud.database();
-      const res = await db.collection('users').where({ openid }).limit(1).get();
+      const res = await Promise.race([
+        wx.cloud.database().collection('users').where({ openid }).limit(1).get(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('syncUserInfo timeout')), 5000))
+      ]);
       if (res.data && res.data.length > 0) {
         const user = res.data[0];
         const userInfo = {
@@ -69,12 +75,12 @@ App({
         };
         wx.setStorageSync('userInfo', userInfo);
         this.globalData.userInfo = userInfo;
-        console.log('✅ 用户信息已同步:', userInfo.nickName);
+        console.log('用户信息已同步:', userInfo.nickName);
       } else {
-        console.log('ℹ️ users 集合中暂无该用户记录（首次使用）');
+        console.log('users 集合中暂无该用户记录（首次使用）');
       }
     } catch (e) {
-      console.warn('⚠️ 同步用户信息失败:', e);
+      console.warn('同步用户信息失败:', e);
     }
   },
 

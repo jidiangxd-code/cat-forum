@@ -231,7 +231,12 @@ Page({
       const checkResult = await api.checkContent({ content, images: [] });
       if (!checkResult.success) {
         this.setData({ submittingComment: false });
-        wx.showToast({ title: checkResult.reason || '内容包含违规信息', icon: 'none', duration: 2500 });
+        wx.showModal({
+          title: '评论审核未通过',
+          content: checkResult.reason || '内容包含违规信息，请修改后重试',
+          showCancel: false,
+          confirmText: '我知道了'
+        });
         return;
       }
 

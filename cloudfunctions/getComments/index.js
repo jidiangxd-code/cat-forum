@@ -41,9 +41,9 @@ exports.main = async (event, context) => {
         const author = c.authorInfo && c.authorInfo[0] || {};
         return {
           ...c,
-          // 优先用评论里已有的字段，找不到再从 users 集合取
-          authorName: c.authorName || author.nickName || author.nickname || '匿名用户',
-          authorAvatar: c.authorAvatar || author.avatar || author.avatarUrl || '',
+          // 优先用 users 表的最新昵称，确保改名后同步
+          authorName: author.nickName || c.authorName || author.nickname || '匿名用户',
+          authorAvatar: author.avatar || c.authorAvatar || author.avatarUrl || '',
           // 清理联表数据，避免传输过大
           authorInfo: undefined
         };

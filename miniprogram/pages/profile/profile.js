@@ -10,9 +10,6 @@ Page({
     // 主题选项
     themeOptions: theme.getAll(),
     userInfo: null,
-    avatarError: false,
-    editingNickName: false,
-    nickNameDraft: '',
     isLoggedIn: false,
     stats: {
       publishCount: 0,
@@ -114,9 +111,11 @@ Page({
       
       if (res.data && res.data.length > 0) {
         const cloudUser = res.data[0];
+        // 云端 avatar 可能为空（旧数据或未部署云函数），不为空时才用云端覆盖本地
+        const cloudAvatar = cloudUser.avatar || '';
         const mergedInfo = {
           nickName: cloudUser.nickName || localInfo?.nickName || '爱猫同学',
-          avatarUrl: cloudUser.avatar || localInfo?.avatarUrl || '',
+          avatarUrl: cloudAvatar || localInfo?.avatarUrl || '',
           gender: cloudUser.gender || '',
           campus: cloudUser.campus || '',
           bio: cloudUser.bio || ''
@@ -181,65 +180,6 @@ Page({
       console.error('登录失败:', err);
       wx.showToast({ title: '登录失败', icon: 'none' });
     }
-  },
-
-  // 选择头像
-  async onChooseAvatar(e) {
-    const avatarUrl = e.detail.avatarUrl;
-    if (!avatarUrl) return;
-
-    const userInfo = { ...(this.data.userInfo || {}), avatarUrl };
-    wx.setStorageSync('userInfo', userInfo);
-    this.setData({ userInfo, avatarError: false });
-
-    // 同步头像到云端 users 集合
-    try {
-      await wx.cloud.callFunction({
-        name: 'updateUserProfile',
-        data: { nickName: userInfo.nickName || '', avatar: avatarUrl }
-      });
-    } catch (err) {
-      console.warn('头像保存失败', err);
-    }
-  },
-
-  // 昵称输入
-  onNickNameInput(e) {
-    this.setData({ nickNameDraft: e.detail.value });
-  },
-
-  // 保存昵称
-  async saveNickName() {
-    const nickName = (this.data.nickNameDraft || '').trim();
-    if (!nickName) {
-      wx.showToast({ title: '昵称不能为空', icon: 'none' });
-      return;
-    }
-    if (nickName.length > 20) {
-      wx.showToast({ title: '昵称不能超过20字', icon: 'none' });
-      return;
-    }
-    const userInfo = { ...(this.data.userInfo || {}), nickName };
-    wx.setStorageSync('userInfo', userInfo);
-    this.setData({ userInfo, editingNickName: false });
-
-    try {
-      await wx.cloud.callFunction({
-        name: 'updateUserProfile',
-        data: { nickName, avatar: userInfo.avatarUrl || '' }
-      });
-      wx.showToast({ title: '昵称已更新', icon: 'success' });
-    } catch (err) {
-      console.warn('昵称保存失败', err);
-    }
-  },
-
-  // 切换昵称编辑
-  toggleNickNameEdit() {
-    this.setData({
-      editingNickName: !this.data.editingNickName,
-      nickNameDraft: this.data.userInfo?.nickName || ''
-    });
   },
 
   // 加载统计数据
@@ -389,7 +329,7 @@ Page({
   // ========== 点击事件 ==========
 
   onAvatarError() {
-    this.setData({ avatarError: true });
+    this.setData({ 'userInfo.avatarUrl': '/assets/images/default-avatar.png' });
   },
 
   // Tab 内点击帖子 → 跳转详情

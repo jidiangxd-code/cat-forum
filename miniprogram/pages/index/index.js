@@ -101,10 +101,10 @@ Page({
         this.setData({ catCache: newCatCache });
       }
 
-      // 批量获取缺失作者信息的用户数据
+      // 批量获取作者最新信息（无论帖子是否有 authorName，都查最新昵称）
       const authorIds = [...new Set(
         posts
-          .filter(p => !p.authorName && p.authorId)
+          .filter(p => p.authorId)
           .map(p => p.authorId)
       )];
       const newAuthorIds = authorIds.filter(id => !this.data.authorCache[id]);
@@ -130,13 +130,13 @@ Page({
         this.setData({ authorCache: newAuthorCache });
       }
 
-      // 合并猫咪信息和作者信息到帖子
+      // 合并猫咪信息和作者信息到帖子（优先用 authorCache 的最新昵称）
       const enriched = posts.map(p => {
         const cat = this.data.catCache[p.catId] || null;
-        // 优先用帖子自带的 authorName/authorAvatar，没有则从缓存查
+        // 始终用 authorCache 里的最新昵称覆盖，确保改名后同步
         let authorName = p.authorName;
         let authorAvatar = p.authorAvatar;
-        if (!authorName && p.authorId && this.data.authorCache[p.authorId]) {
+        if (p.authorId && this.data.authorCache[p.authorId]) {
           authorName = this.data.authorCache[p.authorId].nickName;
           authorAvatar = this.data.authorCache[p.authorId].avatar;
         }
