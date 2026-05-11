@@ -71,6 +71,21 @@ Page({
       
       post.createTimeStr = this._formatTime(post.createTime);
       
+      // 实时查询作者最新昵称和头像（确保改名后同步）
+      if (post.authorId) {
+        try {
+          const db = wx.cloud.database();
+          const userRes = await db.collection('users').where({ openid: post.authorId }).limit(1).get();
+          if (userRes.data && userRes.data.length > 0) {
+            const user = userRes.data[0];
+            if (user.nickName) post.authorName = user.nickName;
+            if (user.avatar) post.authorAvatar = user.avatar;
+          }
+        } catch (e) {
+          console.warn('查询作者信息失败', e);
+        }
+      }
+      
       // 检查是否已收藏
       const openid = api.getOpenId();
       let favorited = false;
@@ -130,15 +145,42 @@ Page({
   async loadComments() {
     try {
       const res = await api.getComments(this.data.postId);
+      const comments = res.data || [];
+
+      // 批量查询评论作者的最新昵称和头像
+      const authorIds = [...new Set(comments.map(c => c.authorId).filter(Boolean))];
+      let authorMap = {};
+      if (authorIds.length > 0) {
+        try {
+          const db = wx.cloud.database();
+          const results = await Promise.allSettled(
+            authorIds.map(id => db.collection('users').where({ openid: id }).limit(1).get())
+          );
+          results.forEach((r, i) => {
+            if (r.status === 'fulfilled' && r.value.data && r.value.data.length > 0) {
+              const user = r.value.data[0];
+              authorMap[authorIds[i]] = { nickName: user.nickName, avatar: user.avatar };
+            }
+          });
+        } catch (e) {
+          console.warn('批量查询评论作者信息失败', e);
+        }
+      }
+
       const myOpenId = api.getOpenId();
-      const comments = (res.data || [])
-        .filter(c => c.status !== 'deleted')   // 过滤软删除评论
-        .map(c => ({
-          ...c,
-          timeStr: this._formatTime(c.createTime),
-          isOwn: c.authorId === myOpenId        // 标记是否为自己的评论（显示删除按钮）
-        }));
-      this.setData({ comments });
+      const processed = comments
+        .filter(c => c.status !== 'deleted')
+        .map(c => {
+          const latest = authorMap[c.authorId];
+          return {
+            ...c,
+            authorName: (latest && latest.nickName) || c.authorName || '匿名用户',
+            authorAvatar: (latest && latest.avatar) || c.authorAvatar || '',
+            timeStr: this._formatTime(c.createTime),
+            isOwn: c.authorId === myOpenId
+          };
+        });
+      this.setData({ comments: processed });
     } catch (err) {
       console.error('加载评论失败', err);
     }

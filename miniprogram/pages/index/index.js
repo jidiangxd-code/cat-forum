@@ -66,7 +66,8 @@ Page({
   },
 
   onPullDownRefresh() {
-    this.setData({ page: 1, hasMore: true, postList: [] });
+    // 清除作者缓存，确保重新查询最新昵称/头像
+    this.setData({ page: 1, hasMore: true, postList: [], authorCache: {} });
     this.loadPosts(true).then(() => wx.stopPullDownRefresh());
   },
 
